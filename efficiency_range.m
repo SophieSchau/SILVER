@@ -11,6 +11,7 @@ function effs = efficiency_range(ratio,M,N)
 %   OUTPUTS:  effs - list of efficiencies for window size, M to N.
 %
 %   DEPENDENCIES: - efficiency_2D()
+%                 - surface_points()
 %
 % Sophie Schauman, 2019
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -24,6 +25,13 @@ function effs = efficiency_range(ratio,M,N)
 
     
     elseif length(ratio) == 2 % 3D acquisition
-        error('3D acquisition not implemented yet')
+        for ii = 1:length(effs)
+            
+            x = mod([0:M+ii-2]*ratio(1),1)';
+            y = mod([0:M+ii-2]*ratio(2),1)';
+            points = [x,y]; % tip positions on unit square
+            points = uniquetol(points,1e-6, 'Byrows', true);
+            effs(ii) = efficiency_3D(points, M+ii-1); 
+        end   
     end
 end
