@@ -1,4 +1,4 @@
-function [ratio, eff_gr,eff_a] = SILVER_3D(M,N)
+function [ratio, eff_gr,eff_a] = SILVER_3D(window_sizes)
 %SILVER_3D Calculate the optimal increment for a range of temporal windows
 %   For 2D Golden means radial sampling the azimuthal angle, and and 
 %   z-increment between the tip position of subsequently acquired spokes is
@@ -13,8 +13,7 @@ function [ratio, eff_gr,eff_a] = SILVER_3D(M,N)
 %   The optimisation is performed by a minimized of the maximum SNR 
 %   inefficiency (as the reciprocal of the SNR efficiency ?). 
 %
-%   INPUTS:   M - minimum number of spokes used to reconstruct
-%             N - maximum number of spkes used to reconstruct
+%   INPUTS:   window_sizes - list of number of spokes used to reconstruct
 %   OUTPUTS:  ratio - the SILVER equivalent of the 2D golden means. 
 %                     (a 2x1 vector) 
 %
@@ -23,9 +22,6 @@ function [ratio, eff_gr,eff_a] = SILVER_3D(M,N)
 %
 % Sophie Schauman, Mark Chiew, 2019
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% M = minimum number of spokes
-% N = maximum number of spokes
     
 % a is the optimal angle increment for an arbitrary number of spokes
 % between N-M for a 3D acquisition
@@ -38,7 +34,7 @@ function [ratio, eff_gr,eff_a] = SILVER_3D(M,N)
     n = 1;
     for ii = 1:2:10
         for jj = 2:2:10
-            [ratios(:,n),fval(n)] = fmincon(@(x)1./min(efficiency_range(x,M,N)),[(ii/10); (jj/10)], [], [], [], [], [0,0], [1,1], [], opts); 
+            [ratios(:,n),fval(n)] = fmincon(@(x)1./min(efficiency_range(x,window_sizes)),[(ii/10); (jj/10)], [], [], [], [], [0,0], [1,1], [], opts); 
             disp(['iteration: ' num2str(n)])
             n = n+1;
         end
@@ -46,8 +42,8 @@ function [ratio, eff_gr,eff_a] = SILVER_3D(M,N)
     
     [~,i] = min(fval);
     ratio = ratios(:,i);
-    eff_gr = efficiency_range(gr3D,M,N);
-    eff_a  = efficiency_range(ratio,M,N);
+    eff_gr = efficiency_range(gr3D,window_sizes);
+    eff_a  = efficiency_range(ratio,window_sizes);
     
     gr = gr3D;
     
