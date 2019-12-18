@@ -1,4 +1,4 @@
-function areas = voronoi_areas_on_sphere(points)
+function areas = voronoi_areas_on_sphere(points, display)
 %VORONOI_AREAS_ON_SPHERE estimates the surface area occupide by each radial 
 %spoke
 %
@@ -7,6 +7,7 @@ function areas = voronoi_areas_on_sphere(points)
 % 
 %    INPUTS:
 %       points   -   Nx2 vector of points, scaled between [0,1]
+%       display  - boolean. If true, show the parcellation.
 %
 %    OUTPUTS:
 %       areas   -   Nx1 vector of densities for each point in 'points'
@@ -16,7 +17,9 @@ function areas = voronoi_areas_on_sphere(points)
 %
 % Mark Chiew, Sophie Schauman 2019
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+if nargin <2
+    display = false;
+end
 % Number of original points
 N   = size(points,1);
 
@@ -29,5 +32,15 @@ for i = 1:N
 end
 
 % Compute voronoi cells
-[~,~,~,areas] = voronoisphere(unique([q;-q],'rows')');
+[~,~,boundary,areas] = voronoisphere(unique([q;-q],'rows')');
 areas = areas(1:N);
+
+if display
+    figure
+    for k = 1:length(boundary)
+        fill3(boundary{k}(1,:),boundary{k}(2,:),boundary{k}(3,:),'r','EdgeColor','w');
+        hold on
+        scatter3([q(:,1);-q(:,1)],[q(:,2);-q(:,2)],[q(:,3);-q(:,3)],100, 'g','filled') ;
+    end
+end
+end

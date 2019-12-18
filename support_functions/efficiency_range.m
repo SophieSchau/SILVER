@@ -35,13 +35,10 @@ function effs = efficiency_range(ratio,window_sizes,efficiency_metric)
                 
 
         for ii = 1:length(effs)
-            
-            
             x = mod([0:window_sizes(ii)-1]*ratio(1),1)';
             y = mod([0:window_sizes(ii)-1]*ratio(2),1)';
             points = [x,y]; % tip positions on unit square
-            points = uniquetol(points,1e-6, 'Byrows', true);
-            effs(ii) = efficiency_3D(points, window_sizes(ii), efficiency_metric); 
+            effs(ii) = efficiency_3D(points, efficiency_metric); 
         end   
     end
 end
