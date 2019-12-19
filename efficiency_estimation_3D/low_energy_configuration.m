@@ -24,7 +24,7 @@ options = optimset('Display','iter', 'MaxFunEvals', 100000);
 [coordinates, energy] = fmincon(@electrostatic_potential,starting_coordinates, [], [], [], [], zeros(size(starting_coordinates)), ones(size(starting_coordinates)), [], options); 
  
 try
-    save(['efficiency_estimation_3D/low_energy_configurations/' num2str(N) 'spokes_config.mat'], 'energy', 'coordinates')
+    save(['SILVER/efficiency_estimation_3D/low_energy_configurations/' num2str(N) 'spokes_config.mat'], 'energy', 'coordinates')
 catch
     save([num2str(N) 'spokes_config.mat'], 'energy', 'coordinates')
 end
