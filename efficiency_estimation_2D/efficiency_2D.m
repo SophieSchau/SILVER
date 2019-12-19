@@ -16,5 +16,6 @@ function eff = efficiency_2D(spokes)
     spokes_unwrapped = mod(spokes_relative_angles,pi);
 
     q = diff(sort([spokes_unwrapped, pi])); %angle between adjacent spokes
+    q(q<1e-4) = []; % remove spokes that are the same spoke
     eff = sqrt((pi^2/length(spokes))/sum((0.5*(q+circshift(q,1))).^2));
 end
