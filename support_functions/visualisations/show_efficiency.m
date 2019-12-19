@@ -5,8 +5,8 @@ function [] = show_efficiency(ratio, window_sizes, efficiency_metric)
 %    INPUTS:
 %       ratio   -   a single number (2D imaging) or an array of two numbers
 %                   (3D imaging). For 3D, the first number is the ratio
-%                   that determines the azimuthal angle of the spoke, and 
-%                   the second determines z-coordinate of spoke tip.
+%                   that determines the z-coordinate of spoke tip, and 
+%                   the second determines azimuthal angle of the spoke.
 %       window_sizes  - list of window sizes to calculate efficiency for
 %                   and plot.
 %       efficiency_metric - for 3D imaging this needs to be defined as
