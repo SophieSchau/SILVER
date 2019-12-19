@@ -32,7 +32,7 @@ switch efficiency_metric
         
     case 'electrostatic_potential'
         ref_pot = low_energy_configuration(N);
-        eff = ref_pot/electrostatic_potential(points); 
+        eff = ref_pot/electrostatic_potential(points);
         
     otherwise
         error(['Efficiency metric `' efficiency_metric ...

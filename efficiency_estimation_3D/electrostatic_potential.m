@@ -23,11 +23,14 @@ points = [w;-w]; %duplicate to get both ends of spoke
 
 % Compute distance of every point from every other
 % Use trick that ||x-y||^2 = ||x||^2 + ||y||^2 - 2x'y
-d = sqrt(2 - 2*points*points');
+d = abs(sqrt(2 - 2*points*points'));
 
 % Sum over upper right triangle
 % This accounts for every pair-wise interaction
 potential = 0;
 for i = 1:size(points,1)-1    
     potential = potential + sum(1./d(i,i+1:end));
+end
+if potential == Inf
+    potential = realmax;
 end

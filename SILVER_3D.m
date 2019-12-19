@@ -40,12 +40,11 @@ function [ratio, eff_gr,eff_a] = SILVER_3D(window_sizes, efficiency_metric)
     % Loop starting estimates to overcome non-convexity
     % should be parallelised for efficiency
     n = 1;
-    for ii = 1:2:10
-        for jj = 2:2:10
-            [ratios(:,n),fval(n)] = fmincon(@(x)1./min(efficiency_range(x,window_sizes,efficiency_metric)),[(ii/10); (jj/10)], [], [], [], [], [0,0], [1,1], [], opts); 
-            disp(['iteration: ' num2str(n) ' of 25'])
-            n = n+1;
-        end
+    rng(1)
+    for ii = 1:100
+        [ratios(:,n),fval(n)] = fmincon(@(x)1./min(efficiency_range(x,window_sizes,efficiency_metric)),[rand(1); rand(1)], [], [], [], [], [0,0], [1,1], [], opts); 
+        disp(['iteration: ' num2str(n) ' of 100: ratios = ' num2str(ratios(1,n)) ', ' num2str(ratios(2,n))])
+        n = n+1;
     end
     
     [~,i] = min(fval);

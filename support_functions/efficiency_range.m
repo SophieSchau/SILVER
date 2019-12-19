@@ -9,7 +9,7 @@ function effs = efficiency_range(ratio,window_sizes,efficiency_metric)
 %             efficiency_metric - string. possible values:
 %                                         'voronoi_sphere'
 %                                         'voronoi_plane'
-%   OUTPUTS:  effs - list of efficiencies for window size, M to N.
+%   OUTPUTS:  effs - list of efficiencies for all window sizes
 %
 %   DEPENDENCIES: - efficiency_2D()
 %                 - efficiency_3D()
