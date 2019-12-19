@@ -25,7 +25,7 @@ function [ratio] = SILVER_2D(window_sizes)
     % Loop starting estimates to overcome non-convexity 
     % This should be paralellised for efficiency
     for i = 1:100
-        [ratios(i), fval(i)] = fmincon(@(x)1./min(efficiency_range(x,window_sizes)),(i/100), [], [], [], [], 0, pi, [], opts);        
+        [ratios(i), fval(i)] = fmincon(@(x)1./min(efficiency_range(x,window_sizes)),(i/100), [], [], [], [], 0, 1, [], opts);        
     end
     
     [~,i] = min(fval);
