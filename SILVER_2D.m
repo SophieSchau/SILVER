@@ -1,4 +1,4 @@
-function [ratio] = SILVER_2D(window_sizes, savefilename)
+function [ratio] = SILVER_2D(window_sizes, efficiency_metric, savefilename)
 %SILVER_2D Calculate the optimal increment for a range of temporal windows
 %   For Golden angle radial sampling the optimal angular increment between 
 %   spokes is pi times the Golden ratio (approximately 0.6180). The SILVER
@@ -8,6 +8,9 @@ function [ratio] = SILVER_2D(window_sizes, savefilename)
 %   inefficiency (as the reciprocal of the SNR efficiency ?). 
 %
 %   INPUTS:   window_sizes - list of number of spokes used to reconstruct
+%             efficiency_metric - string. possible values:
+%                                         'Winkelmann' (default)
+%                                         'electrostatic_potential'
 %             savefilename - name and path of file to save result to.
 %   OUTPUTS:  ratio - the SILVER equivalent of the golden ratio. The
 %                     optimal angle increment is pi * ratio.
@@ -27,7 +30,7 @@ function [ratio] = SILVER_2D(window_sizes, savefilename)
     % This should be paralellised for efficiency
     tic
     for i = 1:100
-        [ratios(i), fval(i)] = fmincon(@(x)1./min(efficiency_range(x,window_sizes)),(i/100), [], [], [], [], 0, 1, [], opts);        
+        [ratios(i), fval(i)] = fmincon(@(x)1./min(efficiency_range(x,window_sizes, efficiency_metric)),(i/100), [], [], [], [], 0, 1, [], opts);        
     end
     t = toc;
     [~,i] = min(fval);

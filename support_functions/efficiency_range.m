@@ -20,10 +20,12 @@ function effs = efficiency_range(ratio,window_sizes,efficiency_metric)
     effs = zeros(length(window_sizes),1);
     
     if length(ratio) == 1 % 2D acquisition
-
+        if nargin < 3
+            efficiency_metric = 'Winkelmann';
+        end
     
         for ii = 1:length(effs)
-            effs(ii) = efficiency_2D([0:window_sizes(ii)-1]*ratio*pi);        
+            effs(ii) = efficiency_2D([0:window_sizes(ii)-1]*ratio*pi, efficiency_metric);        
         end   
 
     

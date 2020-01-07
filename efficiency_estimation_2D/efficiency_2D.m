@@ -1,21 +1,55 @@
-function eff = efficiency_2D(spokes)
-%EFFICIENCY_2D Calculates the SNR efficiency for a 2D radial acquisition
-%compared to uniform sampling
+function eff = efficiency_2D(angles, efficiency_metric)
+%EFFICIENCY_3D Summary Calculates the SNR efficiency for a 3D radial acquisition
+%compared to optimal sampling
 %
-%   Based on Winkelmann et al. (IEEE TRANSACTIONS ON MEDICAL IMAGING, 2007)
+%   
 %
-%   INPUTS:   spokes - list of angles of spokes (radians)
-%   OUTPUTS:  eff - SNR efficiency of this sampling scheme compared with an
-%                   equal number of uniformly spaced spokes
+%   INPUTS:   angles    - list of angles of spokes (radians)
+%             efficiency_metric - string. possible values:
+%                                         'Winkelmann' (IEEE TRANSACTIONS ON MEDICAL IMAGING, 2007)
+%                                         'electrostatic_potential'
+%   OUTPUTS:  eff       - SNR efficiency of this sampling scheme compared 
+%                         with an equal number of optimally spaced spokes
+%
+%   DEPENDENCIES: electrostatic_potential()
 %
 %
-% Sophie Schauman, Mark Chiew, 2019
+% Sophie Schauman, 2019
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+N = length(angles); % number of spokes
+switch efficiency_metric
+    case 'Winkelmann'
+        spokes_relative_angles = angles-angles(1);
+        spokes_unwrapped = mod(spokes_relative_angles,pi);
 
-    spokes_relative_angles = spokes-spokes(1);
-    spokes_unwrapped = mod(spokes_relative_angles,pi);
-
-    q = diff(sort([spokes_unwrapped, pi])); %angle between adjacent spokes
-    q(q<1e-4) = []; % remove spokes that are the same spoke
-    eff = sqrt((pi^2/length(spokes))/sum((0.5*(q+circshift(q,1))).^2));
+        q = diff(sort([spokes_unwrapped, pi])); %angle between adjacent spokes
+        eff = sqrt((pi^2/N)/sum((0.5*(q+circshift(q,1))).^2));
+        
+    case 'electrostatic_potential'
+        optimal_points = zeros(N, 2);
+        tmp = linspace(0,0.5,N+1);
+        optimal_points(:,2) = tmp(1:end-1);
+        
+        points = zeros(N, 2);
+        spokes_relative_angles = angles-angles(1);
+        spokes_unwrapped = mod(spokes_relative_angles,pi);
+        points(:,2) = spokes_unwrapped/(2*pi);
+        
+        
+        ref_pot = electrostatic_potential(optimal_points);
+        eff = ref_pot/electrostatic_potential(points);
+        
+    otherwise
+        error(['Efficiency metric `' efficiency_metric ...
+            '` not implemented. --- Implemented metrics: '...
+            '`Winkelmann`, `electrostatic_potential`'])
 end
+end
+
+
+
+
+
+
+
+

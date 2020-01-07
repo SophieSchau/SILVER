@@ -17,6 +17,7 @@ function [ratio, eff_gr,eff_SILVER] = SILVER_3D(window_sizes, efficiency_metric,
 %             efficiency_metric - string. possible values:
 %                                         'voronoi_sphere' (default)
 %                                         'voronoi_plane'
+%                                         'electrostatic_potential'
 %             savefilename - name and path of file to save result to.
 %   OUTPUTS:  ratio - the SILVER equivalent of the 2D golden means. 
 %                     (a 2x1 vector) 

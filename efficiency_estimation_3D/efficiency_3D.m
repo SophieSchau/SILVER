@@ -9,6 +9,7 @@ function eff = efficiency_3D(points, efficiency_metric)
 %             efficiency_metric - string. possible values:
 %                                         'voronoi_sphere'
 %                                         'voronoi_plane'
+%                                         'electrostatic_potential'
 %   OUTPUTS:  eff       - SNR efficiency of this sampling scheme compared 
 %                         with an equal number of optimally spaced spokes
 %
