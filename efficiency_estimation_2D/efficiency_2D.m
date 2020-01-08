@@ -1,10 +1,10 @@
 function eff = efficiency_2D(angles, efficiency_metric)
-%EFFICIENCY_3D Summary Calculates the SNR efficiency for a 3D radial acquisition
+%EFFICIENCY_2D Summary Calculates the SNR efficiency for a 3D radial acquisition
 %compared to optimal sampling
 %
 %   
 %
-%   INPUTS:   angles    - list of angles of spokes (radians)
+%   INPUTS:   angles    - list of angles of spokes (radians (zero to pi))
 %             efficiency_metric - string. possible values:
 %                                         'Winkelmann' (IEEE TRANSACTIONS ON MEDICAL IMAGING, 2007)
 %                                         'electrostatic_potential'
@@ -14,7 +14,7 @@ function eff = efficiency_2D(angles, efficiency_metric)
 %   DEPENDENCIES: electrostatic_potential()
 %
 %
-% Sophie Schauman, 2019
+% Sophie Schauman, 2020
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 N = length(angles); % number of spokes
 switch efficiency_metric
