@@ -17,8 +17,8 @@ function eff = efficiency_2D(angles, efficiency_metric)
 % Sophie Schauman, 2020
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 N = length(angles); % number of spokes
-switch efficiency_metric
-    case 'Winkelmann'
+switch lower(efficiency_metric)
+    case 'winkelmann'
         spokes_relative_angles = angles-angles(1);
         spokes_unwrapped = mod(spokes_relative_angles,pi);
 

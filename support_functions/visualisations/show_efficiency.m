@@ -22,5 +22,5 @@ if nargin < 3
 end
 
 eff_a = efficiency_range(ratio,window_sizes,efficiency_metric) ;
-    plot(window_sizes, eff_a, 'Linewidth',3)
+    plot(window_sizes, eff_a, 'Linewidth',3, 'Marker', 'o')
 end
