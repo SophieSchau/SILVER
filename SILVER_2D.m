@@ -31,7 +31,12 @@ function [ratio] = SILVER_2D(window_sizes, efficiency_metric, savefilename)
     rng(1)
     tic
     for i = 1:100
-        [ratios(i), fval(i)] = fmincon(@(x)1./min(efficiency_range(x,window_sizes, efficiency_metric)),rand(1), [], [], [], [], 0, 1, [], opts);        
+        if i == 1
+            [ratios(i), fval(i)] = fmincon(@(x)1./min(efficiency_range(x,window_sizes, efficiency_metric)),gr2D, [], [], [], [], 0, 1, [], opts);        
+        else
+            [ratios(i), fval(i)] = fmincon(@(x)1./min(efficiency_range(x,window_sizes, efficiency_metric)),rand(1), [], [], [], [], 0, 1, [], opts);        
+        end 
+            
     end
     t = toc;
     [~,i] = min(fval);
