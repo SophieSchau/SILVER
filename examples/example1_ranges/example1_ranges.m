@@ -37,7 +37,7 @@ if ~exist(savename, 'file')
 
         end
     end
-    save(savename, 'prcnt_increase')
+    save(savename, 'prcnt_increase','M', 'L')
 else
     warning('using pre-calculated results')
     load(savename);
