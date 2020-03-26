@@ -7,7 +7,7 @@ function [ratio, eff_gr,eff_SILVER] = SILVER_3D(window_sizes, efficiency_metric,
 %   phi_n = phi_n-1 + 2*pi*mod(0.6823,1)
 %   z_n = mod(z_n-1 +0.4656,1)
 %
-%   The SILVER method optimises the increment for a window size [M,N] 
+%   The SILVER method optimises the increment for a set of window sizes, S,
 %   instead of [1 to infinity]. 
 %   
 %   The optimisation is performed by a minimized of the maximum SNR 

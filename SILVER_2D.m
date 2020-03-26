@@ -2,9 +2,9 @@ function [ratio] = SILVER_2D(window_sizes, efficiency_metric, savefilename)
 %SILVER_2D Calculate the optimal increment for a range of temporal windows
 %   For Golden angle radial sampling the optimal angular increment between 
 %   spokes is pi times the Golden ratio (approximately 0.6180). The SILVER
-%   method optimises the increment for a window size [M,N]. 
+%   method optimises the increment for a set of window sizes, S. 
 %   
-%   The optimisation is performed by a minimized of the maximum SNR 
+%   The optimisation is performed by a minimization of the maximum SNR 
 %   inefficiency (as the reciprocal of the SNR efficiency ?). 
 %
 %   INPUTS:   window_sizes - list of number of spokes used to reconstruct

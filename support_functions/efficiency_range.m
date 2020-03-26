@@ -1,6 +1,6 @@
 function effs = efficiency_range(ratio,window_sizes,efficiency_metric) 
 %EFICIENCY_RANGE get a list of SNR efficiencies for each number of spokes
-%in the range [M, N]
+%in the set of window sizes, S
 %
 %   INPUTS:   ratio - a single number for 2D acquisition (equivalent to
 %             golden ratio), a 2x1 vector for 3D acquisition (equivalent to
