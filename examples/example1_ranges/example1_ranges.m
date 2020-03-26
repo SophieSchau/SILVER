@@ -51,7 +51,7 @@ hold on
 plot(L+1,prcnt_increase(2,:),'x-','Linewidth', 3,'markersize', 10)
 plot(L+1,prcnt_increase(3,:),'x-', 'Linewidth', 3,'markersize', 10)
 
-set(gca,'FontSize',24)
+set(gca,'FontSize',18)
 set(gcf,'Position',[124 359 876 439])
 axis([0,max(L)+1,0,5])
 legend('Minimum window size = 4', 'Minimum window size = 16', 'Minimum window size = 32', 'location', 'northeast')
