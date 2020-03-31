@@ -11,7 +11,7 @@ close all
 
 %% 1. Choose  sets of window sizes, S, to consider
 
-S1 = [16,32,48];
+S1 = [15,25,50];
 S2 = [32:39];
 S = {S1,S2};
 
