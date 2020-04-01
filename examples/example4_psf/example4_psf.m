@@ -21,7 +21,6 @@ else
     load(savename,'ratio')
 end
 
-
 %% 3. Generate PSF's for SILVER, GR, and uniform sampling and vizualise
 
 for n = 1:length(S)
