@@ -122,11 +122,18 @@ legend('Uniform','GR', 'SILVER', 'Location', 'northwest')
 set(gca,'FontSize', 20)
 ylabel('SNR')
 
+savefig('examples/example6_phantom_simu/example6_phantom_simu_SNR_result.fig')
+saveas(gcf,'examples/example6_phantom_simu/example6_phantom_simu_SNR_result.tiff')
+
+
 figure(3)
 bar(categorical(S), [SSIM_uniform; SSIM_GR; SSIM_SILVER]')
 legend('Uniform','GR', 'SILVER', 'Location', 'northwest')
 set(gca,'FontSize', 20)
 ylabel('SSIM')
+
+savefig('examples/example6_phantom_simu/example6_phantom_simu_SSIM_result.fig')
+saveas(gcf,'examples/example6_phantom_simu/example6_phantom_simu_SSIM_result.tiff')
 
 % SNR and SSIM increase of SILVER compared to GR?
 for n = 1:length(S)
@@ -140,3 +147,5 @@ bar(categorical(S), [SNR_prcnt_incr; SSIM_prcnt_incr; theorethical_eff_incr]')
 legend('SNR','SSIM', 'EP', 'Location', 'northeast')
 ylabel('% increase')
 set(gca,'FontSize', 20)
+savefig('examples/example6_phantom_simu/example6_phantom_simu_quality_incr_result.fig')
+saveas(gcf,'examples/example6_phantom_simu/example6_phantom_simu_quality_incr_result.tiff')
