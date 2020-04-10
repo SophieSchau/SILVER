@@ -63,8 +63,8 @@ xtickangle(-90)
 legend('SILVER', 'Golden ratio','location', 'northeast')
 
 axis([xlim, 0.9,1.01])
-set(gca,'FontSize',18)
-set(gcf,'Position',[124 359 876 439])
+set(gca,'FontSize',16)
+set(gcf,'Position',[124 357 876 441])
 
 ylabel('Minimum efficiency, \eta')
 

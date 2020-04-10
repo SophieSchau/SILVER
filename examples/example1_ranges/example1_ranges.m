@@ -47,14 +47,18 @@ else
 end
 
 %% 4. Vizualise result
-tiny_ratios = [];
-tiny_ratios_higher_order = [];
-for N = 1
-    tiny_ratios = cat(1,tiny_ratios,gen_gr2D(N,1));
-    tiny_ratios = cat(1,1-tiny_ratios,gen_gr2D(N,1));
-end
-
 figure(1)
+xticks([1,10:10:100])
+box on
+ii = 0;
+for n = [1,10:10:100]
+    ii = ii+1;
+    labels{ii} = ['S = \{M, ..., M+' num2str(L(n)) '\}'];
+end
+set(gca,'xticklabel',labels)
+xtickangle(-90)
+hold on
+
 c_map = get(gca,'colororder');
 plot(L,min_eff_SILVER(1,:), 'o-','Linewidth', 3, 'markersize', 5, 'Color',c_map(1,:))
 hold on
@@ -64,11 +68,11 @@ plot(L,min_eff_GR(2,:), '--','Linewidth', 2, 'markersize', 5, 'Color',[c_map(2,:
 plot(L,min_eff_SILVER(3,:),'o-', 'Linewidth', 3,'markersize', 5, 'Color',c_map(3,:))
 plot(L,min_eff_GR(3,:), '--','Linewidth', 2, 'markersize', 5, 'Color',[c_map(3,:), 0.5])
 
-set(gca,'FontSize',18)
-set(gcf,'Position',[124 359 876 439])
+
+set(gca,'FontSize',16)
+set(gcf,'Position',[124 357 876 441])
 axis([0,max(L)+1,ylim])
 legend('SILVER, M = 4', 'GR, M = 4', 'SILVER, M = 16', 'GR, M = 16', 'SILVER, M = 32', 'GR, M = 32','location', 'northeast')
-xlabel('Range width, R')
 ylabel('Minimum efficiency, \eta')
 
 
