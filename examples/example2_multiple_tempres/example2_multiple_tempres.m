@@ -38,10 +38,13 @@ if ~exist(savename, 'file')
     n = 0;
     for s = S
         n = n+1;
-        load(['examples/precalculated/silver_' strrep(num2str(s{:}),' ', '_') '.mat'],'eff_SILVER')
-        prcnt_increase(n) = (min(eff_SILVER)/min(efficiency_range(gr2D,s{:},'electrostatic_potential'))-1)*100;
+        load(['examples/precalculated/silver_' strrep(num2str(s{:}),' ', '_') '.mat'],'eff_SILVER','ratio')
+            min_eff_SILVER(n) = (min(eff_SILVER));
+            min_eff_GR(n) = min(efficiency_range(gr2D,s{:},'electrostatic_potential'));
+            prcnt_increase(n) = ((min_eff_SILVER(n)/min_eff_GR(n))-1)*100;
+            SILVER_ratio(n) = ratio;
     end
-    save(savename, 'prcnt_increase','S')
+    save(savename, 'prcnt_increase','SILVER_ratio','min_eff_GR', 'min_eff_SILVER','S')
 else
     warning('using pre-calculated results')
     load(savename);
@@ -50,17 +53,20 @@ end
 %% 4. Vizualise result
 
 figure(2)
+c_map = get(gca,'colororder');
 for n = 1:length(S)
     labels{n} = ['S = \{' num2str(S{n}) '\}'];
 end
-bar(prcnt_increase,'barwidth', 0.5)
+bar([min_eff_SILVER;min_eff_GR]','barwidth', 1)
 set(gca,'xticklabel',labels)
 xtickangle(-90)
+legend('SILVER', 'Golden ratio','location', 'northeast')
 
+axis([xlim, 0.9,1.01])
 set(gca,'FontSize',18)
 set(gcf,'Position',[124 359 876 439])
 
-ylabel('SILVER efficiency increase, %')
+ylabel('Minimum efficiency, \eta')
 
 savefig('examples/example2_multiple_tempres/example2_multiple_tempres_result.fig')
 saveas(gcf,'examples/example2_multiple_tempres/example2_multiple_tempres_result.tiff')
