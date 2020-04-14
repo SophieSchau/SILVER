@@ -22,11 +22,11 @@ else
 end
 
 %% 3. Generate PSF's for SILVER, GR, and uniform sampling and vizualise
-
+load('examples/example4_psf/compressed_sensitivities.mat','sens')
 for n = 1:length(S)
-    SILVER_PSF{n} = psf_radial(ratio, S(n), 64);
-    GR_PSF{n} = psf_radial(gr2D, S(n), 64);
-    Uniform_PSF{n} = psf_radial(1/S(n), S(n), 64);
+    SILVER_PSF{n} = psf_radial(ratio, S(n), 64,sens);
+    GR_PSF{n} = psf_radial(gr2D, S(n), 64,sens);
+    Uniform_PSF{n} = psf_radial(1/S(n), S(n), 64,sens);
 end
     
 figure(1)
