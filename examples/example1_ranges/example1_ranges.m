@@ -72,7 +72,7 @@ plot(L,min_eff_GR(3,:), '--','Linewidth', 2, 'markersize', 5, 'Color',[c_map(3,:
 set(gca,'FontSize',16)
 set(gcf,'Position',[124 357 876 441])
 axis([0,max(L)+1,ylim])
-legend('SILVER, M = 4', 'GR, M = 4', 'SILVER, M = 16', 'GR, M = 16', 'SILVER, M = 32', 'GR, M = 32','location', 'northeast')
+legend('SILVER, M = 4', 'Golden ratio, M = 4', 'SILVER, M = 16', 'Golden ratio, M = 16', 'SILVER, M = 32', 'Golden ratio, M = 32','location', 'northeast')
 ylabel('Minimum efficiency, \eta')
 
 

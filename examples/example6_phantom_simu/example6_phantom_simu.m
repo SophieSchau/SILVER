@@ -10,7 +10,7 @@ clear
 close 
 
 %% 1. Choose  set of window sizes, S, to consider
-S = [16,32,64];
+S = [16,32,48];
 
 %% 2. Do SILVER optimization for that range
 
@@ -23,6 +23,11 @@ end
 
 %% 3. Set up ground truth and forward model
 load('examples/example6_phantom_simu/phantom_64x64x1x60','im');
+load('examples/example4_psf/compressed_sensitivities.mat','sens')
+psens = zeros(64,64,1,8);
+for i = 1:8
+    psens(:,:,1,i) = imresize(sens(:,:,1,i),[64,64]);
+end
 rng(123)
 
 for n = 1:length(S)
@@ -30,9 +35,9 @@ for n = 1:length(S)
     k_GR= reshape(gen_radial_traj((0:60*S(n)-1)*gr2D*pi, 128, []),[],60,2);
     k_SILVER= reshape(gen_radial_traj((0:60*S(n)-1)*ratio*pi, 128, []),[],60,2);
     
-    E_Uniform{n} = xfm_NUFFT([64 64 1 60],ones(64),[],k_Uniform);
-    E_GR{n} = xfm_NUFFT([64 64 1 60],ones(64),[],k_GR);
-    E_SILVER{n} = xfm_NUFFT([64 64 1 60],ones(64),[],k_SILVER);
+    E_Uniform{n} = xfm_NUFFT([64 64 1 60],psens,[],k_Uniform);
+    E_GR{n} = xfm_NUFFT([64 64 1 60],psens,[],k_GR);
+    E_SILVER{n} = xfm_NUFFT([64 64 1 60],psens,[],k_SILVER);
     
     noise = (randn(size(k_Uniform,1),size(k_Uniform,2)) + 1i* randn(size(k_Uniform,1),size(k_Uniform,2)))/sqrt(2);
     
@@ -43,13 +48,24 @@ end
 
 %% 4. Reconstruct
 savename = 'examples/example6_phantom_simu/example6_phantom_simu.mat';
+
 if ~exist(savename,'file')
+    % linear recon
     for n = 1:length(S)
-        recon_Uniform{n} = cham_pock_2_xtTGV(E_Uniform{n}'*kdata_Uniform{n}, E_Uniform{n}, 500, 0.5, 0);
-        recon_GR{n} = cham_pock_2_xtTGV(E_GR{n}'*kdata_GR{n}, E_GR{n}, 500, 0.5, 0);
-        recon_SILVER{n} = cham_pock_2_xtTGV(E_SILVER{n}'*kdata_SILVER{n}, E_SILVER{n}, 500, 0.5, 0);
+        recon_l_Uniform{n} = fista(E_Uniform{n}, kdata_Uniform{n}, 1, 0.000000, ...
+        [64, 64, 1,size(kdata_Uniform{n},2)], 50, 0.5);
+        recon_l_GR{n} = fista(E_GR{n}, kdata_GR{n}, 1, 0.0000000, ...
+        [64, 64, 1,size(kdata_GR{n},2)], 50, 0.5);
+        recon_l_SILVER{n} = fista(E_SILVER{n}, kdata_SILVER{n}, 1, 0.000000, ...
+        [64, 64, 1,size(kdata_SILVER{n},2)], 50, 0.5);
     end
-    save(savename, 'recon_SILVER', 'recon_GR', 'recon_Uniform')
+    % non-linear recon
+    for n = 1:length(S)
+        recon_nl_Uniform{n} = cham_pock_2_xtTGV(E_Uniform{n}'*kdata_Uniform{n}, E_Uniform{n}, 50, 1, 0);
+        recon_nl_GR{n} = cham_pock_2_xtTGV(E_GR{n}'*kdata_GR{n}, E_GR{n}, 50, 1, 0);
+        recon_nl_SILVER{n} = cham_pock_2_xtTGV(E_SILVER{n}'*kdata_SILVER{n}, E_SILVER{n}, 50, 1, 0);
+    end
+    save(savename, 'recon_l_SILVER', 'recon_l_GR', 'recon_nl_Uniform', 'recon_nl_SILVER', 'recon_nl_GR', 'recon_nl_Uniform')
 else
     warning('using previously reconstructed images')
     load(savename)
@@ -58,7 +74,7 @@ end
 figure(1)
 for n = 1:length(S)
     subplot(length(S),3,n*3-2)
-    recon = abs(recon_Uniform{n}.out(:,:,:,10));
+    recon = abs(cat(2,recon_l_Uniform{n}(:,:,:,10),recon_nl_Uniform{n}.out(:,:,:,10)));
     imagesc(recon)
     axis image
     axis off
@@ -69,7 +85,7 @@ for n = 1:length(S)
     
     
     subplot(length(S),3,n*3-1)
-    recon = abs(recon_GR{n}.out(:,:,:,10));
+    recon = abs(cat(2,recon_l_GR{n}(:,:,:,10),recon_nl_GR{n}.out(:,:,:,10)));
     imagesc(recon)
     axis image
     axis off
@@ -78,7 +94,7 @@ for n = 1:length(S)
     end
     
     subplot(length(S),3,n*3)
-    recon = abs(recon_SILVER{n}.out(:,:,:,10));
+    recon = abs(cat(2,recon_l_SILVER{n}(:,:,:,10),recon_nl_SILVER{n}.out(:,:,:,10)));
     imagesc(recon)
     axis image
     axis off
@@ -97,21 +113,21 @@ saveas(gcf,'examples/example6_phantom_simu/example6_phantom_simu_quali_result.ti
 signal_mask = logical(im);
 noise_mask = ~signal_mask;
 for n = 1:length(S)
-    S_uniform(n) = mean(abs(recon_Uniform{n}.out(signal_mask)));
-    N_uniform(n) = std(recon_Uniform{n}.out(noise_mask));
+    S_uniform(n) = mean(abs(recon_l_Uniform{n}(signal_mask)));
+    N_uniform(n) = std(recon_l_Uniform{n}(noise_mask));
     SNR_uniform(n) = S_uniform(n)/N_uniform(n);
-    SSIM_uniform(n) = ssim(single(squeeze(abs(im./max(im(:))))),squeeze(abs(recon_Uniform{n}.out./max(recon_Uniform{n}.out(:)))));
+    SSIM_uniform(n) = ssim(single(squeeze(abs(im./max(im(:))))),squeeze(abs(recon_nl_Uniform{n}.out./max(recon_nl_Uniform{n}.out(:)))));
     
-    S_GR(n) = mean(abs(recon_GR{n}.out(signal_mask)));
-    N_GR(n) = std(recon_GR{n}.out(noise_mask));
+    S_GR(n) = mean(abs(recon_l_GR{n}(signal_mask)));
+    N_GR(n) = std(recon_l_GR{n}(noise_mask));
     SNR_GR(n) = S_GR(n)/N_GR(n);
-    SSIM_GR(n) = ssim(single(squeeze(abs(im./max(im(:))))),squeeze(abs(recon_GR{n}.out./max(recon_GR{n}.out(:)))));
+    SSIM_GR(n) = ssim(single(squeeze(abs(im./max(im(:))))),squeeze(abs(recon_nl_GR{n}.out./max(recon_nl_GR{n}.out(:)))));
 
     
-    S_SILVER(n) = mean(abs(recon_SILVER{n}.out(signal_mask)));
-    N_SILVER(n) = std(recon_SILVER{n}.out(noise_mask));
+    S_SILVER(n) = mean(abs(recon_l_SILVER{n}(signal_mask)));
+    N_SILVER(n) = std(recon_l_SILVER{n}(noise_mask));
     SNR_SILVER(n) = S_SILVER(n)/N_SILVER(n);
-    SSIM_SILVER(n) = ssim(single(squeeze(abs(im./max(im(:))))),squeeze(abs(recon_SILVER{n}.out./max(recon_SILVER{n}.out(:)))));
+    SSIM_SILVER(n) = ssim(single(squeeze(abs(im./max(im(:))))),squeeze(abs(recon_nl_SILVER{n}.out./max(recon_nl_SILVER{n}.out(:)))));
 
     
 end
