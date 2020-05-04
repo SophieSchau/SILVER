@@ -8,8 +8,11 @@
 clear
 close all
 
-%% 1. Choose  set of window sizes, S, to consider
-N = [16,32,64,128];
+savefolder = 'examples/example5_gfactor/gfactor_maps/simu4/';
+load('examples/example5_gfactor/simu_sensitivity_map4.mat', 'psens') %coils
+
+%% 1. Choose set of window sizes, S, to consider
+N = [16,32,48,64,128];
 for n = 1:length(N)
     S{n*7-6} = [N(n), 2*N(n)];
     S{n*7-5} = [N(n), 2*N(n), 3*N(n)];
@@ -31,16 +34,10 @@ for s = S
    disp([num2str(s{:}) ' done'])
 end
 
-%% 3. Generate g-factors for SILVER
-
-load('examples/example5_gfactor/compressed_sensitivities.mat', 'sens')
-psens = zeros(64,64,1,8);
-for i = 1:8
-    psens(:,:,1,i) = imresize(sens(:,:,1,i),[64,64]);
-end
+%% 3. Generate g-factor maps for GOLDEN RATIO and UNIFORM to use for comparison
 
 for m = 1:length(S)
-    savename = ['examples/example5_gfactor/example5_gfactor_SILVER_' strrep(num2str(S{m}),' ', '_') '_result.mat'];
+    savename = [savefolder 'example5_gfactor_SILVER_' strrep(num2str(S{m}),' ', '_') '_result.mat'];
     if ~exist(savename, 'file')
         for n = 1:length(S{m})
             load(['examples/precalculated/silver_' strrep(num2str(S{m}),' ', '_') '.mat'],'ratio');
@@ -60,7 +57,7 @@ end
 
 %% 4. Generate g-factors for golden ratio and uniform
 for n = 1:length(N)
-    savename = ['examples/example5_gfactor/example5_gfactor_GR_' num2str(N(n)) '_result.mat'];
+    savename = [savefolder 'example5_gfactor_GR_' num2str(N(n)) '_result.mat'];
     if ~exist(savename, 'file')
         k_GR= reshape(sqrt(2)*gen_radial_traj((0:N(n)-1)*gr2D*pi, 128, [])./pi,[],2);
         GR_g = gFactor(psens,k_GR);
@@ -73,7 +70,7 @@ for n = 1:length(N)
         GR_gmaps{n} = GR_g;
         clear GR_g
     end
-    savename = ['examples/example5_gfactor/example5_gfactor_UNIFORM_' num2str(N(n)) '_result.mat'];
+    savename = [savefolder 'example5_gfactor_UNIFORM_' num2str(N(n)) '_result.mat'];
     if ~exist(savename, 'file')
         k_UNIFORM= reshape(sqrt(2)*gen_radial_traj((0:N(n)-1)*1/N(n)*pi, 128, [])./pi,[],2);
         UNIFORM_g = gFactor(psens,k_UNIFORM);
@@ -90,24 +87,21 @@ for n = 1:length(N)
 end
 
 
-%% 5. Visualize
-[columnsInImage, rowsInImage] = meshgrid(1:64, 1:64);
-centerX = 32;
-centerY = 32;
-radius = 30;
-circleMask = (rowsInImage - centerY).^2 ...
-    + (columnsInImage - centerX).^2 <= radius.^2;
+%% 5. Visual check and preprocess for analysis
 
+figure(1)
 p = 1;
 v = repmat(1:length(N),[7 1]);
 v = v(:);
 for m = 1:length(S)
     a = ismember(S{m},N(v(m)));
-    S{m}(a)
+    b = ismember(N,N(v(m)));
+    S{m}(a);
+    N(b);
     subplot(length(N),7,p)
-    im = abs(SILVER_gmaps{m}{a}).*circleMask;
-    SILVER_max_g(m)= max(im(circleMask));
-    SILVER_mean_g(m)= mean(im(circleMask));
+    im = cat(2, abs(UNIFORM_gmaps{b}),abs(SILVER_gmaps{m}{a}), abs(GR_gmaps{b}));
+    SILVER_max_g(m)= max(abs(SILVER_gmaps{m}{a}(:)));
+    SILVER_mean_g(m)= mean(abs(SILVER_gmaps{m}{a}(:)));
     imagesc(im)
     axis image
     axis off
@@ -130,6 +124,7 @@ for m = 1:length(S)
     if mod(p,7) == 1 
         cl = [min(im(im>0)),max(im(:))];
         caxis(cl);
+
         text(-2,32, ['N = ' num2str(N(v(m))) ' spokes'], 'fontsize', 14,'HorizontalAlignment','right')
     else
         caxis(cl)
@@ -145,84 +140,97 @@ SILVER_mean_g= reshape(SILVER_mean_g,7,length(N));
 %% 6. Compare SILVER to GR and Uniform
 lables = {'S = \{N, 2N\}', 'S = \{N, 2N, 3N\}', 'S = \{N-1 ... N+1\}', 'S = \{N-2 ... N+2\}','S = \{N-3 ... N+3\}','S = \{N-4 ... N+4\}','S = \{N-5 ... N+5\}', 'UNIFORM', 'Golden ratio'};
 for m = 1:length(N)
-    figure
-    hold on
-    [data, idx] = sort(abs(cat(1,SILVER_max_g(:,m),max(UNIFORM_gmaps{m}(circleMask)),max(GR_gmaps{m}(circleMask)))));
-    for ii = 1:length(data)
-        h = bar(ii,data(ii));
-        if idx(ii) == 8 %UNIFORM
-            set(h, 'FaceColor', 'r') 
-        elseif idx(ii) == 9 %golden ratio
-            set(h, 'FaceColor', 'y') 
-        else %SILVER
-            set(h, 'FaceColor', 'b') 
-        end
-    end
-    xticks(1:9)
-    xticklabels(lables(idx))
-    xtickangle(-90)
-    title(['N = ' num2str(N(m))])
+    data(m,:) = abs(cat(1,SILVER_mean_g(:,m),mean(UNIFORM_gmaps{m}(:)),mean(GR_gmaps{m}(:))));
+    data(m,:) = data(m,:)./abs(mean(UNIFORM_gmaps{m}(:)));
 end
+  
+figure(2)
+hold on
 
+data = mean(data,3); % across pixels
 
+data_means = mean(data,1); % across windows
+data_min = data_means-min(data,[],[1,3]);
+data_max = max(data,[],[1,3])-data_means;
 
+[data_means, idx] = sort(data_means);
+data_min = data_min(idx);
+data_max = data_max(idx);
+data = data(:,idx);
 
+silver_cl = linspace(0.4,0.7,7)'.*ones(7,3);
+for ii = 1:length(data_means)
+    h = bar(ii,data_means(ii));
+    if idx(ii) == 8 %UNIFORM
+        set(h, 'FaceColor', [0 0.5 1]) 
+    elseif idx(ii) == 9 %golden ratio
+        set(h, 'FaceColor', [1 0.5 0]) 
+    else %SILVER
+        set(h, 'FaceColor', silver_cl(idx(ii),:)) 
+    end
+    h.LineWidth = 2;
+end
+% er = errorbar(1:9,data_means,data_min,data_max);
+% er.Color = [0 0 0];                            
+% er.LineStyle = 'none'; 
+% er.LineWidth = 2;
+cl = hsv(length(N));
+for n = 1:length(N)
+    h(n) = scatter(1:9, data(n,:),100, cl(n,:),'filled','MarkerFaceAlpha', 0.5, 'markeredgecolor','k', 'DisplayName',['N = ' num2str(N(n))]);
+end
+l = legend(h);
+l.Location = 'northwest';
+grid on
+xticks(1:9)
+xticklabels(lables(idx))
+xtickangle(-90)
+ylabel('mean g-factor compared to uniform')
+set(gca,'fontsize', 16)
+set(gca,'linewidth', 2)
+box on
+savefig([savefolder 'example5_gfactor_graph.fig'])
+saveas(gcf,[savefolder '/example5_gfactor_graph.tiff'])
 
-% %% 4. Visualize
-% figure(1)
-% [columnsInImage, rowsInImage] = meshgrid(1:64, 1:64);
-% centerX = 32;
-% centerY = 32;
-% radius = 60;
-% circleMask = (rowsInImage - centerY).^2 ...
-%     + (columnsInImage - centerX).^2 <= radius.^2;
-% 
-% c = [1,100; 1,10; 1, 1.1];
-% 
-% for n = 1:length(S)
-%     subplot(length(S),3,n*3-2)
-%     im = abs(Uniform_g{n}).*circleMask;
-%     disp(['Maximum g-factor for Uniform sampling (' num2str(S(n)) ' spokes) is ' num2str(max(im(:)))])
-%     imagesc(im)
-%     axis image
-%     axis off
-%     if n ==1
-%         text(32,-4,'UNIFORM', 'fontsize', 20,'HorizontalAlignment','center')
-%     end
-%     caxis(c(n,:))
-%     colorbar
-%     set(gca,'FontSize', 18)
-%     text(-2,32, [num2str(S(n)) ' spokes'], 'fontsize', 20,'HorizontalAlignment','right')
-%     
-%     
-%     subplot(length(S),3,n*3-1)
-%     im = abs(GR_g{n}).*circleMask;
-%     disp(['Maximum g-factor for Golden ratio sampling (' num2str(S(n)) ' spokes) is ' num2str(max(im(:)))])
-%     imagesc(im)
-%     axis image
-%     axis off
-%     if n ==1
-%         text(32,-4,'GOLDEN RATIO', 'fontsize', 20,'HorizontalAlignment','center')
-%     end
-%     caxis(c(n,:))
-%     colorbar
-%     set(gca,'FontSize', 18)
-%     
-%     subplot(length(S),3,n*3)
-%     im = abs(SILVER_g{n}).*circleMask;
-%     disp(['Maximum g-factor for SILVER sampling (' num2str(S(n)) ' spokes) is ' num2str(max(im(:)))])
-%     imagesc(im)
-%     axis image
-%     axis off
-%     if n ==1
-%         text(32,-4,'SILVER', 'fontsize', 20,'HorizontalAlignment','center')
-%     end
-%     caxis(c(n,:));
-%     colorbar
-%     set(gca,'FontSize', 18)
-%     disp(' ')
-%     
-% end
-% % set(gcf,'Position', [440 1 794 797])
-% % savefig('examples/example5_gfactor/example5_gfactor_result.fig')
-% % saveas(gcf,'examples/example5_gfactor/example5_gfactor_result.tiff')
+%% 7. Show specific example
+% choose sets:
+%    1 = {N, 2N}
+%    2 = {N, 2N, 3N}
+%    3 = {N-1, ..., N+1}
+%    4 = {N-2, ..., N+2}
+%    5 = {N-3, ..., N+3}
+%    6 = {N-4, ..., N+4}
+%    7 = {N-5, ..., N+5}
+
+chosen_set = 1:7; % chosen set
+for cs = chosen_set
+    sets = [];
+    for n = 1:length(N)
+        sets = cat(1,sets,n*7-(7-cs));
+    end
+
+    ii = 1;
+    im = [];
+    for s = S(sets)
+        a = ismember(s{:},N(ii));
+        s{:}(a)
+        im = cat(2,im,cat(1, abs(SILVER_gmaps{sets(ii)}{a})./abs(UNIFORM_gmaps{ii}), abs(GR_gmaps{ii})./abs(UNIFORM_gmaps{ii})));
+        ii = ii+1;
+    end
+    figure
+    imagesc(im)
+    cl = caxis;
+    caxis([1 cl(2)*0.5])
+    colormap('jet')
+    colorbar
+    axis image
+    axis off
+    text(-max(size(psens)),max(size(psens))/2,{'SILVER:' lables{cs}}, 'fontsize', 16,'HorizontalAlignment','left')
+    text(-max(size(psens)),max(size(psens))+max(size(psens))/2,'Golden ratio', 'fontsize', 16,'HorizontalAlignment','left')
+    for n = 1:length(N)
+        text((n-1)*max(size(psens))+max(size(psens))/2,-max(size(psens))/8,['N = ' num2str(N(n))], 'fontsize', 16,'HorizontalAlignment','center')
+    end
+    set(gcf, 'Position', [57 444 1167 354])
+
+    savefig([savefolder 'example5_gfactor_exampleset' num2str(cs) '.fig'])
+    saveas(gcf,[savefolder 'example5_gfactor_exampleset' num2str(cs) '.tiff'])
+end
