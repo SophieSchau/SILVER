@@ -8,8 +8,8 @@
 clear
 close all
 
-savefolder = 'examples/example5_gfactor/gfactor_maps/simu4/';
-load('examples/example5_gfactor/simu_sensitivity_map4.mat', 'psens') %coils
+savefolder = 'examples/example5_gfactor/gfactor_maps/test/';
+load('examples/example5_gfactor/test_sensitivity_map.mat', 'psens') %coils
 
 %% 1. Choose set of window sizes, S, to consider
 N = [16,32,48,64,128];
@@ -149,7 +149,7 @@ hold on
 
 data = mean(data,3); % across pixels
 
-data_means = mean(data,1); % across windows
+data_means = mean(data,1); % across different N
 data_min = data_means-min(data,[],[1,3]);
 data_max = max(data,[],[1,3])-data_means;
 

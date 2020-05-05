@@ -7,7 +7,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 clear
-close 
+close all
 
 %% 1. Choose  set of window sizes, S, to consider
 S = [16,32,48];
@@ -23,32 +23,32 @@ end
 
 %% 3. Set up ground truth and forward model
 load('examples/example6_phantom_simu/phantom_64x64x1x60','im');
-load('examples/example4_psf/compressed_sensitivities.mat','sens')
-psens = zeros(64,64,1,8);
-for i = 1:8
-    psens(:,:,1,i) = imresize(sens(:,:,1,i),[64,64]);
-end
-rng(123)
+load('examples/example5_gfactor/test_sensitivity_map.mat','psens');
 
-for n = 1:length(S)
-    k_Uniform= reshape(gen_radial_traj((0:60*S(n)-1)*1/S(n)*pi, 128, []),[],60,2);
-    k_GR= reshape(gen_radial_traj((0:60*S(n)-1)*gr2D*pi, 128, []),[],60,2);
-    k_SILVER= reshape(gen_radial_traj((0:60*S(n)-1)*ratio*pi, 128, []),[],60,2);
-    
-    E_Uniform{n} = xfm_NUFFT([64 64 1 60],psens,[],k_Uniform);
-    E_GR{n} = xfm_NUFFT([64 64 1 60],psens,[],k_GR);
-    E_SILVER{n} = xfm_NUFFT([64 64 1 60],psens,[],k_SILVER);
-    
-    noise = (randn(size(k_Uniform,1),size(k_Uniform,2)) + 1i* randn(size(k_Uniform,1),size(k_Uniform,2)))/sqrt(2);
-    
-    kdata_Uniform{n} = E_Uniform{n}*im +noise;
-    kdata_GR{n} = E_GR{n}*im +noise;
-    kdata_SILVER{n} = E_SILVER{n}*im +noise;
+rng(123)
+savename = 'examples/example6_phantom_simu/example6_phantom_simu.mat';
+
+if ~exist(savename,'file')
+    for n = 1:length(S)
+        k_Uniform= reshape(gen_radial_traj((0:60*S(n)-1)*1/S(n)*pi, 128, []),[],60,2);
+        k_GR= reshape(gen_radial_traj((0:60*S(n)-1)*gr2D*pi, 128, []),[],60,2);
+        k_SILVER= reshape(gen_radial_traj((0:60*S(n)-1)*ratio*pi, 128, []),[],60,2);
+
+        E_Uniform{n} = xfm_NUFFT([64 64 1 60],psens,[],k_Uniform);
+        E_GR{n} = xfm_NUFFT([64 64 1 60],psens,[],k_GR);
+        E_SILVER{n} = xfm_NUFFT([64 64 1 60],psens,[],k_SILVER);
+
+        noise = (randn(size(k_Uniform,1),size(k_Uniform,2)) + 1i* randn(size(k_Uniform,1),size(k_Uniform,2)))/sqrt(2);
+
+        kdata_Uniform{n} = E_Uniform{n}*im +noise;
+        kdata_GR{n} = E_GR{n}*im +noise;
+        kdata_SILVER{n} = E_SILVER{n}*im +noise;
+    end
+else
+    warning('using previously reconstructed images')
 end
 
 %% 4. Reconstruct
-savename = 'examples/example6_phantom_simu/example6_phantom_simu.mat';
-
 if ~exist(savename,'file')
     % linear recon
     for n = 1:length(S)
@@ -65,9 +65,8 @@ if ~exist(savename,'file')
         recon_nl_GR{n} = cham_pock_2_xtTGV(E_GR{n}'*kdata_GR{n}, E_GR{n}, 50, 1, 0);
         recon_nl_SILVER{n} = cham_pock_2_xtTGV(E_SILVER{n}'*kdata_SILVER{n}, E_SILVER{n}, 50, 1, 0);
     end
-    save(savename, 'recon_l_SILVER', 'recon_l_GR', 'recon_nl_Uniform', 'recon_nl_SILVER', 'recon_nl_GR', 'recon_nl_Uniform')
+    save(savename, 'recon_l_SILVER', 'recon_l_GR', 'recon_l_Uniform', 'recon_nl_SILVER', 'recon_nl_GR', 'recon_nl_Uniform')
 else
-    warning('using previously reconstructed images')
     load(savename)
 end   
 %% 5. Compare reconstructions visually
