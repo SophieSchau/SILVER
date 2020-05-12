@@ -18,19 +18,19 @@ S = [68,153,306];
 load('examples/example7_invivo/example_masks_68_153_306.mat', 'mask_signal', 'mask_noise')
 
 for subj = subjects
-    savename = ['examples/example7_invivo/example7_invivo_subj' num2str(subj) '.mat'];
-    load(savename, 'recon_SILVER', 'recon_GR', 'recon_Uniform')
+    savename = ['examples/example7_invivo/subj' num2str(subj) '/example7_invivo_subj' num2str(subj) '.mat'];
+    load(savename, 'recon_nl_SILVER', 'recon_nl_GR', 'recon_nl_Uniform')
     for n = 1:length(S)
-        S_uniform(n,subj) = mean(abs(recon_Uniform{n}(repmat(mask_signal{subj},[1,1,1,size(recon_Uniform{n},4)]))));
-        N_uniform(n,subj) = std(abs(recon_Uniform{n}(repmat(mask_noise{subj},[1,1,1,size(recon_Uniform{n},4)]))));
+        S_uniform(n,subj) = mean(abs(recon_nl_Uniform{n}(repmat(mask_signal{subj},[1,1,1,size(recon_nl_Uniform{n},4)]))));
+        N_uniform(n,subj) = std(abs(recon_nl_Uniform{n}(repmat(mask_noise{subj},[1,1,1,size(recon_nl_Uniform{n},4)]))));
         SNR_uniform(n,subj) = S_uniform(n,subj)/N_uniform(n,subj);
 
-        S_GR(n,subj) = mean(abs(recon_GR{n}(repmat(mask_signal{subj},[1,1,1,size(recon_GR{n},4)]))));
-        N_GR(n,subj) = std(abs(recon_GR{n}(repmat(mask_noise{subj},[1,1,1,size(recon_GR{n},4)]))));
+        S_GR(n,subj) = mean(abs(recon_nl_GR{n}(repmat(mask_signal{subj},[1,1,1,size(recon_nl_GR{n},4)]))));
+        N_GR(n,subj) = std(abs(recon_nl_GR{n}(repmat(mask_noise{subj},[1,1,1,size(recon_nl_GR{n},4)]))));
         SNR_GR(n,subj) = S_GR(n,subj)/N_GR(n,subj);
 
-        S_SILVER(n,subj) = mean(abs(recon_SILVER{n}(repmat(mask_signal{subj},[1,1,1,size(recon_SILVER{n},4)]))));
-        N_SILVER(n,subj) = std(abs(recon_SILVER{n}(repmat(mask_noise{subj},[1,1,1,size(recon_SILVER{n},4)]))));
+        S_SILVER(n,subj) = mean(abs(recon_nl_SILVER{n}(repmat(mask_signal{subj},[1,1,1,size(recon_nl_SILVER{n},4)]))));
+        N_SILVER(n,subj) = std(abs(recon_nl_SILVER{n}(repmat(mask_noise{subj},[1,1,1,size(recon_nl_SILVER{n},4)]))));
         SNR_SILVER(n,subj) = S_SILVER(n,subj)/N_SILVER(n,subj);
     end
 end
@@ -87,7 +87,7 @@ end
         
 
 legend('Uniform','GR', 'SILVER', 'Location', 'northwest')
-
-savefig(['examples/example7_invivo/example7_invivo_SNR_group_result.fig'])
-saveas(gcf,['examples/example7_invivo/example7_invivo_SNR_group_result.tiff'])
+% 
+% savefig(['examples/example7_invivo/group/example7_invivo_SNR_group_result.fig'])
+% saveas(gcf,['examples/example7_invivo/group/example7_invivo_SNR_group_result.tiff'])
 
