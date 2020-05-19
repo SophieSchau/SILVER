@@ -19,7 +19,6 @@ load('examples/example7_invivo/example_masks_68_153_306.mat', 'mask_signal', 'ma
 
 for subj = subjects
     savename = ['examples/example7_invivo/subj' num2str(subj) '/example7_invivo_subj' num2str(subj) '.mat'];
-<<<<<<< HEAD
     load(savename, 'recon_l_SILVER', 'recon_l_GR', 'recon_l_Uniform')
     for n = 1:length(S)
         S_uniform(n,subj) = mean(abs(recon_l_Uniform{n}(repmat(mask_signal{subj},[1,1,1,size(recon_l_Uniform{n},4)]))));
@@ -32,20 +31,7 @@ for subj = subjects
 
         S_SILVER(n,subj) = mean(abs(recon_l_SILVER{n}(repmat(mask_signal{subj},[1,1,1,size(recon_l_SILVER{n},4)]))));
         N_SILVER(n,subj) = std(abs(recon_l_SILVER{n}(repmat(mask_noise{subj},[1,1,1,size(recon_l_SILVER{n},4)]))));
-=======
-    load(savename, 'recon_nl_SILVER', 'recon_nl_GR', 'recon_nl_Uniform')
-    for n = 1:length(S)
-        S_uniform(n,subj) = mean(abs(recon_nl_Uniform{n}(repmat(mask_signal{subj},[1,1,1,size(recon_nl_Uniform{n},4)]))));
-        N_uniform(n,subj) = std(abs(recon_nl_Uniform{n}(repmat(mask_noise{subj},[1,1,1,size(recon_nl_Uniform{n},4)]))));
-        SNR_uniform(n,subj) = S_uniform(n,subj)/N_uniform(n,subj);
 
-        S_GR(n,subj) = mean(abs(recon_nl_GR{n}(repmat(mask_signal{subj},[1,1,1,size(recon_nl_GR{n},4)]))));
-        N_GR(n,subj) = std(abs(recon_nl_GR{n}(repmat(mask_noise{subj},[1,1,1,size(recon_nl_GR{n},4)]))));
-        SNR_GR(n,subj) = S_GR(n,subj)/N_GR(n,subj);
-
-        S_SILVER(n,subj) = mean(abs(recon_nl_SILVER{n}(repmat(mask_signal{subj},[1,1,1,size(recon_nl_SILVER{n},4)]))));
-        N_SILVER(n,subj) = std(abs(recon_nl_SILVER{n}(repmat(mask_noise{subj},[1,1,1,size(recon_nl_SILVER{n},4)]))));
->>>>>>> c0bafaa6ff8c2b0716037fbaa803f7db0d3139eb
         SNR_SILVER(n,subj) = S_SILVER(n,subj)/N_SILVER(n,subj);
     end
 end
@@ -102,7 +88,7 @@ end
         
 
 legend('Uniform','GR', 'SILVER', 'Location', 'northwest')
-% 
-% savefig(['examples/example7_invivo/group/example7_invivo_SNR_group_result.fig'])
-% saveas(gcf,['examples/example7_invivo/group/example7_invivo_SNR_group_result.tiff'])
+
+savefig(['examples/example7_invivo/group/example7_invivo_SNR_group_result.fig'])
+saveas(gcf,['examples/example7_invivo/group/example7_invivo_SNR_group_result.tiff'])
 
