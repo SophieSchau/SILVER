@@ -265,32 +265,55 @@ end
 
 figure(3)
 subplot(2,2,1)
-bar(categorical(S), [SNR_uniform; SNR_GR; SNR_SILVER]','BarWidth',1)
+b = bar(categorical(S), [SNR_uniform; SNR_GR; SNR_SILVER]','BarWidth',1);
+b(1).FaceColor = [0,0.5,1];
+b(2).FaceColor = [1,0.5,0];
+b(3).FaceColor = [0.5,0.5,0.5];
 legend('Uniform','GR', 'SILVER', 'Location', 'eastoutside')
 title(['Subj ' num2str(Subj) ' - SNR (linear recon)'])
 set(gca,'FontSize', 20)
+set(gca, 'LineWidth', 2)
+grid on
 ylabel('SNR')
 
 subplot(2,2,2)
-bar(categorical(S), [SSIM_uniform; SSIM_GR; SSIM_SILVER]','BarWidth',1)
+b = bar(categorical(S), [SSIM_uniform; SSIM_GR; SSIM_SILVER]','BarWidth',1);
+b(1).FaceColor = [0,0.5,1];
+b(2).FaceColor = [1,0.5,0];
+b(3).FaceColor = [0.5,0.5,0.5];
 legend('Uniform','GR', 'SILVER', 'Location', 'eastoutside')
 title(['Subj ' num2str(Subj) ' - SSIM (nonlinear recon)'])
 set(gca,'FontSize', 20)
+set(gca, 'LineWidth', 2)
+grid on
 ylabel('SSIM')
 
 subplot(2,2,3)
-bar(categorical(S), [SNR_nl_uniform; SNR_nl_GR; SNR_nl_SILVER]','BarWidth',1)
+b = bar(categorical(S), [SNR_nl_uniform; SNR_nl_GR; SNR_nl_SILVER]','BarWidth',1);
+b(1).FaceColor = [0,0.5,1];
+b(2).FaceColor = [1,0.5,0];
+b(3).FaceColor = [0.5,0.5,0.5];
 legend('Uniform','GR', 'SILVER', 'Location', 'eastoutside')
 title(['Subj ' num2str(Subj) ' - SNR (non-linear recon)'])
 set(gca,'FontSize', 20)
+set(gca, 'LineWidth', 2)
+grid on
 ylabel('SNR')
 
 subplot(2,2,4)
-bar(categorical(S), [SSIM_l_uniform; SSIM_l_GR; SSIM_l_SILVER]','BarWidth',1)
+b = bar(categorical(S), [SSIM_l_uniform; SSIM_l_GR; SSIM_l_SILVER]','BarWidth',1);
+b(1).FaceColor = [0,0.5,1];
+b(2).FaceColor = [1,0.5,0];
+b(3).FaceColor = [0.5,0.5,0.5];
 legend('Uniform','GR', 'SILVER', 'Location', 'eastoutside')
 title(['Subj ' num2str(Subj) ' - SSIM (linear recon)'])
 set(gca,'FontSize', 20)
+set(gca, 'LineWidth', 2)
+grid on
 ylabel('SSIM')
+
+
+set(gcf,'Position',[124 359 876 439])
 
 savefig(['examples/example7_invivo/subj' num2str(Subj) '/example7_invivo_SNR_subj_' num2str(Subj) '_SNR.fig'])
 saveas(gcf,['examples/example7_invivo/subj' num2str(Subj) '/example7_invivo_SNR_subj_' num2str(Subj) '_SNR.tiff'])

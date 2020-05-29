@@ -136,7 +136,10 @@ figure(2)
 res = [mean(SNR_uniform,2,'omitnan' )'; mean(SNR_GR,2,'omitnan' )'; mean(SNR_SILVER,2,'omitnan' )']';
 err = [std(SNR_uniform,0,2,'omitnan' )'; std(SNR_GR,0,2,'omitnan' )'; std(SNR_SILVER,0,2,'omitnan' )']';
 
-bar(res, 'barwidth', 1)
+b = bar(res, 'barwidth', 1);
+b(1).FaceColor = [0,0.5,1];
+b(2).FaceColor = [1,0.5,0];
+b(3).FaceColor = [0.5,0.5,0.5];
 hold on
 legend('Uniform','GR', 'SILVER', 'Location', 'northwest')
 set(gca,'FontSize', 20)
@@ -177,6 +180,9 @@ end
 
 
 legend('Uniform','GR', 'SILVER', 'Location', 'northwest')
+grid on
+box on
+set(gca, 'linewidth', 2)
 
 savefig('examples/example6_phantom_simu/example6_phantom_simu_SNR_result.fig')
 saveas(gcf,'examples/example6_phantom_simu/example6_phantom_simu_SNR_result.tiff')

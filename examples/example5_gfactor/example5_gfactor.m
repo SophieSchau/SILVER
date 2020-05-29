@@ -99,9 +99,9 @@ for m = 1:length(S)
     S{m}(a);
     N(b);
     subplot(length(N),7,p)
-    im = cat(2, abs(UNIFORM_gmaps{b}),abs(SILVER_gmaps{m}{a}), abs(GR_gmaps{b}));
-    SILVER_max_g(m)= max(abs(SILVER_gmaps{m}{a}(:)));
-    SILVER_mean_g(m)= mean(abs(SILVER_gmaps{m}{a}(:)));
+    im = cat(2, abs(UNIFORM_gmaps{b})./abs(UNIFORM_gmaps{b}),abs(SILVER_gmaps{m}{a})./abs(UNIFORM_gmaps{b}), abs(GR_gmaps{b})./abs(UNIFORM_gmaps{b}));
+    SILVER_max_g(m)= max(abs(SILVER_gmaps{m}{a})./abs(UNIFORM_gmaps{b}),[],'all');
+    SILVER_mean_g(m)= mean(abs(SILVER_gmaps{m}{a})./abs(UNIFORM_gmaps{b}), 'all');
     imagesc(im)
     axis image
     axis off
@@ -140,8 +140,8 @@ SILVER_mean_g= reshape(SILVER_mean_g,7,length(N));
 %% 6. Compare SILVER to GR and Uniform
 lables = {'S = \{N, 2N\}', 'S = \{N, 2N, 3N\}', 'S = \{N-1 ... N+1\}', 'S = \{N-2 ... N+2\}','S = \{N-3 ... N+3\}','S = \{N-4 ... N+4\}','S = \{N-5 ... N+5\}', 'UNIFORM', 'Golden ratio'};
 for m = 1:length(N)
-    data(m,:) = abs(cat(1,SILVER_mean_g(:,m),mean(UNIFORM_gmaps{m}(:)),mean(GR_gmaps{m}(:))));
-    data(m,:) = data(m,:)./abs(mean(UNIFORM_gmaps{m}(:)));
+    data(m,:) = abs(cat(1,SILVER_mean_g(:,m),mean(UNIFORM_gmaps{m}(:)./abs(UNIFORM_gmaps{m}(:))),mean(GR_gmaps{m}(:)./abs(UNIFORM_gmaps{m}(:)))));
+%     data(m,:) = data(m,:)./abs(mean(UNIFORM_gmaps{m}(:)));
 end
   
 figure(2)
@@ -170,6 +170,9 @@ for ii = 1:length(data_means)
     end
     h.LineWidth = 2;
 end
+disp(['Mean SILVER gfactor amplification across chosen sets: ' num2str(mean(data_means(idx<8)))])
+disp(['Mean Golden gfactor amplification across chosen sets: ' num2str(mean(data_means(idx==9)))])
+
 % er = errorbar(1:9,data_means,data_min,data_max);
 % er.Color = [0 0 0];                            
 % er.LineStyle = 'none'; 
@@ -230,6 +233,8 @@ for cs = chosen_set
         text((n-1)*max(size(psens))+max(size(psens))/2,-max(size(psens))/8,['N = ' num2str(N(n))], 'fontsize', 16,'HorizontalAlignment','center')
     end
     set(gcf, 'Position', [57 444 1167 354])
+    set(gca,'fontsize', 18)
+    set(gca, 'linewidth', 2)
 
     savefig([savefolder 'example5_gfactor_exampleset' num2str(cs) '.fig'])
     saveas(gcf,[savefolder 'example5_gfactor_exampleset' num2str(cs) '.tiff'])

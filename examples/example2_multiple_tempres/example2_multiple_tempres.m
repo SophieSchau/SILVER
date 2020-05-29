@@ -53,17 +53,25 @@ end
 %% 4. Vizualise result
 
 figure(2)
-c_map = get(gca,'colororder');
+c_map = [0.5 0.5 0.5; 1 0.5 0];
+
 for n = 1:length(S)
     labels{n} = ['S = \{' num2str(S{n}) '\}'];
 end
-bar([min_eff_SILVER;min_eff_GR]','barwidth', 1)
+b = bar([min_eff_SILVER;min_eff_GR]','barwidth', 1);
+b(1).FaceColor = c_map(1,:);
+b(2).FaceColor = c_map(2,:);
+b(1).LineWidth = 2;
+b(2).LineWidth = 2;
+
 set(gca,'xticklabel',labels)
 xtickangle(-90)
 legend('SILVER', 'Golden ratio','location', 'northeast')
 
 axis([xlim, 0.9,1.01])
 set(gca,'FontSize',16)
+set(gca, 'LineWidth', 2)
+grid on
 set(gcf,'Position',[124 357 876 441])
 
 ylabel('Minimum efficiency, \eta')

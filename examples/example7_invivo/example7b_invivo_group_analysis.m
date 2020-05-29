@@ -44,7 +44,10 @@ res = [mean(SNR_uniform,2,'omitnan' )'; mean(SNR_GR,2,'omitnan' )'; mean(SNR_SIL
 err = [std(SNR_uniform,0,2,'omitnan' )'; std(SNR_GR,0,2,'omitnan' )'; std(SNR_SILVER,0,2,'omitnan' )']';
 
 figure(4)
-bar(res,'BarWidth',1)
+b = bar(res,'BarWidth',1);
+b(1).FaceColor = [0,0.5,1];
+b(2).FaceColor = [1,0.5,0];
+b(3).FaceColor = [0.5,0.5,0.5];
 xticklabels(S)
 xlabel('Number of spokes')
 set(gca,'FontSize', 20)
@@ -88,6 +91,11 @@ end
         
 
 legend('Uniform','GR', 'SILVER', 'Location', 'northwest')
+
+set(gca,'fontsize', 16);
+set(gca,'linewidth', 2);
+box on
+grid on
 
 savefig(['examples/example7_invivo/group/example7_invivo_SNR_group_result.fig'])
 saveas(gcf,['examples/example7_invivo/group/example7_invivo_SNR_group_result.tiff'])

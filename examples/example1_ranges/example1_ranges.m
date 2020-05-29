@@ -59,17 +59,19 @@ set(gca,'xticklabel',labels)
 xtickangle(-90)
 hold on
 
-c_map = get(gca,'colororder');
+c_map = [0.7 0.7 0.7; 0.5 0.5 0.5; 0.3 0.3 0.3; 1 0.5 0;0.7*([1 0.5 0]); 0.5*([1 0.5 0])];
 plot(L,min_eff_SILVER(1,:), 'o-','Linewidth', 3, 'markersize', 5, 'Color',c_map(1,:))
 hold on
-plot(L,min_eff_GR(1,:), '--','Linewidth', 2, 'markersize', 5, 'Color',[c_map(1,:), 0.5])
+plot(L,min_eff_GR(1,:), '--','Linewidth', 2, 'markersize', 5, 'Color',[c_map(4,:)])
 plot(L,min_eff_SILVER(2,:),'o-','Linewidth', 3,'markersize', 5, 'Color',c_map(2,:))
-plot(L,min_eff_GR(2,:), '--','Linewidth', 2, 'markersize', 5, 'Color',[c_map(2,:), 0.5])
+plot(L,min_eff_GR(2,:), '--','Linewidth', 2, 'markersize', 5, 'Color',[c_map(5,:)])
 plot(L,min_eff_SILVER(3,:),'o-', 'Linewidth', 3,'markersize', 5, 'Color',c_map(3,:))
-plot(L,min_eff_GR(3,:), '--','Linewidth', 2, 'markersize', 5, 'Color',[c_map(3,:), 0.5])
+plot(L,min_eff_GR(3,:), '--','Linewidth', 2, 'markersize', 5, 'Color',[c_map(6,:)])
 
 
 set(gca,'FontSize',16)
+set(gca, 'LineWidth', 2)
+grid on
 set(gcf,'Position',[124 357 876 441])
 axis([0,max(L)+1,ylim])
 legend('SILVER, M = 4', 'Golden ratio, M = 4', 'SILVER, M = 16', 'Golden ratio, M = 16', 'SILVER, M = 32', 'Golden ratio, M = 32','location', 'northeast')
