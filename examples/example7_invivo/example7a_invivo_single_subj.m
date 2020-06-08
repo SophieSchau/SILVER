@@ -11,13 +11,13 @@ clear
 close all
 
 %% 1. Load data, and choose subject to consider
-kdata_filename = 'examples/example7_invivo/example_kdata_68_153_306.mat';
+kdata_filename = 'examples/example7_invivo/example_kdata_68_153_306_v2.mat';
 sens_filename = 'examples/example7_invivo/example_sensitivities_68_153_306.mat';
 
 kdata_file = matfile(kdata_filename);
 sens_file = matfile(sens_filename);
 
-Subj = 1;
+Subj = 2;
 
 kdata_Uniform = kdata_file.kdata_Uniform(:,Subj);
 kdata_GR = kdata_file.kdata_GR(:,Subj);
@@ -54,7 +54,7 @@ end
 S_ratio = ratio;
 
 %% 3. Forward transform
-savename = ['examples/example7_invivo/subj' num2str(Subj) '/example7_invivo_subj' num2str(Subj) '.mat'];
+savename = ['examples/example7_invivo/subj' num2str(Subj) '/example7_invivo_subj' num2str(Subj) 'test.mat'];
 if ~exist(savename,'file')
     for n = 1:length(S)
         for method = {'UNIFORM', 'GR', 'SILVER'}
@@ -66,13 +66,16 @@ if ~exist(savename,'file')
                 case 'SILVER'
                     ratio = S_ratio;
             end
-            Phi = [];
-            for frame = 1:NFrames
-                for repeat = 0:NRepeats-1
-                    Phi = cat(1, Phi, mod( ((frame-1)*NSpokes+repeat:NRepeats:frame*NSpokes-1)' * ratio * pi, 2*pi ));
-                end
-            end
-
+% OLD METHOD - WRONG!
+%             Phi = [];
+%             for frame = 1:NFrames
+%                 for repeat = 0:NRepeats-1
+%                     Phi = cat(1, Phi, mod( ((frame-1)*NSpokes+repeat:NRepeats:frame*NSpokes-1)' * ratio * pi, 2*pi ));
+%                 end
+%             end
+            
+            Phi = mod([0:(NSpokes*NFrames-1)] * ratio * pi, 2*pi );
+            
             switch method{:}
                 case 'UNIFORM'
                     kspace_UNIFORM = reshape(gen_radial_traj(Phi, NSamps, []),[], size(kdata_Uniform{n},2),2);

@@ -26,7 +26,18 @@ file_SILVER = {...
 for subj = 1:length(file_SILVER)
     for n = 1:length(S)
         twix_obj = mapVBVD(file_Uniform{n,subj},'ignoreSeg');
-        kdata_Uniform{n,subj} = reshape(permute(twix_obj.image{''},[1,3,5,4,2]),twix_obj.hdr.Config.RawCol, [], twix_obj.hdr.Config.NLin*twix_obj.hdr.Config.NPhs/S(n),twix_obj.hdr.Config.NAveMeas,twix_obj.hdr.Config.NChaMeas);        
+        kdata_Uniform{n,subj} = reshape(permute(twix_obj.image{''},[1,3,5,4,2]),twix_obj.hdr.Config.RawCol, [], twix_obj.hdr.Config.NPhs,twix_obj.hdr.Config.NAveMeas,twix_obj.hdr.Config.NChaMeas);        
+            
+        spoke_order = [];
+        NFrames = twix_obj.hdr.Config.NPhs;
+        NRepeats = twix_obj.hdr.Config.NLin/twix_obj.hdr.Config.NSeg;
+        NSpokes = twix_obj.hdr.Config.NLin;
+        for repeat = 1:NRepeats
+            spoke_order = cat(2, spoke_order, repeat:NRepeats:NSpokes);
+        end
+        [~, idx] = sort(spoke_order);
+        kdata_Uniform{n,subj} = kdata_Uniform{n,subj}(:,idx,:,:,:);
+        
         % Phase correction
         for ii = 1:size(kdata_Uniform{n,subj},2) % each line
             for jj = 1:size(kdata_Uniform{n,subj},3) % each frame
@@ -40,7 +51,8 @@ for subj = 1:length(file_SILVER)
         
 
         twix_obj = mapVBVD(file_GR{subj},'ignoreSeg');
-        kdata_GR{n,subj} = reshape(permute(twix_obj.image{''},[1,3,5,4,2]),twix_obj.hdr.Config.RawCol, [], twix_obj.hdr.Config.NLin*twix_obj.hdr.Config.NPhs/S(n),twix_obj.hdr.Config.NAveMeas,twix_obj.hdr.Config.NChaMeas);        
+        kdata_GR{n,subj} = reshape(permute(twix_obj.image{''},[1,3,5,4,2]),twix_obj.hdr.Config.RawCol, [], twix_obj.hdr.Config.NPhs,twix_obj.hdr.Config.NAveMeas,twix_obj.hdr.Config.NChaMeas);        
+        kdata_GR{n,subj} = kdata_GR{n,subj}(:,idx,:,:,:);
         % Phase correction
         for ii = 1:size(kdata_GR{n,subj},2) % each line
             for jj = 1:size(kdata_GR{n,subj},3) % each frame
@@ -56,7 +68,8 @@ for subj = 1:length(file_SILVER)
         
         
         twix_obj = mapVBVD(file_SILVER{subj},'ignoreSeg');
-        kdata_SILVER{n,subj} = reshape(permute(twix_obj.image{''},[1,3,5,4,2]),twix_obj.hdr.Config.RawCol, [], twix_obj.hdr.Config.NLin*twix_obj.hdr.Config.NPhs/S(n),twix_obj.hdr.Config.NAveMeas,twix_obj.hdr.Config.NChaMeas);        
+        kdata_SILVER{n,subj} = reshape(permute(twix_obj.image{''},[1,3,5,4,2]),twix_obj.hdr.Config.RawCol, [], twix_obj.hdr.Config.NPhs,twix_obj.hdr.Config.NAveMeas,twix_obj.hdr.Config.NChaMeas);        
+        kdata_SILVER{n,subj} = kdata_SILVER{n,subj}(:,idx,:,:,:);
         % Phase correction
         for ii = 1:size(kdata_SILVER{n,subj},2) % each line
             for jj = 1:size(kdata_SILVER{n,subj},3) % each frame
@@ -72,4 +85,4 @@ for subj = 1:length(file_SILVER)
 end
 
 SILVER_twix = twix_obj;
-save('examples/example7_invivo/example_kdata_68_153_306.mat', 'kdata_SILVER', 'kdata_GR', 'kdata_Uniform', 'S', 'SILVER_twix', '-v7.3');
+save('examples/example7_invivo/example_kdata_68_153_306_v2.mat', 'kdata_SILVER', 'kdata_GR', 'kdata_Uniform', 'S', 'SILVER_twix', '-v7.3');

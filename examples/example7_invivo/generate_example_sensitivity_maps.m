@@ -7,7 +7,7 @@
 clear
 close all
 
-load('examples/example7_invivo/example_kdata_68_153_306.mat', 'kdata_SILVER', 'kdata_GR', 'kdata_Uniform', 'S', 'SILVER_twix');
+load('examples/example7_invivo/example_kdata_68_153_306_v2.mat', 'kdata_SILVER', 'kdata_GR', 'kdata_Uniform', 'S', 'SILVER_twix');
 [S_max, S_max_idx] = max(S);
 NCoils = SILVER_twix.hdr.Meas.NChaMeas;
 Mat_size = [SILVER_twix.hdr.Config.BaseResolution, SILVER_twix.hdr.Config.BaseResolution, 1, 1];
@@ -22,12 +22,10 @@ for method = {'UNIFORM', 'GR', 'SILVER'}
         case 'SILVER'
             ratio = SILVER_2D(S,'electrostatic_potential') ;
     end
-    Phi = [];
-    for frame = 1:SILVER_twix.hdr.Meas.NPhs
-        for repeat = 0:SILVER_twix.hdr.Config.NLin/SILVER_twix.hdr.Config.NSeg-1
-            Phi = cat(1, Phi, mod( ((frame-1)*SILVER_twix.hdr.Config.NLin+repeat:SILVER_twix.hdr.Config.NLin/SILVER_twix.hdr.Config.NSeg:frame*SILVER_twix.hdr.Config.NLin-1)' * ratio * pi, 2*pi ));
-        end
-    end
+    NFrames = SILVER_twix.hdr.Meas.NPhs;
+    NRepeats = SILVER_twix.hdr.Config.NLin/SILVER_twix.hdr.Config.NSeg;
+    NSpokes = SILVER_twix.hdr.Config.NLin;
+    Phi = mod([0:(NSpokes*NFrames-1)] * ratio * pi, 2*pi );
     switch method{:}
         case 'UNIFORM'
             kspace_UNIFORM = gen_radial_traj(Phi, SILVER_twix.hdr.Config.NColMeas, []);
