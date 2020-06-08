@@ -99,7 +99,7 @@ for m = 1:length(S)
     S{m}(a);
     N(b);
     subplot(length(N),7,p)
-    im = cat(2, abs(UNIFORM_gmaps{b})./abs(UNIFORM_gmaps{b}),abs(SILVER_gmaps{m}{a})./abs(UNIFORM_gmaps{b}), abs(GR_gmaps{b})./abs(UNIFORM_gmaps{b}));
+    im = cat(2, abs(UNIFORM_gmaps{b}),abs(SILVER_gmaps{m}{a}), abs(GR_gmaps{b}));
     SILVER_max_g(m)= max(abs(SILVER_gmaps{m}{a})./abs(UNIFORM_gmaps{b}),[],'all');
     SILVER_mean_g(m)= mean(abs(SILVER_gmaps{m}{a})./abs(UNIFORM_gmaps{b}), 'all');
     imagesc(im)

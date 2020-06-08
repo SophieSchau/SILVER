@@ -1,4 +1,4 @@
-function [u,cost] = fista(xfm, d, W, lambda, im_size, niter, step)
+function [u,cost] = fista(xfm, d, W, lambda, im_size, niter, step, conv_crit)
 
 %   Mark Chiew  
 %   May 2017
@@ -16,6 +16,10 @@ function [u,cost] = fista(xfm, d, W, lambda, im_size, niter, step)
 %   and d is the measured raw k-space data
 
 %   Constant stepsize variant
+
+if nargin < 8
+    conv_crit = 0;
+end
 
 %   Initialise
     u   =   W*zeros(im_size);
@@ -53,6 +57,11 @@ for iter = 1:niter
 
     %   Display iteration summary data
     fprintf(1, '%-5d %-16G %-16G %-16G\n', iter, err1(iter), err2(iter), cost(iter));
+    if iter > 1
+        if abs(cost(iter-1)- cost(iter)) < cost(iter-1)*conv_crit
+            break
+        end
+    end
 %     imshow(abs(u(:,:,:,1)),[])
 %     drawnow
 end

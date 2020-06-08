@@ -26,14 +26,14 @@ load('examples/example6_phantom_simu/phantom_64x64x1x60','im');
 load('examples/example5_gfactor/test_sensitivity_map.mat','psens');
 
 
-savename = 'examples/example6_phantom_simu/example6_phantom_simu.mat';
+savename = 'examples/example6_phantom_simu/example6_phantom_simu_max10000its_test_matched_traj.mat';
 
 if ~exist(savename,'file')
     
     for n = 1:length(S)
-        k_Uniform= reshape(gen_radial_traj((0:60*S(n)-1)*1/S(n)*pi, 128, []),[],60,2);
-        k_GR= reshape(gen_radial_traj((0:60*S(n)-1)*gr2D*pi, 128, []),[],60,2);
-        k_SILVER= reshape(gen_radial_traj((0:60*S(n)-1)*ratio*pi, 128, []),[],60,2);
+        k_Uniform= reshape(sqrt(2)*gen_radial_traj((0:60*S(n)-1)*1/S(n)*pi, 128, []),[],60,2);
+        k_GR= reshape(sqrt(2)*gen_radial_traj((0:60*S(n)-1)*gr2D*pi, 128, []),[],60,2);
+        k_SILVER= reshape(sqrt(2)*gen_radial_traj((0:60*S(n)-1)*ratio*pi, 128, []),[],60,2);
 
         E_Uniform{n} = xfm_NUFFT([64 64 1 60],psens,[],k_Uniform);
         E_GR{n} = xfm_NUFFT([64 64 1 60],psens,[],k_GR);
@@ -45,12 +45,12 @@ if ~exist(savename,'file')
             kdata_GR = E_GR{n}*im +noise;
             kdata_SILVER = E_SILVER{n}*im +noise;
 
-            recon_l_Uniform{n,seed} = fista(E_Uniform{n}, kdata_Uniform, 1, 0.000000, ...
-            [64, 64, 1,size(kdata_Uniform,2)], 50, 0.5);
+            recon_l_Uniform{n,seed} = fista(E_Uniform{n}, kdata_Uniform, 1, 0.0000000, ...
+            [64, 64, 1,size(kdata_Uniform,2)], 10000, 0.7,0.001);
             recon_l_GR{n,seed} = fista(E_GR{n}, kdata_GR, 1, 0.0000000, ...
-            [64, 64, 1,size(kdata_GR,2)], 50, 0.5);
-            recon_l_SILVER{n,seed} = fista(E_SILVER{n}, kdata_SILVER, 1, 0.000000, ...
-            [64, 64, 1,size(kdata_SILVER,2)], 50, 0.5);
+            [64, 64, 1,size(kdata_GR,2)], 10000, 0.7,0.001);
+            recon_l_SILVER{n,seed} = fista(E_SILVER{n}, kdata_SILVER, 1, 0.0000000, ...
+            [64, 64, 1,size(kdata_SILVER,2)], 10000, 0.7,0.001);
         end
     end
     save(savename, 'recon_l_SILVER', 'recon_l_GR', 'recon_l_Uniform')
@@ -65,50 +65,57 @@ figure(1)
 clim = [min(im(:)),max(im(:))];
 for t = 1:60
 for n = 1:length(S)
-    subplot(length(S),3,n*3-2)
+    h(n) = subplot(length(S),3,n*3-2);
     recons = [recon_l_Uniform{n,1}];
     recons = permute(reshape(recons, 64,64,1,1,60),[1,2,4,5,3]);
     recons_mean = mean(recons,5);
-    imagesc(cat(2,abs(recons_mean(:,:,1,t)),abs(im(:,:,1,t)-recons_mean(:,:,1,t))) );
+    imagesc(cat(1,abs(recons_mean(:,:,1,t)),4*abs(im(:,:,1,t)-recons_mean(:,:,1,t))) );
     axis image
     axis off
-%     caxis(clim)
+    caxis(clim)
     if n ==1
-        text(64,-6,'UNIFORM', 'fontsize', 20,'HorizontalAlignment','center')
+        text(32,-6,'UNIFORM', 'fontsize', 16,'HorizontalAlignment','center')
     end
-    text(-2,32, [num2str(S(n)) ' spokes'], 'fontsize', 20,'HorizontalAlignment','right')
+    text(-5,32, [num2str(S(n)) ' spokes'], 'fontsize', 16,'HorizontalAlignment','center','Rotation', 90)
+    text(-5,96, 'error x 4', 'fontsize', 16,'HorizontalAlignment','center','Rotation', 90)
+
     
-    
-    subplot(length(S),3,n*3-1)
+    hh(n) = subplot(length(S),3,n*3-1);
     recons = [recon_l_GR{n,1}];
     recons = permute(reshape(recons, 64,64,1,1,60),[1,2,4,5,3]);
     recons_mean = mean(recons,5);
-    imagesc(cat(2,abs(recons_mean(:,:,1,t)),abs(im(:,:,1,t)-recons_mean(:,:,1,t))) );
+    imagesc(cat(1,abs(recons_mean(:,:,1,t)),4*abs(im(:,:,1,t)-recons_mean(:,:,1,t))) );
     axis image
     axis off
-%     caxis(clim)
+    caxis(clim)
     if n ==1
-        text(64,-6,'GOLDEN RATIO', 'fontsize', 20,'HorizontalAlignment','center')
+        text(32,-6,'GOLDEN RATIO', 'fontsize', 16,'HorizontalAlignment','center')
     end
     
-    subplot(length(S),3,n*3)
+    hhh(n) = subplot(length(S),3,n*3);
     recons = [recon_l_SILVER{n,1}];
     recons = permute(reshape(recons, 64,64,1,1,60),[1,2,4,5,3]);
     recons_mean = mean(recons,5);
-    imagesc(cat(2,abs(recons_mean(:,:,1,t)),abs(im(:,:,1,t)-recons_mean(:,:,1,t))) );
+    imagesc(cat(1,abs(recons_mean(:,:,1,t)),4*abs(im(:,:,1,t)-recons_mean(:,:,1,t))) );
     axis image
     axis off
-%     caxis(clim)
+    caxis(clim)
     if n ==1
-        text(64,-6,'SILVER', 'fontsize', 20,'HorizontalAlignment','center')
+        text(32,-6,'SILVER', 'fontsize', 16,'HorizontalAlignment','center')
     end
     
 end
 drawnow
-set(gcf,'Position', [81 230 1001 490])
-makegif('examples/example6_phantom_simu/example6_phantom_simu_guali_result.gif')
+for ii = 1:3
+    set(h(ii),'Position',[0.1,0.95-ii*0.3,0.3,0.3]);
+    set(hh(ii),'Position',[0.4,0.95-ii*0.3,0.3,0.3]);
+    set(hhh(ii),'Position',[0.7,0.95-ii*0.3,0.3,0.3]);
 end
-savefig('examples/example6_phantom_simu/example6_phantom_simu_guali_result.fig')
+set(gcf,'Position', [593 1 406 797])
+colormap('jet')
+makegif_fast('examples/example6_phantom_simu/example6_phantom_simu_quali_result.gif')
+end
+savefig('examples/example6_phantom_simu/example6_phantom_simu_quali_result.fig')
 saveas(gcf,'examples/example6_phantom_simu/example6_phantom_simu_quali_result.tiff')
 
 %% 6. Quantify reconstruction quality
@@ -116,6 +123,17 @@ saveas(gcf,'examples/example6_phantom_simu/example6_phantom_simu_quali_result.ti
 signal_mask = logical(im);
 noise_mask = ~signal_mask;
 for n = 1:length(S)
+%     N_uniform(n) = {std(real(cat(5,recon_l_Uniform{n,:})),0,5)};
+%     N_GR(n) = {std(real(cat(5,recon_l_GR{n,:})),0,5)};
+%     N_SILVER(n) = {std(real(cat(5,recon_l_SILVER{n,:})),0,5)};
+%     
+%     S_uniform(n) = {mean(abs(cat(5,recon_l_Uniform{n,:})),5)};
+%     S_GR(n) = {mean(abs(cat(5,recon_l_GR{n,:})),5)};
+%     S_SILVER(n) = {mean(abs(cat(5,recon_l_SILVER{n,:})),5)};
+%     
+%     SNR_uniform(n,1) = mean(S_uniform{n}(signal_mask)./N_uniform{n}(signal_mask));
+%     SNR_GR(n,1) = mean(S_GR{n}(signal_mask)./N_GR{n}(signal_mask));
+%     SNR_SILVER(n,1) = mean(S_SILVER{n}(signal_mask)./N_SILVER{n}(signal_mask));
     for seed = 1:10
         S_uniform(n,seed) = mean(abs(recon_l_Uniform{n,seed}(signal_mask)));
         N_uniform(n,seed) = std(recon_l_Uniform{n,seed}(noise_mask));
@@ -128,6 +146,15 @@ for n = 1:length(S)
         S_SILVER(n,seed) = mean(abs(recon_l_SILVER{n,seed}(signal_mask)));
         N_SILVER(n,seed) = std(recon_l_SILVER{n,seed}(noise_mask));
         SNR_SILVER(n,seed) = S_SILVER(n,seed)/N_SILVER(n,seed);
+        
+%         S_uniform(n,seed) = {abs(recon_l_Uniform{n,seed})};
+%         SNR_uniform(n,seed) = {S_uniform{n,seed}./N_uniform{n}};
+% 
+%         S_GR(n,seed) = {abs(recon_l_GR{n,seed})};
+%         SNR_GR(n,seed) = {S_GR{n,seed}./N_GR{n}};
+% 
+%         S_SILVER(n,seed) = {abs(recon_l_SILVER{n,seed})};
+%         SNR_SILVER(n,seed) = {S_SILVER{n,seed}./N_SILVER{n}};
     end
     
 end
@@ -143,6 +170,7 @@ b(3).FaceColor = [0.5,0.5,0.5];
 hold on
 legend('Uniform','GR', 'SILVER', 'Location', 'northwest')
 set(gca,'FontSize', 20)
+xlabel('Number of spokes')
 ylabel('SNR')
 xticklabels(S)
 
@@ -183,6 +211,7 @@ legend('Uniform','GR', 'SILVER', 'Location', 'northwest')
 grid on
 box on
 set(gca, 'linewidth', 2)
+set(gca, 'fontsize', 16)
 
 savefig('examples/example6_phantom_simu/example6_phantom_simu_SNR_result.fig')
 saveas(gcf,'examples/example6_phantom_simu/example6_phantom_simu_SNR_result.tiff')

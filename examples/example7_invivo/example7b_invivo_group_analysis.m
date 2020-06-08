@@ -31,9 +31,9 @@ for subj = subjects
 
         S_SILVER(n,subj) = mean(abs(recon_l_SILVER{n}(repmat(mask_signal{subj},[1,1,1,size(recon_l_SILVER{n},4)]))));
         N_SILVER(n,subj) = std(abs(recon_l_SILVER{n}(repmat(mask_noise{subj},[1,1,1,size(recon_l_SILVER{n},4)]))));
-
         SNR_SILVER(n,subj) = S_SILVER(n,subj)/N_SILVER(n,subj);
     end
+    
 end
 SNR_uniform(SNR_uniform==0)=NaN;
 SNR_GR(SNR_GR==0)=NaN;
@@ -43,7 +43,7 @@ SNR_SILVER(SNR_SILVER==0)=NaN;
 res = [mean(SNR_uniform,2,'omitnan' )'; mean(SNR_GR,2,'omitnan' )'; mean(SNR_SILVER,2,'omitnan' )']';
 err = [std(SNR_uniform,0,2,'omitnan' )'; std(SNR_GR,0,2,'omitnan' )'; std(SNR_SILVER,0,2,'omitnan' )']';
 
-figure(4)
+figure(100)
 b = bar(res,'BarWidth',1);
 b(1).FaceColor = [0,0.5,1];
 b(2).FaceColor = [1,0.5,0];
@@ -51,7 +51,7 @@ b(3).FaceColor = [0.5,0.5,0.5];
 xticklabels(S)
 xlabel('Number of spokes')
 set(gca,'FontSize', 20)
-title(['Subjects ' num2str(subjects)])
+% title(['Subjects ' num2str(subjects)])
 ylabel('SNR')
 hold on
 
