@@ -1,7 +1,14 @@
+%% Generate gifs of reconstructions
+
+
 clear
 close all
+
+gifname = ['examples/example7_invivo/group/example7_invivo_N' num2str(S(n)) '.gif'];
+
+
 for subj = 1:3
-    savename = ['examples/example7_invivo/subj' num2str(subj) '/example7_invivo_subj' num2str(subj) 'test.mat'];
+    savename = ['examples/example7_invivo/subj' num2str(subj) '/example7_invivo_subj' num2str(subj) '.mat'];
     subj_data{subj} = load(savename, 'recon_l_SILVER', 'recon_l_GR', 'recon_l_Uniform');    
 end        
 S = [68,153,306];
@@ -29,7 +36,11 @@ for n = 1:3
             colormap gray
             title([num2str(S(n)) ' spokes'],'Fontsize', 20)
             set(gcf, 'Position', [20 58 903 740])
+            
+            if t == 1
+                system(['rm '  gifname ]);
+            end
             drawnow
-            makegif_fast(['examples/example7_invivo/group/example7_invivo_N' num2str(S(n)) '.gif'])
+            makegif_fast(gifname)
         end
 end
