@@ -9,7 +9,7 @@
 clear
 close all
 
-%% 1. Choose  sets of window sizes, S, to consider
+%% 1. Choose  sets of example window sizes, S, to consider
 
 S1 = [16,32,48];
 S2 = [33:39];
@@ -25,18 +25,16 @@ for s = S
 end
 
 
-%% 3. Vizualise results
+%% 3. Vizualise efficiency of examples of SILVER and Golden ratio
+
+viz_range = 10:50; % x-axis values, numbers of spoeks per frame
+eff_scale = [0.9, 1]; % min and max y-axis efficiency values
+c_map = [0.5 0.5 0.5; 0.3 0.3 0.3;]; % each row is one shade of SILVER
 
 
-eff_GR = efficiency_range(gr2D,10:50,'electrostatic_potential');
-
+eff_GR = efficiency_range(gr2D,viz_range,'electrostatic_potential');
 figure(3)
-c_map = [0.5 0.5 0.5; 0.3 0.3 0.3;];
-
-
 hold on
-
-
 
 n = 0;
 for s = S
@@ -47,12 +45,12 @@ for s = S
     
     
     load(['examples/precalculated/silver_' strrep(num2str(s{:}),' ', '_') '.mat'], 'ratio')
-    eff_SILVER_all = efficiency_range(ratio,10:50,'electrostatic_potential');
-    h = plot(10:50,eff_SILVER_all,'x-','Linewidth', 3, 'markersize', 5, 'color',c_map(n,:) );
+    eff_SILVER_all = efficiency_range(ratio,viz_range,'electrostatic_potential');
+    h = plot(viz_range,eff_SILVER_all,'x-','Linewidth', 3, 'markersize', 5, 'color',c_map(n,:) );
     lg{n} = ['SILVER: S = \{' num2str(s{:}) '\}, \alpha = ' num2str(ratio)];
 
 end
-plot(10:50,eff_GR,'x-','Linewidth', 3, 'markersize', 5, 'color', [1 0.5 0])
+plot(viz_range,eff_GR,'x-','Linewidth', 3, 'markersize', 5, 'color', [1 0.5 0])
 lg{end+1} = ['Golden ratio: \alpha = ' num2str(gr2D)];
 
 box on
