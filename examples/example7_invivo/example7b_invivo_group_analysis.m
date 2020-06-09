@@ -18,7 +18,7 @@ S = [68,153,306];
 load('examples/example7_invivo/example_masks_68_153_306.mat', 'mask_signal', 'mask_noise')
 
 for subj = subjects
-    savename = ['examples/example7_invivo/subj' num2str(subj) '/example7_invivo_subj' num2str(subj) '.mat'];
+    savename = ['examples/example7_invivo/subj' num2str(subj) '/example7_invivo_subj' num2str(subj) 'test.mat'];
     load(savename, 'recon_l_SILVER', 'recon_l_GR', 'recon_l_Uniform')
     for n = 1:length(S)
         S_uniform(n,subj) = mean(abs(recon_l_Uniform{n}(repmat(mask_signal{subj},[1,1,1,size(recon_l_Uniform{n},4)]))));
@@ -73,19 +73,19 @@ yt = get(gca, 'YTick');
 axis([xlim    0  ceil(max(yt)*1.05)])
 for s = 1:length(S)
     if ttest2(SNR_uniform(s,:),SNR_GR(s,:))
-        plot([x(s),x(s)+groupwidth/3], [1 1]*max(res(s,:))*1.1, '-k',  mean([x(s),x(s)+groupwidth/3]), max(res(s,:))*1.15, '*k')
+        plot([x(s),x(s)+groupwidth/3], [1 1]*max(res(s,:))*1.1, '-k',  mean([x(s),x(s)+groupwidth/3]), max(res(s,:))*1.13, '*k')
     end
     if ttest2(SNR_uniform(s,:),SNR_SILVER(s,:))
         yt = get(gca, 'YTick');
         axis([xlim    0  ceil(max(yt)*1.05)])
         hold on
-        plot([x(s),x(s)+groupwidth*2/3], [1 1]*max(res(s,:))*1.1, '-k',  mean([x(s),x(s)+groupwidth*2/3]), max(res(s,:))*1.15, '*k')
+        plot([x(s),x(s)+groupwidth*2/3], [1 1]*max(res(s,:))*1.15, '-k',  mean([x(s),x(s)+groupwidth*2/3]), max(res(s,:))*1.18, '*k')
     end
     if ttest2(SNR_SILVER(s,:),SNR_GR(s,:))
         yt = get(gca, 'YTick');
         axis([xlim    0  ceil(max(yt)*1.05)])
         hold on
-        plot([x(s)+groupwidth/3,x(s)+groupwidth*2/3], [1 1]*max(res(s,:))*1.1, '-k',  mean([x(s)+groupwidth/3,x(s)+groupwidth*2/3]), max(res(s,:))*1.15, '*k')
+        plot([x(s)+groupwidth/3,x(s)+groupwidth*2/3], [1 1]*max(res(s,:))*1.2, '-k',  mean([x(s)+groupwidth/3,x(s)+groupwidth*2/3]), max(res(s,:))*1.23, '*k')
     end
 end
         

@@ -17,7 +17,7 @@ sens_filename = 'examples/example7_invivo/example_sensitivities_68_153_306.mat';
 kdata_file = matfile(kdata_filename);
 sens_file = matfile(sens_filename);
 
-Subj = 2;
+Subj = 3;
 
 kdata_Uniform = kdata_file.kdata_Uniform(:,Subj);
 kdata_GR = kdata_file.kdata_GR(:,Subj);

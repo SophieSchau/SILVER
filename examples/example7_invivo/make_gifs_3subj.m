@@ -1,7 +1,7 @@
 clear
 close all
 for subj = 1:3
-    savename = ['examples/example7_invivo/subj' num2str(subj) '/example7_invivo_subj' num2str(subj) '.mat'];
+    savename = ['examples/example7_invivo/subj' num2str(subj) '/example7_invivo_subj' num2str(subj) 'test.mat'];
     subj_data{subj} = load(savename, 'recon_l_SILVER', 'recon_l_GR', 'recon_l_Uniform');    
 end        
 S = [68,153,306];
