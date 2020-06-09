@@ -26,7 +26,7 @@ load('examples/example6_phantom_simu/phantom_64x64x1x60','im');
 load('examples/example5_gfactor/test_sensitivity_map.mat','psens');
 
 
-savename = 'examples/example6_phantom_simu/example6_phantom_simu_max10000its_test_matched_traj.mat';
+savename = 'examples/example6_phantom_simu/example6_phantom_simu.mat';
 
 if ~exist(savename,'file')
     
@@ -61,6 +61,8 @@ else
 end
 
 %% 4. Compare reconstructions visually
+gifname = 'examples/example6_phantom_simu/example6_phantom_simu_quali_result.gif';
+
 figure(1)
 clim = [min(im(:)),max(im(:))];
 for t = 1:60
@@ -113,7 +115,11 @@ for ii = 1:3
 end
 set(gcf,'Position', [593 1 406 797])
 colormap('jet')
-makegif_fast('examples/example6_phantom_simu/example6_phantom_simu_quali_result.gif')
+if t == 1
+    system(['rm '  gifname ]);
+end
+    
+makegif_fast(gifname)
 end
 savefig('examples/example6_phantom_simu/example6_phantom_simu_quali_result.fig')
 saveas(gcf,'examples/example6_phantom_simu/example6_phantom_simu_quali_result.tiff')
@@ -123,6 +129,8 @@ saveas(gcf,'examples/example6_phantom_simu/example6_phantom_simu_quali_result.ti
 signal_mask = logical(im);
 noise_mask = ~signal_mask;
 for n = 1:length(S)
+    
+%    Pseudo-replica method
 %     N_uniform(n) = {std(real(cat(5,recon_l_Uniform{n,:})),0,5)};
 %     N_GR(n) = {std(real(cat(5,recon_l_GR{n,:})),0,5)};
 %     N_SILVER(n) = {std(real(cat(5,recon_l_SILVER{n,:})),0,5)};
@@ -134,7 +142,10 @@ for n = 1:length(S)
 %     SNR_uniform(n,1) = mean(S_uniform{n}(signal_mask)./N_uniform{n}(signal_mask));
 %     SNR_GR(n,1) = mean(S_GR{n}(signal_mask)./N_GR{n}(signal_mask));
 %     SNR_SILVER(n,1) = mean(S_SILVER{n}(signal_mask)./N_SILVER{n}(signal_mask));
+
+%   Spatial SNR
     for seed = 1:10
+        % averaged SNR:
         S_uniform(n,seed) = mean(abs(recon_l_Uniform{n,seed}(signal_mask)));
         N_uniform(n,seed) = std(recon_l_Uniform{n,seed}(noise_mask));
         SNR_uniform(n,seed) = S_uniform(n,seed)/N_uniform(n,seed);
@@ -146,7 +157,8 @@ for n = 1:length(S)
         S_SILVER(n,seed) = mean(abs(recon_l_SILVER{n,seed}(signal_mask)));
         N_SILVER(n,seed) = std(recon_l_SILVER{n,seed}(noise_mask));
         SNR_SILVER(n,seed) = S_SILVER(n,seed)/N_SILVER(n,seed);
-        
+
+        % SNR maps:        
 %         S_uniform(n,seed) = {abs(recon_l_Uniform{n,seed})};
 %         SNR_uniform(n,seed) = {S_uniform{n,seed}./N_uniform{n}};
 % 
