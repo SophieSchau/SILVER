@@ -20,7 +20,7 @@ S6 = [32,64,96];
 S7 = fibonacci(5:9);
 S = {S1,S2,S3,S4,S5,S6,S7};
 
-%% 2. Do SILVER optimization for those ranges
+%% 2. Do SILVER optimization for those ranges, electrostatic potential cost
 for s = S
    savename = ['examples/precalculated/silver_' strrep(num2str(s{:}),' ', '_') '.mat'];
    if ~exist(savename, 'file')
@@ -30,7 +30,7 @@ for s = S
 end
 
 
-%% 3. Process results
+%% 3. Calculate minimum efficiency in all sets for SILVER and golden ratio
 
 savename= 'examples/example2_multiple_tempres/example2_multiple_tempres_result.mat';
 
