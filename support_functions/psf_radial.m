@@ -1,8 +1,11 @@
 function [psf] = psf_radial(ratio, N, matrix_size)
 %PSF_RADIAL generates a point spread function map for radially sampled MRI
+%(single coil)
 %   
 %   INPUTS: ratio        -   angular step size is ratio*180 degrees.
 %           N            -   number of spokes to generate
+%           (matrix_size)-   Optional size of matrix to reconstruct.
+%                            Defaults to round(sqrt(2)*N/pi).
 %
 %   OUTPUT: psf -   2D matrix. Operator that when applied to a delta
 %                   function characterizes the effect of the chosen

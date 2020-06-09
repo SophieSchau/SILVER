@@ -10,7 +10,7 @@ clear
 close all
 
 %% 1. Choose  set of window sizes, S, to consider
-S = [16,32,64];
+S = [16,32,48];
 
 %% 2. Do SILVER optimization for that range
 
@@ -30,7 +30,7 @@ for n = 1:length(S)
 end
 
 
-%% 4. Vizualise
+%% 4. Vizualise PSFs
 figure(1)
 delta = zeros(64,64);
 delta(32,32) = 1;
