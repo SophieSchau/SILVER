@@ -36,14 +36,6 @@ for c = 1:Nc
     I_phs = I_phs*4*pi-2*pi;
 
     psens(:,:,1,c) = I_mag.*exp(1j*I_phs);
-%     subplot(1,2,1)
-%     imagesc(abs(psens(:,:,1,c)))
-%     colorbar
-%     drawnow
-%     subplot(1,2,2)
-%     imagesc(angle(psens(:,:,1,c)))
-%     colorbar
-%     drawnow
 end
 
 [u,s,~] = lsvd(reshape(psens,[],Nc),Ncc);
