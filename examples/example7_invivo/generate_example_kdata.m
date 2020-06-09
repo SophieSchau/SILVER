@@ -85,4 +85,4 @@ for subj = 1:length(file_SILVER)
 end
 
 SILVER_twix = twix_obj;
-save('examples/example7_invivo/example_kdata_68_153_306_v2.mat', 'kdata_SILVER', 'kdata_GR', 'kdata_Uniform', 'S', 'SILVER_twix', '-v7.3');
+save('examples/example7_invivo/example_kdata_68_153_306.mat', 'kdata_SILVER', 'kdata_GR', 'kdata_Uniform', 'S', 'SILVER_twix', '-v7.3');

@@ -14,13 +14,11 @@ Mat_size = [SILVER_twix.hdr.Config.BaseResolution, SILVER_twix.hdr.Config.BaseRe
 %%
 
 ratio = 1/S_max;
+NFrames = SILVER_twix.hdr.Meas.NPhs;
+NRepeats = SILVER_twix.hdr.Config.NLin/SILVER_twix.hdr.Config.NSeg;
+NSpokes = SILVER_twix.hdr.Config.NLin;
 
-Phi = [];
-for frame = 1:SILVER_twix.hdr.Meas.NPhs
-    for repeat = 0:SILVER_twix.hdr.Config.NLin/SILVER_twix.hdr.Config.NSeg-1
-        Phi = cat(1, Phi, mod( ((frame-1)*SILVER_twix.hdr.Config.NLin+repeat:SILVER_twix.hdr.Config.NLin/SILVER_twix.hdr.Config.NSeg:frame*SILVER_twix.hdr.Config.NLin-1)' * ratio * pi, 2*pi ));
-    end
-end
+Phi = mod([0:(NSpokes*NFrames-1)] * ratio * pi, 2*pi );
 kspace = gen_radial_traj(Phi, SILVER_twix.hdr.Config.NColMeas, []);
 
 %%

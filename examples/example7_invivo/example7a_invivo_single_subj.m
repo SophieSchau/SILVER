@@ -11,13 +11,13 @@ clear
 close all
 
 %% 1. Load data, and choose subject to consider
-kdata_filename = 'examples/example7_invivo/example_kdata_68_153_306_v2.mat';
+kdata_filename = 'examples/example7_invivo/example_kdata_68_153_306.mat';
 sens_filename = 'examples/example7_invivo/example_sensitivities_68_153_306.mat';
 
 kdata_file = matfile(kdata_filename);
 sens_file = matfile(sens_filename);
 
-Subj = 3;
+Subj = 1;
 
 kdata_Uniform = kdata_file.kdata_Uniform(:,Subj);
 kdata_GR = kdata_file.kdata_GR(:,Subj);
@@ -54,7 +54,7 @@ end
 S_ratio = ratio;
 
 %% 3. Forward transform
-savename = ['examples/example7_invivo/subj' num2str(Subj) '/example7_invivo_subj' num2str(Subj) 'test.mat'];
+savename = ['examples/example7_invivo/subj' num2str(Subj) '/example7_invivo_subj' num2str(Subj) '.mat'];
 if ~exist(savename,'file')
     for n = 1:length(S)
         for method = {'UNIFORM', 'GR', 'SILVER'}

@@ -18,7 +18,7 @@ S = [68,153,306];
 load('examples/example7_invivo/example_masks_68_153_306.mat', 'mask_signal', 'mask_noise')
 
 for subj = subjects
-    savename = ['examples/example7_invivo/subj' num2str(subj) '/example7_invivo_subj' num2str(subj) 'test.mat'];
+    savename = ['examples/example7_invivo/subj' num2str(subj) '/example7_invivo_subj' num2str(subj) '.mat'];
     load(savename, 'recon_l_SILVER', 'recon_l_GR', 'recon_l_Uniform')
     for n = 1:length(S)
         S_uniform(n,subj) = mean(abs(recon_l_Uniform{n}(repmat(mask_signal{subj},[1,1,1,size(recon_l_Uniform{n},4)]))));

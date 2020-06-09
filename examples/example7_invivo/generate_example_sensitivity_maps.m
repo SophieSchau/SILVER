@@ -7,7 +7,7 @@
 clear
 close all
 
-load('examples/example7_invivo/example_kdata_68_153_306_v2.mat', 'kdata_SILVER', 'kdata_GR', 'kdata_Uniform', 'S', 'SILVER_twix');
+load('examples/example7_invivo/example_kdata_68_153_306.mat', 'kdata_SILVER', 'kdata_GR', 'kdata_Uniform', 'S', 'SILVER_twix');
 [S_max, S_max_idx] = max(S);
 NCoils = SILVER_twix.hdr.Meas.NChaMeas;
 Mat_size = [SILVER_twix.hdr.Config.BaseResolution, SILVER_twix.hdr.Config.BaseResolution, 1, 1];
