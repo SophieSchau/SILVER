@@ -44,10 +44,11 @@ for s = S
     end
     
     
-    load(['examples/precalculated/silver_' strrep(num2str(s{:}),' ', '_') '.mat'], 'ratio')
+    load(['examples/precalculated/silver_' strrep(num2str(s{:}),' ', '_') '.mat'], 'ratio','eff_SILVER')
     eff_SILVER_all = efficiency_range(ratio,viz_range,'electrostatic_potential');
     h = plot(viz_range,eff_SILVER_all,'x-','Linewidth', 3, 'markersize', 5, 'color',c_map(n,:) );
     lg{n} = ['SILVER: S = \{' num2str(s{:}) '\}, \alpha = ' num2str(ratio)];
+    plot(s{:},eff_SILVER,'o','markersize', 10, 'markerfacecolor',c_map(n,:),'markeredgecolor',c_map(n,:),'HandleVisibility','off');
 
 end
 plot(viz_range,eff_GR,'x-','Linewidth', 3, 'markersize', 5, 'color', [1 0.5 0])

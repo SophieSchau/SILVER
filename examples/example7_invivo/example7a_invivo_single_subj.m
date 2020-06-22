@@ -17,7 +17,7 @@ sens_filename = 'examples/example7_invivo/example_sensitivities_68_153_306.mat';
 kdata_file = matfile(kdata_filename);
 sens_file = matfile(sens_filename);
 
-Subj = 1;
+Subj = 3;
 
 kdata_Uniform = kdata_file.kdata_Uniform(:,Subj);
 kdata_GR = kdata_file.kdata_GR(:,Subj);
@@ -324,13 +324,13 @@ saveas(gcf,['examples/example7_invivo/subj' num2str(Subj) '/example7_invivo_SNR_
 
 %%
 figure(4)
-imshow(flipud(abs(mean(recon_l_Uniform{3}(:,:,:,:),4))),[0, 2e-4])
+imshow(flipud(abs(mean(recon_l_Uniform{3}(:,:,:,:),4))),[0, 1e-4])
 hold on
 h = imagesc(cat(3,flipud(mask_signal{Subj}),zeros(192), zeros(192)));
-h.AlphaData = 0.2;
+h.AlphaData = 0.5;
 
 hh = imagesc(cat(3,zeros(192), zeros(192), flipud(mask_noise{Subj})));
-hh.AlphaData = 0.2;
+hh.AlphaData = 0.5;
 
 title(['Subj ' num2str(Subj)], 'Fontsize', 20)
 set(gcf, 'Position', [440 84 484 455])
