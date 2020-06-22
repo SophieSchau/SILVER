@@ -17,3 +17,6 @@ system('cp SILVER_data/example4/* examples/example4_psf/.');
 
 %% Example 5 data
 system('cp -r SILVER_data/example5/* examples/example5_gfactor/.');
+
+%% Example 6 data
+system('cp SILVER_data/example6/* examples/example6_phantom_simu/.');
