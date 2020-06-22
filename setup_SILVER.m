@@ -1,5 +1,5 @@
 %% Download data
-url = 'https://someurl.com/SILVER_data.tar.gz';
+url = './SILVER_data.tar.gz';
 gunzip(url, 'SILVER_data');
 untar('SILVER_data/SILVER_data.tar','SILVER_data');
 
@@ -20,3 +20,9 @@ system('cp -r SILVER_data/example5/* examples/example5_gfactor/.');
 
 %% Example 6 data
 system('cp SILVER_data/example6/* examples/example6_phantom_simu/.');
+
+%% Example 7 data
+system('cp -r SILVER_data/example7/* examples/example7_invivo/.');
+
+%% Precalculated SILVER optimizations
+system('cp SILVER_data/precalculated/* examples/precalculated/.');
