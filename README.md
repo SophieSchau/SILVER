@@ -2,7 +2,7 @@
 Pre-print available here: insert link to pre-print once submitted
 
 ## Setup
-You can clone this project to get access to all code used in the SILVER project and re-run all experiments from the paper. If you want to add in pre-calculated SILVER optimizations, data and example results to save time, download [this] data set and to the folder containing this repository and run setup_SILVER.m in Matlab.
+You can clone this project to get access to all code used in the SILVER project and re-run all experiments from the paper. If you want to add in pre-calculated SILVER optimizations, data and example results to save time, download [this] dataset (~10GB) and add to the folder containing this repository and run setup_SILVER.m in Matlab. If you want to save space and setup time you can add only `SILVER_setup_basic.tar.gz` (about 500MB) from the dataset to your folder and run setup_SILVER.m. Then everything except example 7 (in-vivo) will run.
 
 ### Pre-requisites:
 - [The NUFFT from the Michigan Image Reconstruction Toolbox](https://web.eecs.umich.edu/~fessler/code/)
