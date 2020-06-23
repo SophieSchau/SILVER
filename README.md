@@ -10,7 +10,7 @@ You can clone this project to get access to all code used in the SILVER project 
 
 ## Use
 ### 2D
-In 2D SILVER can be optimized with the Winkelmann method [1] or using electrostatic potential [2]. Simply call `SILVER_2D(window_sizes, method, save_filename)` with `window_sizes` being a list of integers representing how many spokes to combine in each window, `method` has to be a string that is either `Winkelmann` or `electrostatic_potential`, `save_filename` is optional and is the filename and path to where the result (`ratio` as well as other variables related to the optimistion (see comments in the function for details)) will be stored. `ratio` is the optimal step increment such that the angle to rotate each spoke is `ratio`*180 degrees. 
+In 2D SILVER can be optimized with the Winkelmann method [1] or using electrostatic potential [2]. Simply call `ratio = SILVER_2D(window_sizes, method, save_filename)` with `window_sizes` being a list of integers representing how many spokes to combine in each window, `method` has to be a string that is either `Winkelmann` or `electrostatic_potential`, `save_filename` is optional and is the filename and path to where the result (`ratio` as well as other variables related to the optimistion (see comments in the function for details)) will be stored. `ratio` is the optimal step increment such that the angle to rotate each spoke is `ratio`*180 degrees. 
 
 ### 3D
 Work in progress.
