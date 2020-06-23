@@ -19,4 +19,4 @@ Work in progress.
 
 [1] Winkelmann S, Schaeffter T, Koehler T, Eggers H, Doessel O. An optimal radial profile order based on the Golden Ratio for time-resolved MRI. IEEE Trans Med Imaging. 2007;26(1):68-76. doi:10.1109/TMI.2006.885337
 
-[2] Schauman SS, Okell TW, Chiew M. The Set Increment with Limited Views Encoding Ratio (SILVER) Method for Optimizing Radial Sampling of Dynamic MRI. BioRxiv. 2020.
+[2] Schauman SS, Okell TW, Chiew M. The Set Increment with Limited Views Encoding Ratio (SILVER) Method for Optimizing Radial Sampling of Dynamic MRI. 2020.
