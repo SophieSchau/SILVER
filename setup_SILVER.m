@@ -1,13 +1,5 @@
 %% Download data
-url_simu = './SILVER_data.tar.gz';
-url_invivo = './SILVER_data_invivo.tar.gz';
-
-system('tar -zxvf SILVER_data_invivo.tar.gz')
-
-% gunzip(url_simu);
-% gunzip(url_invivo);
-% untar('SILVER_data.tar');
-% untar('SILVER_data_invivo.tar')
+system('tar -zxvf ./SILVER_data.tar.gz')
 
 %% Example 1 data
 system('cp SILVER_data/example1/* examples/example1_ranges/.');
@@ -34,11 +26,11 @@ system('cp SILVER_data/example6/* examples/example6_phantom_simu/.');
 system('rm SILVER_data/example6/*');
 % 
 %% Example 7 data
-system('cp -r SILVER_data_invivo/* examples/example7_invivo/.');
-system('rm -r SILVER_data_invivo/*');
+system('cp -r SILVER_data/example7/* examples/example7_invivo/.');
+system('rm -r SILVER_data/example7/*');
 
 %% Precalculated SILVER optimizations
 system('cp SILVER_data/precalculated/* examples/precalculated/.');
 
 %% Final cleanup
-system('rm SILVER_data*')
+system('rm -r SILVER_data')
