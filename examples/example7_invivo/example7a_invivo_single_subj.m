@@ -11,17 +11,21 @@ clear
 close all
 
 %% 1. Load data, and choose subject to consider
-kdata_filename = 'examples/example7_invivo/example_kdata_68_153_306.mat';
+kdata_SILVER_filename = 'examples/example7_invivo/example_kdata_SILVER_68_153_306.mat';
+kdata_GR_filename = 'examples/example7_invivo/example_kdata_GR_68_153_306.mat';
+kdata_UNIFORM_filename = 'examples/example7_invivo/example_kdata_UNIFORM_68_153_306.mat';
 sens_filename = 'examples/example7_invivo/example_sensitivities_68_153_306.mat';
 
-kdata_file = matfile(kdata_filename);
+kdata_UNIFORM_file = matfile(kdata_UNIFORM_filename);
+kdata_SILVER_file = matfile(kdata_SILVER_filename);
+kdata_GR_file = matfile(kdata_GR_filename);
 sens_file = matfile(sens_filename);
 
 Subj = 3;
 
-kdata_Uniform = kdata_file.kdata_Uniform(:,Subj);
-kdata_GR = kdata_file.kdata_GR(:,Subj);
-kdata_SILVER = kdata_file.kdata_SILVER(:,Subj);
+kdata_Uniform = kdata_UNIFORM_file.kdata_Uniform(:,Subj);
+kdata_GR = kdata_GR_file.kdata_GR(:,Subj);
+kdata_SILVER = kdata_SILVER_file.kdata_SILVER(:,Subj);
 
 sens_UNIFORM = sens_file.sens_UNIFORM(1,Subj);
 sens_GR = sens_file.sens_GR(1,Subj);
@@ -30,17 +34,12 @@ sens_SILVER = sens_file.sens_SILVER(1,Subj);
 
 %% 2. Setup useful variables and do SILVER optimiaztion
 
-load(kdata_filename, 'SILVER_twix','S')
-
-Mat_size = SILVER_twix.hdr.Config.BaseResolution;
-NFrames = SILVER_twix.hdr.Meas.NPhs;
-NRepeats = SILVER_twix.hdr.Config.NLin/SILVER_twix.hdr.Config.NSeg;
-NSpokes = SILVER_twix.hdr.Config.NLin;
-NSamps = SILVER_twix.hdr.Config.NColMeas;
-NSubj = size(kdata_SILVER,2);
 E_UNIFORM = cell(size(kdata_Uniform));
 E_GR = cell(size(kdata_GR));
 E_SILVER = cell(size(kdata_SILVER));
+
+load('examples/example7_invivo/example_params_68_153_306.mat', 'Mat_size', 'NFrames', 'NRepeats', 'NSpokes', 'NSamps', 'NSubj','S');
+
 
 clear SILVER_twix kdata_file sens_file;
 
@@ -66,13 +65,6 @@ if ~exist(savename,'file')
                 case 'SILVER'
                     ratio = S_ratio;
             end
-% OLD METHOD - WRONG!
-%             Phi = [];
-%             for frame = 1:NFrames
-%                 for repeat = 0:NRepeats-1
-%                     Phi = cat(1, Phi, mod( ((frame-1)*NSpokes+repeat:NRepeats:frame*NSpokes-1)' * ratio * pi, 2*pi ));
-%                 end
-%             end
             
             Phi = mod([0:(NSpokes*NFrames-1)] * ratio * pi, 2*pi );
             

@@ -1,10 +1,13 @@
 %% Download data
 url_simu = './SILVER_data.tar.gz';
 url_invivo = './SILVER_data_invivo.tar.gz';
-gunzip(url_simu);
-gunzip(url_invivo);
-untar('SILVER_data.tar');
-untar('SILVER_data_invivo.tar')
+
+system('tar -zxvf SILVER_data_invivo.tar.gz')
+
+% gunzip(url_simu);
+% gunzip(url_invivo);
+% untar('SILVER_data.tar');
+% untar('SILVER_data_invivo.tar')
 
 %% Example 1 data
 system('cp SILVER_data/example1/* examples/example1_ranges/.');

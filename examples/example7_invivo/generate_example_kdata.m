@@ -85,4 +85,18 @@ for subj = 1:length(file_SILVER)
 end
 
 SILVER_twix = twix_obj;
-save('examples/example7_invivo/example_kdata_68_153_306.mat', 'kdata_SILVER', 'kdata_GR', 'kdata_Uniform', 'S', 'SILVER_twix', '-v7.3');
+
+% Useful parameters
+Mat_size = SILVER_twix.hdr.Config.BaseResolution;
+NFrames = SILVER_twix.hdr.Meas.NPhs;
+NRepeats = SILVER_twix.hdr.Config.NLin/SILVER_twix.hdr.Config.NSeg;
+NSpokes = SILVER_twix.hdr.Config.NLin;
+NSamps = SILVER_twix.hdr.Config.NColMeas;
+NSubj = size(kdata_SILVER,2);
+
+
+
+save('examples/example7_invivo/example_kdata_SILVER_68_153_306.mat', 'kdata_SILVER', '-v7.3');
+save('examples/example7_invivo/example_kdata_GR_68_153_306.mat', 'kdata_GR', '-v7.3');
+save('examples/example7_invivo/example_kdata_UNIFORM_68_153_306.mat', 'kdata_Uniform', '-v7.3');
+save('examples/example7_invivo/example_params_68_153_306.mat', 'Mat_size', 'NFrames', 'NRepeats', 'NSpokes', 'NSamps', 'NSubj','S');
