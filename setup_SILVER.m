@@ -33,9 +33,9 @@ system('rm -r SILVER_data_basic');
 
 
 %% Example 7 (in-vivo) data
-
-system('tar -zxvf ./SILVER_data_invivo.tar.gz');
-system('cp -r SILVER_data_invivo/example7/* examples/example7_invivo/.');
-system('rm -r SILVER_data_invivo');
-
+if exist('./SILVER_data_invivo.tar.gz', 'file')
+    system('tar -zxvf ./SILVER_data_invivo.tar.gz');
+    system('cp -r SILVER_data_invivo/example7/* examples/example7_invivo/.');
+    system('rm -r SILVER_data_invivo');
+end
 
