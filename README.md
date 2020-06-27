@@ -1,5 +1,5 @@
 # SILVER - Set Increment with Limited Views Encoding Ratio
-Pre-print available here: insert link to pre-print once submitted
+Pre-print available here: https://www.biorxiv.org/content/10.1101/2020.06.25.171017v1
 
 ## Setup
 You can clone this project to get access to all code used in the SILVER project and re-run all experiments from the paper. If you want to add in pre-calculated SILVER optimizations, data and example results to save time, download [this](https://zenodo.org/record/3904738) dataset (~10GB) and add to the folder containing this repository and run setup_SILVER.m in Matlab. If you want to save space and setup time you can add only `SILVER_setup_basic.tar.gz` (about 500MB) from the dataset to your folder and run setup_SILVER.m. Then everything except example 7 (in-vivo) will run.
@@ -19,4 +19,4 @@ Work in progress.
 
 [1] Winkelmann S, Schaeffter T, Koehler T, Eggers H, Doessel O. An optimal radial profile order based on the Golden Ratio for time-resolved MRI. IEEE Trans Med Imaging. 2007;26(1):68-76. doi:10.1109/TMI.2006.885337
 
-[2] Schauman SS, Okell TW, Chiew M. The Set Increment with Limited Views Encoding Ratio (SILVER) Method for Optimizing Radial Sampling of Dynamic MRI. 2020.
+[2] Schauman SS, Okell TW, Chiew M. The Set Increment with Limited Views Encoding Ratio (SILVER) Method for Optimizing Radial Sampling of Dynamic MRI. BioRxiv 2020. https://doi.org/10.1101/2020.06.25.171017
