@@ -17,7 +17,7 @@ savefolder = 'examples/example5_gfactor/gfactor_maps/test/';
 load('examples/example5_gfactor/test_sensitivity_map.mat', 'psens') %coils
 
 %% 1. Choose sets of window sizes, S, to consider for SILVER
-N = [16,32,48,64,128];
+N = [32,48,64,128];
 for n = 1:length(N)
     S{n*7-6} = [N(n), 2*N(n)];
     S{n*7-5} = [N(n), 2*N(n), 3*N(n)];
@@ -105,8 +105,8 @@ for m = 1:length(S)
     N(b);
     subplot(length(N),Ntrials,p)
     im = cat(2, abs(UNIFORM_gmaps{b}),abs(SILVER_gmaps{m}{a}), abs(GR_gmaps{b}));
-    SILVER_max_g(m)= max(abs(SILVER_gmaps{m}{a})./abs(UNIFORM_gmaps{b}),[],'all');
-    SILVER_mean_g(m)= mean(abs(SILVER_gmaps{m}{a})./abs(UNIFORM_gmaps{b}), 'all');
+    SILVER_max_g(m)= max(abs(SILVER_gmaps{m}{a}),[],'all');
+    SILVER_mean_g(m)= mean(abs(SILVER_gmaps{m}{a}), 'all');
     imagesc(im)
     axis image
     axis off
@@ -145,12 +145,13 @@ SILVER_mean_g= reshape(SILVER_mean_g,Ntrials,length(N));
 %% 6. Compare SILVER to GR and Uniform
 lables = {'S = \{N, 2N\}', 'S = \{N, 2N, 3N\}', 'S = \{N-1 ... N+1\}', 'S = \{N-2 ... N+2\}','S = \{N-3 ... N+3\}','S = \{N-4 ... N+4\}','S = \{N-5 ... N+5\}', 'UNIFORM', 'Golden ratio'};
 for m = 1:length(N)
-    UNIFORM_mean_g(m)= mean(abs(UNIFORM_gmaps{m}(:))./abs(UNIFORM_gmaps{m}(:)));
-    GR_mean_g(m) = mean(abs(GR_gmaps{m}(:))./abs(UNIFORM_gmaps{m}(:)));
+    UNIFORM_mean_g(m)= mean(abs(UNIFORM_gmaps{m}(:)));
+    GR_mean_g(m) = mean(abs(GR_gmaps{m}(:)));
     data(m,:) = abs(cat(1,SILVER_mean_g(:,m),UNIFORM_mean_g(m),GR_mean_g(m)));
 end
   
 figure(2)
+subplot(2,1,1)
 hold on
 
 data = mean(data,3); % across pixels
@@ -166,7 +167,7 @@ data = data(:,idx);
 
 silver_cl = linspace(0.4,0.7,Ntrials)'.*ones(Ntrials,3);
 for ii = 1:length(data_means)
-    h = bar(ii,data_means(ii));
+    h = bar(ii,log(data_means(ii)));
     if idx(ii) == Ntrials+1 %UNIFORM
         set(h, 'FaceColor', [0 0.5 1]) 
     elseif idx(ii) == Ntrials+2 %golden ratio
@@ -176,12 +177,13 @@ for ii = 1:length(data_means)
     end
     h.LineWidth = 2;
 end
-disp(['Mean SILVER gfactor amplification across chosen sets: ' num2str(mean(data_means(idx<8)))])
-disp(['Mean Golden gfactor amplification across chosen sets: ' num2str(mean(data_means(idx==9)))])
+disp(['Mean Uniform gfactor across chosen sets: ' num2str(mean(data_means(idx==8)))])
+disp(['Mean SILVER gfactor across chosen sets: ' num2str(mean(data_means(idx<8)))])
+disp(['Mean Golden gfactor across chosen sets: ' num2str(mean(data_means(idx==9)))])
 
 cl = hsv(length(N));
 for n = 1:length(N)
-    h(n) = scatter(1:Ntrials+2, data(n,:),100, cl(n,:),'filled','MarkerFaceAlpha', 0.5, 'markeredgecolor','k', 'DisplayName',['N = ' num2str(N(n))]);
+    h(n) = scatter(1:Ntrials+2, log(data(n,:)),100, cl(n,:),'filled','MarkerFaceAlpha', 0.5, 'markeredgecolor','k', 'DisplayName',['N = ' num2str(N(n))]);
 end
 l = legend(h);
 l.Location = 'northwest';
@@ -189,12 +191,12 @@ grid on
 xticks(1:Ntrials+2)
 xticklabels(lables(idx))
 xtickangle(-90)
-ylabel('mean g-factor compared to uniform')
+ylabel('mean log(g-factor)')
 set(gca,'fontsize', 16)
 set(gca,'linewidth', 2)
 box on
-savefig([savefolder 'example5_gfactor_graph.fig'])
-saveas(gcf,[savefolder '/example5_gfactor_graph.tiff'])
+% savefig([savefolder 'example5_gfactor_graph.fig'])
+% saveas(gcf,[savefolder '/example5_gfactor_graph.tiff'])
 
 %% 7. Show specific example
 % choose sets:
@@ -218,23 +220,24 @@ for cs = chosen_set
     for s = S(sets)
         a = ismember(s{:},N(ii));
         s{:}(a);
-        im = cat(2,im,cat(1, abs(SILVER_gmaps{sets(ii)}{a})./abs(UNIFORM_gmaps{ii}), abs(GR_gmaps{ii})./abs(UNIFORM_gmaps{ii})));
+        im = cat(2,im,cat(1, abs(UNIFORM_gmaps{ii}),abs(SILVER_gmaps{sets(ii)}{a}), abs(GR_gmaps{ii})));
         ii = ii+1;
     end
-    figure
-    imagesc(im)
+    subplot(2,1,2)
+    imagesc(log(im))
     cl = caxis;
-    caxis([1 cl(2)*0.5])
+    caxis([0 cl(2)])
     colormap('jet')
     colorbar
     axis image
     axis off
-    text(-max(size(psens)),max(size(psens))/2,{'SILVER:' lables{cs}}, 'fontsize', 16,'HorizontalAlignment','left')
-    text(-max(size(psens)),max(size(psens))+max(size(psens))/2,'Golden ratio', 'fontsize', 16,'HorizontalAlignment','left')
+    text(-max(size(psens))*0.1,max(size(psens))/2,'Uniform', 'fontsize', 16,'HorizontalAlignment','right')
+    text(-max(size(psens))*0.1,max(size(psens))+max(size(psens))/2,{'SILVER:' lables{cs}}, 'fontsize', 16,'HorizontalAlignment','right')
+    text(-max(size(psens))*0.1,2*max(size(psens))+max(size(psens))/2,'Golden ratio', 'fontsize', 16,'HorizontalAlignment','right')
     for n = 1:length(N)
         text((n-1)*max(size(psens))+max(size(psens))/2,-max(size(psens))/8,['N = ' num2str(N(n))], 'fontsize', 16,'HorizontalAlignment','center')
     end
-    set(gcf, 'Position', [57 444 1167 354])
+    set(gcf, 'Position', [57 1 597 797])
     set(gca,'fontsize', 18)
     set(gca, 'linewidth', 2)
 

@@ -11,8 +11,8 @@ close all
 
 %% 1. Choose  set of window sizes, S, to consider, whether to 
 %% reconstruct with one or multiple coils, and how much noise to add.
-S = [16,32,48];
-single_coil = false;
+S = [125,150];
+single_coil = true;
 noise_sd = 1000;
 
 %% 2. Do SILVER optimization for that range
@@ -245,14 +245,14 @@ saveas(gcf,'examples/example6_phantom_simu/example6_phantom_simu_SNR_result.tiff
 figure(3)
 for n = 1:length(S)
     
-E_Uniform = cat(5,recon_l_Uniform{n,:})-im;
-NMRSE_Uniform(n) = sqrt(mean(abs((E_Uniform(signal_mask)./im(signal_mask))).^2,'all'));
+Err_Uniform = cat(5,recon_l_Uniform{n,:})-im;
+NMRSE_Uniform(n) = sqrt(mean(abs((Err_Uniform(signal_mask)./im(signal_mask))).^2,'all'));
 
-E_GR = cat(5,recon_l_GR{n,:})-im;
-NMRSE_GR(n) = sqrt(mean(abs((E_GR(signal_mask)./im(signal_mask))).^2,'all'));
+Err_GR = cat(5,recon_l_GR{n,:})-im;
+NMRSE_GR(n) = sqrt(mean(abs((Err_GR(signal_mask)./im(signal_mask))).^2,'all'));
 
-E_SILVER = cat(5,recon_l_SILVER{n,:})-im;
-NMRSE_SILVER(n) = sqrt(mean(abs((E_SILVER(signal_mask)./im(signal_mask))).^2,'all'));
+Err_SILVER = cat(5,recon_l_SILVER{n,:})-im;
+NMRSE_SILVER(n) = sqrt(mean(abs((Err_SILVER(signal_mask)./im(signal_mask))).^2,'all'));
     
 end
 
