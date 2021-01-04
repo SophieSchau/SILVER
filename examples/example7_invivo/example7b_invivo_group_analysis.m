@@ -49,7 +49,7 @@ b(1).FaceColor = [0,0.5,1];
 b(2).FaceColor = [1,0.5,0];
 b(3).FaceColor = [0.5,0.5,0.5];
 xticklabels(S)
-xlabel('Number of spokes')
+xlabel('Number of spokes/frame')
 set(gca,'FontSize', 20)
 % title(['Subjects ' num2str(subjects)])
 ylabel('SNR')
@@ -61,17 +61,21 @@ nbars = 3;
 groupwidth = min(0.8, nbars/(nbars + 1.5));
 % Set the position of each error bar in the centre of the main bar
 % Based on barweb.m by Bolu Ajiboye from MATLAB File Exchange
-for i = 1:nbars
-    % Calculate center of each bar
-    x = (1:ngroups) - groupwidth/2 + (2*i-1) * groupwidth / (2*nbars);
-    errorbar(x,res(:,i), err(:,i),'k', 'linestyle', 'none', 'linewidth', 1);    
-end
+% for i = 1:nbars
+%     % Calculate center of each bar
+%     x = (1:ngroups) - groupwidth/2 + (2*i-1) * groupwidth / (2*nbars);
+%     errorbar(x,res(:,i), err(:,i),'k', 'linestyle', 'none', 'linewidth', 1);    
+% end
 
 
 x = (1:ngroups) - groupwidth/2 + groupwidth / (2*nbars);
 yt = get(gca, 'YTick');
 axis([xlim    0  ceil(max(yt)*1.05)])
 for s = 1:length(S)
+    scatter(x(s)*[0.99 1 1.01],SNR_uniform(s,:), 'ok', 'MarkerFaceColor', [0, 0.5, 1])
+    scatter((x(s)+groupwidth/3)*[0.99 1 1.01],SNR_GR(s,:), 'ok', 'MarkerFaceColor', [1, 0.5, 0])
+    scatter((x(s)++groupwidth*2/3)*[0.99 1 1.01],SNR_SILVER(s,:), 'ok', 'MarkerFaceColor', [0.5, 0.5, 0.5])
+
     if ttest2(SNR_uniform(s,:),SNR_GR(s,:))
         plot([x(s),x(s)+groupwidth/3], [1 1]*max(res(s,:))*1.1, '-k',  mean([x(s),x(s)+groupwidth/3]), max(res(s,:))*1.13, '*k')
     end
