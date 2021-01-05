@@ -18,9 +18,10 @@ if length(ratio) == 1
     angles = mod(spoke_numbers*ratio,1)*pi;
     x = cos(angles);
     y = sin(angles);
-    plot([x;-x], [y;-y], 'Linewidth', 2, 'color', linecolor)
-elseif length(ratio) == 3
+    h = plot([x;-x], [y;-y], 'Linewidth', 2, 'color', linecolor);
+elseif length(ratio) == 2
     error('3D not implemented yet')
 end
 ax.ColorOrderIndex = mod(colorindex,7)+1;
+set(h(2:end), 'Handlevisibility', 'off')
 end
