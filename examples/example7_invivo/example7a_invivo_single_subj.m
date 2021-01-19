@@ -43,7 +43,7 @@ load('examples/example7_invivo/example_params_68_153_306.mat', 'Mat_size', 'NFra
 
 clear SILVER_twix kdata_file sens_file;
 
-savename = ['examples/precalculated/silver_' strrep(num2str(S),' ', '_') '.mat'];
+savename = ['examples/precalculated_EP/silver_' strrep(num2str(S),' ', '_') '.mat'];
 if ~exist(savename, 'file')
     ratio = SILVER_2D(S,'electrostatic_potential',savename) ;
 else

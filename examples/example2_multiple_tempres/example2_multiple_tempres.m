@@ -22,7 +22,7 @@ S = {S1,S2,S3,S4,S5,S6,S7};
 
 %% 2. Do SILVER optimization for those ranges, electrostatic potential cost
 for s = S
-   savename = ['examples/precalculated/silver_' strrep(num2str(s{:}),' ', '_') '.mat'];
+   savename = ['examples/precalculated_EP/silver_' strrep(num2str(s{:}),' ', '_') '.mat'];
    if ~exist(savename, 'file')
         SILVER_2D(s{:},'electrostatic_potential',savename) ;
    end
@@ -38,7 +38,7 @@ if ~exist(savename, 'file')
     n = 0;
     for s = S
         n = n+1;
-        load(['examples/precalculated/silver_' strrep(num2str(s{:}),' ', '_') '.mat'],'eff_SILVER','ratio')
+        load(['examples/precalculated_EP/silver_' strrep(num2str(s{:}),' ', '_') '.mat'],'eff_SILVER','ratio')
             min_eff_SILVER(n) = (min(eff_SILVER));
             min_eff_GR(n) = min(efficiency_range(gr2D,s{:},'electrostatic_potential'));
             prcnt_increase(n) = ((min_eff_SILVER(n)/min_eff_GR(n))-1)*100;

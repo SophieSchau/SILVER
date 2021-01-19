@@ -14,7 +14,7 @@ S = [16,32,48];
 
 %% 2. Do SILVER optimization for that range
 
-savename = ['examples/precalculated/silver_' strrep(num2str(S),' ', '_') '.mat'];
+savename = ['examples/precalculated_EP/silver_' strrep(num2str(S),' ', '_') '.mat'];
 if ~exist(savename, 'file')
     ratio = SILVER_2D(S,'electrostatic_potential',savename) ;
 else

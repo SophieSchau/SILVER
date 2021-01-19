@@ -32,7 +32,7 @@ Ntrials = length(S)/length(N);
 %% 2. Do SILVER optimization for those sets
 
 for s = S
-   savename = ['examples/precalculated/silver_' strrep(num2str(s{:}),' ', '_') '.mat'];
+   savename = ['examples/precalculated_EP/silver_' strrep(num2str(s{:}),' ', '_') '.mat'];
    if ~exist(savename, 'file')
         SILVER_2D(s{:},'electrostatic_potential',savename) ;
    end
@@ -45,7 +45,7 @@ for m = 1:length(S)
     savename = [savefolder 'example5_gfactor_SILVER_' strrep(num2str(S{m}),' ', '_') '_result.mat'];
     if ~exist(savename, 'file')
         for n = 1:length(S{m})
-            load(['examples/precalculated/silver_' strrep(num2str(S{m}),' ', '_') '.mat'],'ratio');
+            load(['examples/precalculated_EP/silver_' strrep(num2str(S{m}),' ', '_') '.mat'],'ratio');
             k_SILVER= reshape(sqrt(2)*gen_radial_traj((0:S{m}(n)-1)*ratio*pi, 128, [])./pi,[],2);
             SILVER_g{n} = gFactor(psens,k_SILVER);
         end

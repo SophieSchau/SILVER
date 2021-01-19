@@ -16,7 +16,7 @@ R = 1:100;
 %% 2. Do SILVER optimization for those ranges, electrostatic potential cost
 for m = M
     for r = R
-       savename = ['examples/precalculated/silver_' num2str(m) 'to' num2str(m+r) '.mat'];
+       savename = ['examples/precalculated_EP/silver_' num2str(m) 'to' num2str(m+r) '.mat'];
        if ~exist(savename, 'file')
             SILVER_2D(m:m+r,'electrostatic_potential', savename) ;
        end
@@ -32,7 +32,7 @@ if ~exist(savename, 'file')
     for w = 1:length(M)
         m = M(w);
         for r = R
-            load(['examples/precalculated/silver_' num2str(m) 'to' num2str(m+r) '.mat'],'eff_SILVER','ratio')
+            load(['examples/precalculated_EP/silver_' num2str(m) 'to' num2str(m+r) '.mat'],'eff_SILVER','ratio')
             min_eff_SILVER(w,r) = (min(eff_SILVER));
             min_eff_GR(w,r) = min(efficiency_range(gr2D,m:m+r,'electrostatic_potential'));
             prcnt_increase(w,r) = ((min_eff_SILVER(w,r)/min_eff_GR(w,r))-1)*100;

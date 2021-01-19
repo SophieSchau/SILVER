@@ -17,7 +17,7 @@ S = {S1,S2};
 
 %% 2. Do SILVER optimization for those ranges
 for s = S
-   savename = ['examples/precalculated/silver_' strrep(num2str(s{:}),' ', '_') '.mat'];
+   savename = ['examples/precalculated_EP/silver_' strrep(num2str(s{:}),' ', '_') '.mat'];
    if ~exist(savename, 'file')
         SILVER_2D(s{:},'electrostatic_potential',savename) ;
    end
@@ -44,7 +44,7 @@ for s = S
     end
     
     
-    load(['examples/precalculated/silver_' strrep(num2str(s{:}),' ', '_') '.mat'], 'ratio','eff_SILVER')
+    load(['examples/precalculated_EP/silver_' strrep(num2str(s{:}),' ', '_') '.mat'], 'ratio','eff_SILVER')
     eff_SILVER_all = efficiency_range(ratio,viz_range,'electrostatic_potential');
     h = plot(viz_range,eff_SILVER_all,'x-','Linewidth', 3, 'markersize', 5, 'color',c_map(n,:) );
     lg{n} = ['SILVER: S = \{' num2str(s{:}) '\}, \alpha = ' num2str(ratio)];
