@@ -102,31 +102,31 @@ if ~exist(savename,'file')
         % linear recon
         kdata_Uniform_presub = kdata_Uniform{n}(:,:,2,:)-kdata_Uniform{n}(:,:,1,:);
         recon_l_Uniform{n} = fista(E_UNIFORM{n}, kdata_Uniform_presub, 1, 0.000000, ...
-        [Mat_size, Mat_size, 1,size(kdata_Uniform{n},2)], 100, 0.5);
+        [Mat_size, Mat_size, 1,size(kdata_Uniform{n},2)], 30, 0.5);
     
         kdata_GR_presub = kdata_GR{n}(:,:,2,:)-kdata_GR{n}(:,:,1,:);
         recon_l_GR{n} = fista(E_GR{n}, kdata_GR_presub, 1, 0.000000, ...
-        [Mat_size, Mat_size, 1,size(kdata_Uniform{n},2)], 100, 0.5);
+        [Mat_size, Mat_size, 1,size(kdata_Uniform{n},2)], 30, 0.5);
     
         kdata_SILVER_presub = kdata_SILVER{n}(:,:,2,:)-kdata_SILVER{n}(:,:,1,:);
         recon_l_SILVER{n} = fista(E_SILVER{n}, kdata_SILVER_presub, 1, 0.000000, ...
-        [Mat_size, Mat_size, 1,size(kdata_Uniform{n},2)], 100, 0.5);
+        [Mat_size, Mat_size, 1,size(kdata_Uniform{n},2)], 30, 0.5);
     
     
-        % non-linear recon
-        kdata_Uniform_presub = kdata_Uniform{n}(:,:,2,:)-kdata_Uniform{n}(:,:,1,:);
-        recon_nl_Uniform{n} = fista(E_UNIFORM{n}, kdata_Uniform_presub, 1, 0.00001, ...
-        [Mat_size, Mat_size, 1,size(kdata_Uniform{n},2)], 100, 0.5);
-    
-        kdata_GR_presub = kdata_GR{n}(:,:,2,:)-kdata_GR{n}(:,:,1,:);
-        recon_nl_GR{n} = fista(E_GR{n}, kdata_GR_presub, 1, 0.00001, ...
-        [Mat_size, Mat_size, 1,size(kdata_Uniform{n},2)], 100, 0.5);
-    
-        kdata_SILVER_presub = kdata_SILVER{n}(:,:,2,:)-kdata_SILVER{n}(:,:,1,:);
-        recon_nl_SILVER{n} = fista(E_SILVER{n}, kdata_SILVER_presub, 1, 0.00001, ...
-        [Mat_size, Mat_size, 1,size(kdata_Uniform{n},2)], 100, 0.5);
+%         % non-linear recon
+%         kdata_Uniform_presub = kdata_Uniform{n}(:,:,2,:)-kdata_Uniform{n}(:,:,1,:);
+%         recon_nl_Uniform{n} = fista(E_UNIFORM{n}, kdata_Uniform_presub, 1, 0.00001, ...
+%         [Mat_size, Mat_size, 1,size(kdata_Uniform{n},2)], 10000, 0.5,0.01);
+%     
+%         kdata_GR_presub = kdata_GR{n}(:,:,2,:)-kdata_GR{n}(:,:,1,:);
+%         recon_nl_GR{n} = fista(E_GR{n}, kdata_GR_presub, 1, 0.00001, ...
+%         [Mat_size, Mat_size, 1,size(kdata_Uniform{n},2)], 10000, 0.5,0.01);
+%     
+%         kdata_SILVER_presub = kdata_SILVER{n}(:,:,2,:)-kdata_SILVER{n}(:,:,1,:);
+%         recon_nl_SILVER{n} = fista(E_SILVER{n}, kdata_SILVER_presub, 1, 0.00001, ...
+%         [Mat_size, Mat_size, 1,size(kdata_Uniform{n},2)], 10000, 0.5,0.01);
     end
-    save(savename, 'recon_l_SILVER', 'recon_l_GR', 'recon_l_Uniform', 'recon_nl_SILVER', 'recon_nl_GR', 'recon_nl_Uniform')
+    save(savename, 'recon_l_SILVER', 'recon_l_GR', 'recon_l_Uniform');%, 'recon_nl_SILVER', 'recon_nl_GR', 'recon_nl_Uniform')
 end   
  %% 4. Compare reconstructions visually
 figure(1)
@@ -171,46 +171,46 @@ savefig(['examples/example7_invivo/subj' num2str(Subj) '/example7_invivo_linear_
 saveas(gcf,['examples/example7_invivo/subj' num2str(Subj) '/example7_invivo_linear_recon_subj_' num2str(Subj) '_result.tiff'])
 
 
-figure(2)
-for n = 1:length(S)
-    subplot(length(S),3,n*3-2)
-    recon = flipud(abs(mean(recon_nl_Uniform{n}(:,:,:,:),4)));
-    imagesc(recon)
-    cl = caxis;
-    caxis([0,0.5*max(cl)])
-    axis image
-    axis off
-    if n ==1
-        text(Mat_size/2,-10,'UNIFORM', 'fontsize', 20,'HorizontalAlignment','center')
-    end
-    text(-2,Mat_size/2, [num2str(S(n)) ' spokes'], 'fontsize', 20,'HorizontalAlignment','right')
-    
-    
-    subplot(length(S),3,n*3-1)
-    recon = flipud(abs(mean(recon_nl_GR{n}(:,:,:,:),4)));
-    imagesc(recon)
-    caxis([0,0.5*max(cl)])
-    axis image
-    axis off
-    if n ==1
-        text(Mat_size/2,-10,'GOLDEN RATIO', 'fontsize', 20,'HorizontalAlignment','center')
-    end
-    
-    subplot(length(S),3,n*3)
-    recon = flipud(abs(mean(recon_nl_SILVER{n}(:,:,:,:),4)));
-    imagesc(recon)
-    caxis([0,0.5*max(cl)])
-    axis image
-    axis off
-    if n ==1
-        text(Mat_size/2,-10,'SILVER', 'fontsize', 20,'HorizontalAlignment','center')
-    end
-    
-end
-colormap('gray')
-set(gcf,'Position', [263 1 827 797])
-savefig(['examples/example7_invivo/subj' num2str(Subj) '/example7_invivo_nonlinear_recon_subj_' num2str(Subj) '_result.fig'])
-saveas(gcf,['examples/example7_invivo/subj' num2str(Subj) '/example7_invivo_nonlinear_recon_subj_' num2str(Subj) '_result.tiff'])
+% figure(2)
+% for n = 1:length(S)
+%     subplot(length(S),3,n*3-2)
+%     recon = flipud(abs(mean(recon_nl_Uniform{n}(:,:,:,:),4)));
+%     imagesc(recon)
+%     cl = caxis;
+%     caxis([0,0.5*max(cl)])
+%     axis image
+%     axis off
+%     if n ==1
+%         text(Mat_size/2,-10,'UNIFORM', 'fontsize', 20,'HorizontalAlignment','center')
+%     end
+%     text(-2,Mat_size/2, [num2str(S(n)) ' spokes'], 'fontsize', 20,'HorizontalAlignment','right')
+%     
+%     
+%     subplot(length(S),3,n*3-1)
+%     recon = flipud(abs(mean(recon_nl_GR{n}(:,:,:,:),4)));
+%     imagesc(recon)
+%     caxis([0,0.5*max(cl)])
+%     axis image
+%     axis off
+%     if n ==1
+%         text(Mat_size/2,-10,'GOLDEN RATIO', 'fontsize', 20,'HorizontalAlignment','center')
+%     end
+%     
+%     subplot(length(S),3,n*3)
+%     recon = flipud(abs(mean(recon_nl_SILVER{n}(:,:,:,:),4)));
+%     imagesc(recon)
+%     caxis([0,0.5*max(cl)])
+%     axis image
+%     axis off
+%     if n ==1
+%         text(Mat_size/2,-10,'SILVER', 'fontsize', 20,'HorizontalAlignment','center')
+%     end
+%     
+% end
+% colormap('gray')
+% set(gcf,'Position', [263 1 827 797])
+% savefig(['examples/example7_invivo/subj' num2str(Subj) '/example7_invivo_nonlinear_recon_subj_' num2str(Subj) '_result.fig'])
+% saveas(gcf,['examples/example7_invivo/subj' num2str(Subj) '/example7_invivo_nonlinear_recon_subj_' num2str(Subj) '_result.tiff'])
 
 %% 5. Quantify reconstruction quality
 % SNR measurement
@@ -222,38 +222,38 @@ for n = 1:length(S)
     S_uniform(n) = mean(abs(recon_l_Uniform{n}(repmat(mask_signal{Subj},[1,1,1,size(recon_l_Uniform{n},4)]))));
     N_uniform(n) = std(abs(recon_l_Uniform{n}(repmat(mask_noise{Subj},[1,1,1,size(recon_l_Uniform{n},4)]))));
     SNR_uniform(n) = S_uniform(n)/N_uniform(n);
-    SSIM_uniform(n) = ssim(squeeze(abs(GT./max(GT(:)))),squeeze(abs(mean(recon_nl_Uniform{n},4)./max(mean(recon_nl_Uniform{n},4),[],'all'))));
+%     SSIM_uniform(n) = ssim(squeeze(abs(GT./max(GT(:)))),squeeze(abs(mean(recon_nl_Uniform{n},4)./max(mean(recon_nl_Uniform{n},4),[],'all'))));
 
     
     S_GR(n) = mean(abs(recon_l_GR{n}(repmat(mask_signal{Subj},[1,1,1,size(recon_l_GR{n},4)]))));
     N_GR(n) = std(abs(recon_l_GR{n}(repmat(mask_noise{Subj},[1,1,1,size(recon_l_GR{n},4)]))));
     SNR_GR(n) = S_GR(n)/N_GR(n);
-    SSIM_GR(n) = ssim(squeeze(abs(GT./max(GT(:)))),squeeze(abs(mean(recon_nl_GR{n},4)./max(mean(recon_nl_GR{n},4),[],'all'))));
+%     SSIM_GR(n) = ssim(squeeze(abs(GT./max(GT(:)))),squeeze(abs(mean(recon_nl_GR{n},4)./max(mean(recon_nl_GR{n},4),[],'all'))));
 
     
     S_SILVER(n) = mean(abs(recon_l_SILVER{n}(repmat(mask_signal{Subj},[1,1,1,size(recon_l_SILVER{n},4)]))));
     N_SILVER(n) = std(abs(recon_l_SILVER{n}(repmat(mask_noise{Subj},[1,1,1,size(recon_l_SILVER{n},4)]))));
     SNR_SILVER(n) = S_SILVER(n)/N_SILVER(n);
-    SSIM_SILVER(n) = ssim(squeeze(abs(GT./max(GT(:)))),squeeze(abs(mean(recon_nl_SILVER{n},4)./max(mean(recon_nl_SILVER{n},4),[],'all'))));
+%     SSIM_SILVER(n) = ssim(squeeze(abs(GT./max(GT(:)))),squeeze(abs(mean(recon_nl_SILVER{n},4)./max(mean(recon_nl_SILVER{n},4),[],'all'))));
 
     
     
-    S_nl_uniform(n) = mean(abs(recon_nl_Uniform{n}(repmat(mask_signal{Subj},[1,1,1,size(recon_nl_Uniform{n},4)]))));
-    N_nl_uniform(n) = std(abs(recon_nl_Uniform{n}(repmat(mask_noise{Subj},[1,1,1,size(recon_nl_Uniform{n},4)]))));
-    SNR_nl_uniform(n) = S_nl_uniform(n)/N_nl_uniform(n);
-    SSIM_l_uniform(n) = ssim(squeeze(abs(GT./max(GT(:)))),squeeze(abs(mean(recon_l_Uniform{n},4)./max(mean(recon_l_Uniform{n},4),[],'all'))));
-
-    
-    S_nl_GR(n) = mean(abs(recon_nl_GR{n}(repmat(mask_signal{Subj},[1,1,1,size(recon_nl_GR{n},4)]))));
-    N_nl_GR(n) = std(abs(recon_nl_GR{n}(repmat(mask_noise{Subj},[1,1,1,size(recon_nl_GR{n},4)]))));
-    SNR_nl_GR(n) = S_nl_GR(n)/N_nl_GR(n);
-    SSIM_l_GR(n) = ssim(squeeze(abs(GT./max(GT(:)))),squeeze(abs(mean(recon_l_GR{n},4)./max(mean(recon_l_GR{n},4),[],'all'))));
-
-    
-    S_nl_SILVER(n) = mean(abs(recon_nl_SILVER{n}(repmat(mask_signal{Subj},[1,1,1,size(recon_nl_SILVER{n},4)]))));
-    N_nl_SILVER(n) = std(abs(recon_nl_SILVER{n}(repmat(mask_noise{Subj},[1,1,1,size(recon_nl_SILVER{n},4)]))));
-    SNR_nl_SILVER(n) = S_nl_SILVER(n)/N_nl_SILVER(n);
-    SSIM_l_SILVER(n) = ssim(squeeze(abs(GT./max(GT(:)))),squeeze(abs(mean(recon_l_SILVER{n},4)./max(mean(recon_l_SILVER{n},4),[],'all'))));
+%     S_nl_uniform(n) = mean(abs(recon_nl_Uniform{n}(repmat(mask_signal{Subj},[1,1,1,size(recon_nl_Uniform{n},4)]))));
+%     N_nl_uniform(n) = std(abs(recon_nl_Uniform{n}(repmat(mask_noise{Subj},[1,1,1,size(recon_nl_Uniform{n},4)]))));
+%     SNR_nl_uniform(n) = S_nl_uniform(n)/N_nl_uniform(n);
+%     SSIM_l_uniform(n) = ssim(squeeze(abs(GT./max(GT(:)))),squeeze(abs(mean(recon_l_Uniform{n},4)./max(mean(recon_l_Uniform{n},4),[],'all'))));
+% 
+%     
+%     S_nl_GR(n) = mean(abs(recon_nl_GR{n}(repmat(mask_signal{Subj},[1,1,1,size(recon_nl_GR{n},4)]))));
+%     N_nl_GR(n) = std(abs(recon_nl_GR{n}(repmat(mask_noise{Subj},[1,1,1,size(recon_nl_GR{n},4)]))));
+%     SNR_nl_GR(n) = S_nl_GR(n)/N_nl_GR(n);
+%     SSIM_l_GR(n) = ssim(squeeze(abs(GT./max(GT(:)))),squeeze(abs(mean(recon_l_GR{n},4)./max(mean(recon_l_GR{n},4),[],'all'))));
+% 
+%     
+%     S_nl_SILVER(n) = mean(abs(recon_nl_SILVER{n}(repmat(mask_signal{Subj},[1,1,1,size(recon_nl_SILVER{n},4)]))));
+%     N_nl_SILVER(n) = std(abs(recon_nl_SILVER{n}(repmat(mask_noise{Subj},[1,1,1,size(recon_nl_SILVER{n},4)]))));
+%     SNR_nl_SILVER(n) = S_nl_SILVER(n)/N_nl_SILVER(n);
+%     SSIM_l_SILVER(n) = ssim(squeeze(abs(GT./max(GT(:)))),squeeze(abs(mean(recon_l_SILVER{n},4)./max(mean(recon_l_SILVER{n},4),[],'all'))));
 
     
 end
@@ -324,7 +324,7 @@ h.AlphaData = 0.5;
 hh = imagesc(cat(3,zeros(192), zeros(192), flipud(mask_noise{Subj})));
 hh.AlphaData = 0.5;
 
-title(['Subj ' num2str(Subj)], 'Fontsize', 20)
+title(['Subject ' num2str(Subj)], 'Fontsize', 20)
 set(gcf, 'Position', [440 84 484 455])
 savefig(['examples/example7_invivo/subj' num2str(Subj) '/example7_invivo_subj_' num2str(Subj) 'mask.fig'])
 saveas(gcf,['examples/example7_invivo/subj' num2str(Subj) '/example7_invivo_subj_' num2str(Subj) 'mask.tiff'])
