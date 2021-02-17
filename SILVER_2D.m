@@ -95,9 +95,9 @@ function [ratio] = SILVER_2D(window_sizes, efficiency_metric, savefilename, max_
             end
         end
 
-    
+    end
 %     eff_Golden = efficiency_range(gr2D,window_sizes,efficiency_metric);
-%     eff_SILVER  = efficiency_range(ratio,window_sizes,efficiency_metric);
+    eff_SILVER  = efficiency_range(ratio,window_sizes,efficiency_metric);
 %     
 %     fprintf(1,'Golden Angle: %g, Min SNR-Efficiency: %g\n',180*gr2D,min(eff_Golden));
 %     fprintf(1,'SILVER Angle: %g, Min SNR-Efficiency: %g\n',rad2deg(ratio*pi),min(eff_SILVER));
