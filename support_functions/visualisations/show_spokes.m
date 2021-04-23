@@ -18,7 +18,7 @@ if length(ratio) == 1
     angles = mod(spoke_numbers*ratio,1)*pi;
     x = cos(angles);
     y = sin(angles);
-    h = plot([x;-x], [y;-y], 'Linewidth', 2, 'color', linecolor);
+    h = plot([x;-x], [y;-y], 'Linewidth', 0.5, 'color', linecolor);
 elseif length(ratio) == 2
     error('3D not implemented yet')
 end
