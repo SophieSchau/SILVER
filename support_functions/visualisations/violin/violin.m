@@ -1,6 +1,7 @@
 %__________________________________________________________________________
 % violin.m - Simple violin plot using matlab default kernel density estimation
-% Last update: 10/2015
+% Last update: 4/2021
+% * 'side' option added by Sophie Schauman (sophie.schauman@ndcn.ox.ac.uk)
 %__________________________________________________________________________
 % This function creates violin plots based on kernel density estimation
 % using ksdensity with default settings. Please be careful when comparing pdfs
@@ -37,6 +38,8 @@
 %            c) if bw is empty (default []), the optimal bandwidth for
 %            gaussian kernel is used (see Matlab documentation for
 %            ksdensity()
+% side:      Side of violin. (default 'both'); set to 'both', 'left' or
+%            'right'
 %
 % OUTPUT
 %
@@ -98,6 +101,7 @@ plotlegend=1;
 plotmean=1;
 plotmedian=1;
 x = [];
+side = 'both';
 %_____________________
 
 %convert single columns to cells:
@@ -150,6 +154,10 @@ end
 if isempty(find(strcmp(varargin,'x')))==0
     x = varargin{find(strcmp(varargin,'x'))+1};
 end
+if isempty(find(strcmp(varargin,'side')))==0
+    side = varargin{find(strcmp(varargin,'side'))+1};
+end
+
 %%
 if size(fc,1)==1
     fc=repmat(fc,size(Y,2),1);
@@ -194,37 +202,106 @@ else
 end
 
 %% Plot the violins
-i=1;
-for i=i:size(Y,2)
-    if isempty(lc) == 1
-        if setX == 0
-            h(i)=fill([F(:,i)+i;flipud(i-F(:,i))],[U(:,i);flipud(U(:,i))],fc(i,:),'FaceAlpha',alp,'EdgeColor','none');
-        else
-            h(i)=fill([F(:,i)+x(i);flipud(x(i)-F(:,i))],[U(:,i);flipud(U(:,i))],fc(i,:),'FaceAlpha',alp,'EdgeColor','none');
+switch side
+    case 'both'
+        i=1;
+        for i=i:size(Y,2)
+            if isempty(lc) == 1
+                if setX == 0
+                    h(i)=fill([F(:,i)+i;flipud(i-F(:,i))],[U(:,i);flipud(U(:,i))],fc(i,:),'FaceAlpha',alp,'EdgeColor','none');
+                else
+                    h(i)=fill([F(:,i)+x(i);flipud(x(i)-F(:,i))],[U(:,i);flipud(U(:,i))],fc(i,:),'FaceAlpha',alp,'EdgeColor','none');
+                end
+            else
+                if setX == 0
+                    h(i)=fill([F(:,i)+i;flipud(i-F(:,i))],[U(:,i);flipud(U(:,i))],fc(i,:),'FaceAlpha',alp,'EdgeColor',lc);
+                else
+                    h(i)=fill([F(:,i)+x(i);flipud(x(i)-F(:,i))],[U(:,i);flipud(U(:,i))],fc(i,:),'FaceAlpha',alp,'EdgeColor',lc);
+                end
+            end
+            hold on
+            if setX == 0
+                if plotmean == 1
+                    p(1)=plot([interp1(U(:,i),F(:,i)+i,MX(:,i)), interp1(flipud(U(:,i)),flipud(i-F(:,i)),MX(:,i)) ],[MX(:,i) MX(:,i)],mc,'LineWidth',2);
+                end
+                if plotmedian == 1
+                    p(2)=plot([interp1(U(:,i),F(:,i)+i,MED(:,i)), interp1(flipud(U(:,i)),flipud(i-F(:,i)),MED(:,i)) ],[MED(:,i) MED(:,i)],medc,'LineWidth',2);
+                end
+            elseif setX == 1
+                if plotmean == 1
+                    p(1)=plot([interp1(U(:,i),F(:,i)+i,MX(:,i))+x(i)-i, interp1(flipud(U(:,i)),flipud(i-F(:,i)),MX(:,i))+x(i)-i],[MX(:,i) MX(:,i)],mc,'LineWidth',2);
+                end
+                if plotmedian == 1
+                    p(2)=plot([interp1(U(:,i),F(:,i)+i,MED(:,i))+x(i)-i, interp1(flipud(U(:,i)),flipud(i-F(:,i)),MED(:,i))+x(i)-i],[MED(:,i) MED(:,i)],medc,'LineWidth',2);
+                end
+            end
         end
-    else
-        if setX == 0
-            h(i)=fill([F(:,i)+i;flipud(i-F(:,i))],[U(:,i);flipud(U(:,i))],fc(i,:),'FaceAlpha',alp,'EdgeColor',lc);
-        else
-            h(i)=fill([F(:,i)+x(i);flipud(x(i)-F(:,i))],[U(:,i);flipud(U(:,i))],fc(i,:),'FaceAlpha',alp,'EdgeColor',lc);
+    case 'left'
+        i=1;
+        for i=i:size(Y,2)
+            if isempty(lc) == 1
+                if setX == 0
+                    h(i)=fill([i*ones(size(F(:,i))),flipud(i-F(:,i))],[U(:,i);flipud(U(:,i))],fc(i,:),'FaceAlpha',alp,'EdgeColor','none');
+                else
+                    h(i)=fill([x(i)*ones(size(F(:,i)));flipud(x(i)-F(:,i))],[U(:,i);flipud(U(:,i))],fc(i,:),'FaceAlpha',alp,'EdgeColor','none');
+                end
+            else
+                if setX == 0
+                    h(i)=fill([i*ones(size(F(:,i)));flipud(i-F(:,i))],[U(:,i);flipud(U(:,i))],fc(i,:),'FaceAlpha',alp,'EdgeColor',lc);
+                else
+                    h(i)=fill([x(i)*ones(size(F(:,i)));flipud(x(i)-F(:,i))],[U(:,i);flipud(U(:,i))],fc(i,:),'FaceAlpha',alp,'EdgeColor',lc);
+                end
+            end
+            hold on
+            if setX == 0
+                if plotmean == 1
+                    p(1)=plot([interp1(U(:,i),i*ones(size(F(:,i))),MX(:,i)), interp1(flipud(U(:,i)),flipud(i-F(:,i)),MX(:,i)) ],[MX(:,i) MX(:,i)],mc,'LineWidth',2);
+                end
+                if plotmedian == 1
+                    p(2)=plot([interp1(U(:,i),i*ones(size(F(:,i))),MED(:,i)), interp1(flipud(U(:,i)),flipud(i-F(:,i)),MED(:,i)) ],[MED(:,i) MED(:,i)],medc,'LineWidth',2);
+                end
+            elseif setX == 1
+                if plotmean == 1
+                    p(1)=plot([interp1(U(:,i),i*ones(size(F(:,i))),MX(:,i))+x(i)-i, interp1(flipud(U(:,i)),flipud(i-F(:,i)),MX(:,i))+x(i)-i],[MX(:,i) MX(:,i)],mc,'LineWidth',2);
+                end
+                if plotmedian == 1
+                    p(2)=plot([interp1(U(:,i),i*ones(size(F(:,i))),MED(:,i))+x(i)-i, interp1(flipud(U(:,i)),flipud(i-F(:,i)),MED(:,i))+x(i)-i],[MED(:,i) MED(:,i)],medc,'LineWidth',2);
+                end
+            end
         end
-    end
-    hold on
-    if setX == 0
-        if plotmean == 1
-            p(1)=plot([interp1(U(:,i),F(:,i)+i,MX(:,i)), interp1(flipud(U(:,i)),flipud(i-F(:,i)),MX(:,i)) ],[MX(:,i) MX(:,i)],mc,'LineWidth',2);
+    case 'right'
+        i=1;
+        for i=i:size(Y,2)
+            if isempty(lc) == 1
+                if setX == 0
+                    h(i)=fill([F(:,i)+i;i*ones(size(F(:,i)))],[U(:,i);flipud(U(:,i))],fc(i,:),'FaceAlpha',alp,'EdgeColor','none');
+                else
+                    h(i)=fill([F(:,i)+x(i);x(i)*ones(size(F(:,i)))],[U(:,i);flipud(U(:,i))],fc(i,:),'FaceAlpha',alp,'EdgeColor','none');
+                end
+            else
+                if setX == 0
+                    h(i)=fill([F(:,i)+i;i*ones(size(F(:,i)))],[U(:,i);flipud(U(:,i))],fc(i,:),'FaceAlpha',alp,'EdgeColor',lc);
+                else
+                    h(i)=fill([F(:,i)+x(i);x(i)*ones(size(F(:,i)))],[U(:,i);flipud(U(:,i))],fc(i,:),'FaceAlpha',alp,'EdgeColor',lc);
+                end
+            end
+            hold on
+            if setX == 0
+                if plotmean == 1
+                    p(1)=plot([interp1(U(:,i),F(:,i)+i,MX(:,i)), interp1(flipud(U(:,i)),i*ones(size(F(:,i))),MX(:,i)) ],[MX(:,i) MX(:,i)],mc,'LineWidth',2);
+                end
+                if plotmedian == 1
+                    p(2)=plot([interp1(U(:,i),F(:,i)+i,MED(:,i)), interp1(flipud(U(:,i)),i*ones(size(F(:,i))),MED(:,i)) ],[MED(:,i) MED(:,i)],medc,'LineWidth',2);
+                end
+            elseif setX == 1
+                if plotmean == 1
+                    p(1)=plot([interp1(U(:,i),F(:,i)+i,MX(:,i))+x(i)-i, interp1(flipud(U(:,i)),i*ones(size(F(:,i))),MX(:,i))+x(i)-i],[MX(:,i) MX(:,i)],mc,'LineWidth',2);
+                end
+                if plotmedian == 1
+                    p(2)=plot([interp1(U(:,i),F(:,i)+i,MED(:,i))+x(i)-i, interp1(flipud(U(:,i)),i*ones(size(F(:,i))),MED(:,i))+x(i)-i],[MED(:,i) MED(:,i)],medc,'LineWidth',2);
+                end
+            end
         end
-        if plotmedian == 1
-            p(2)=plot([interp1(U(:,i),F(:,i)+i,MED(:,i)), interp1(flipud(U(:,i)),flipud(i-F(:,i)),MED(:,i)) ],[MED(:,i) MED(:,i)],medc,'LineWidth',2);
-        end
-    elseif setX == 1
-        if plotmean == 1
-            p(1)=plot([interp1(U(:,i),F(:,i)+i,MX(:,i))+x(i)-i, interp1(flipud(U(:,i)),flipud(i-F(:,i)),MX(:,i))+x(i)-i],[MX(:,i) MX(:,i)],mc,'LineWidth',2);
-        end
-        if plotmedian == 1
-            p(2)=plot([interp1(U(:,i),F(:,i)+i,MED(:,i))+x(i)-i, interp1(flipud(U(:,i)),flipud(i-F(:,i)),MED(:,i))+x(i)-i],[MED(:,i) MED(:,i)],medc,'LineWidth',2);
-        end
-    end
 end
 
 %% Add legend if requested

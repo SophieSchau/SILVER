@@ -46,7 +46,7 @@ colormap hot
 caxis([0,50])
 colorbar
 
-text(-5, 15, '10 spokes/frame', 'Rotation', 90, 'FontSize', 16, 'HorizontalAlignment', 'center');
+text(-5, 15, 'Navigator - 10 spokes/frame', 'Rotation', 90, 'FontSize', 16, 'HorizontalAlignment', 'center');
 text(15,-3, 'Golden ratio', 'FontSize',16, 'HorizontalAlignment', 'center'); 
 text(-5*2,-3, '(A)', 'FontSize',16, 'HorizontalAlignment', 'center'); 
 
@@ -76,7 +76,7 @@ caxis([0,50])
 colorbar
 
 text(50,-10, 'Golden ratio', 'FontSize',16, 'HorizontalAlignment', 'center'); 
-text(-17, 50, '46 spokes/frame', 'Rotation', 90, 'FontSize', 16, 'HorizontalAlignment', 'center');
+text(-17, 50, 'Imaging - 46 spokes/frame', 'Rotation', 90, 'FontSize', 16, 'HorizontalAlignment', 'center');
 text(-17*2,-10, '(B)', 'FontSize',16, 'HorizontalAlignment', 'center'); 
 
 subplot(2,3,5)

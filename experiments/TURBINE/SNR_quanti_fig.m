@@ -34,10 +34,10 @@ function [] = SNR_quanti_fig(sensmask_lowres, sensmask_highres, slices, kdata_fo
             N_U_sim = cat(2,N_U_sim,std(recon_n_U,[],4));
         end
   
-        subplot(length(window_sizes)+1,1,n)
-        [h1,L1] = violin([N_U{n}(sensmask)./median(N_U{n}(sensmask)) N_GR{n}(sensmask)./median(N_U{n}(sensmask)) N_SILVER{n}(sensmask)./median(N_U{n}(sensmask)) ], 'mc', [], 'medc', 'k', 'facecolor', [0.1 0.1 0.1;0.1 0.1 0.1;0.1 0.1 0.1], 'side', 'left');
+        subplot(length(window_sizes),4,(n*4-3):(n*4-1))
+        [h1,L1] = violin([N_U{n}(sensmask)./median(N_U{n}(sensmask)) N_GR{n}(sensmask)./median(N_U{n}(sensmask)) N_SILVER{n}(sensmask)./median(N_U{n}(sensmask)) ], 'mc', [], 'medc', 'k', 'facecolor', [0.1 0.1 0.1;0.1 0.1 0.1;0.1 0.1 0.1], 'side', 'left', 'bw', 0.1);
         hold on
-        [h2,L2] = violin([N_U_sim(sensmask)./median(N_U_sim(sensmask)) N_GR_sim(sensmask)./median(N_U_sim(sensmask)) N_S_sim(sensmask)./median(N_U_sim(sensmask)) ], 'mc', [], 'medc', 'k', 'facecolor', [0.9 0.9 0.9;0.9 0.9 0.9;0.9 0.9 0.9], 'side', 'right');
+        [h2,L2] = violin([N_U_sim(sensmask)./median(N_U_sim(sensmask)) N_GR_sim(sensmask)./median(N_U_sim(sensmask)) N_S_sim(sensmask)./median(N_U_sim(sensmask)) ], 'mc', [], 'medc', 'k', 'facecolor', [0.9 0.9 0.9;0.9 0.9 0.9;0.9 0.9 0.9], 'side', 'right','bw', 0.1);
         title(['N = ' num2str(window_sizes(n))])
         xticks(1:3)
         xticklabels({'Uniform', 'GR', 'SILVER'})
@@ -58,10 +58,10 @@ function [] = SNR_quanti_fig(sensmask_lowres, sensmask_highres, slices, kdata_fo
         title(['N = ' num2str(window_sizes(n)) ' ' labl], 'FontSize', 12)
         ylabel('noise, normalized', 'FontSize',12)
         axis([xlim*1.15 0 3]) 
-        set(gcf, 'Position', [1 1 691 804])
+        set(gcf, 'Position', [1 1 904 804])
         legend('off')
     end
-    subplot(length(window_sizes)+1,1,n+1)
+    subplot(length(window_sizes),4,4)
     ax = gca;
     axis off
     

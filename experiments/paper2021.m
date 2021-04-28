@@ -196,9 +196,9 @@ imagesc(cat(2, A,B));
 axis image 
 axis off
 set(gca, 'Position', [0 0 1 1])
-set(gcf, 'Position', [1 7 1237 798])
-annotation('textbox',[0.1 0.88 0.1 0.1], 'String', '(A)', 'LineStyle', 'none', 'fontsize', 16)
-annotation('textbox',[0.45 0.88 0.1 0.1], 'String', '(B)', 'LineStyle', 'none','fontsize', 16)
+set(gcf, 'Position', [1 7 1214 798])
+annotation('textbox',[0.05 0.88 0.1 0.1], 'String', '(A)', 'LineStyle', 'none', 'fontsize', 16)
+annotation('textbox',[0.3 0.88 0.1 0.1], 'String', '(B)', 'LineStyle', 'none','fontsize', 16)
 
 saveas(gcf, 'experiments/data/experiment_results/paper2021/figures/Figure7ab.tiff')
 
@@ -272,15 +272,15 @@ imagesc(cat(2, A,B));
 axis image 
 axis off
 set(gca, 'Position', [0 0 1 1])
-set(gcf, 'Position', [1 7 1237 798])
-annotation('textbox',[0.1 0.88 0.1 0.1], 'String', '(A)', 'LineStyle', 'none', 'fontsize', 16)
-annotation('textbox',[0.45 0.88 0.1 0.1], 'String', '(B)', 'LineStyle', 'none','fontsize', 16)
+set(gcf, 'Position', [1 7 1214 798])
+annotation('textbox',[0.05 0.88 0.1 0.1], 'String', '(A)', 'LineStyle', 'none', 'fontsize', 16)
+annotation('textbox',[0.3 0.88 0.1 0.1], 'String', '(B)', 'LineStyle', 'none','fontsize', 16)
 
 saveas(gcf, 'experiments/data/experiment_results/paper2021/figures/Figure8ab.tiff')
 
 
 %% Figure 9
-% TURBINE acquisition in vivo - subtracted acquisitions
+% TURBINE acquisition in vivo - resting state linear recon
 clear 
 close all
 %%%%%%%% SETUP files %%%%%%%% 
@@ -332,7 +332,7 @@ subj = 'A';
 tSNR_fig(['experiments/data/experiment_inputs/TURBINE_data/in-vivo/subj' subj '/recons/'],3:13, 8, sensmask_lowres, sensmask_highres, 'experiments/data/experiment_results/paper2021/figures/Figure9')
 
 %% Figure 10
-% TURBINE acquisition in vivo - subtracted acquisitions
+% TURBINE acquisition in vivo - resting state nonlinear
 clear 
 close all
 %%%%%%%% SETUP files %%%%%%%% 
@@ -479,7 +479,7 @@ saveas(gcf, 'experiments/data/experiment_results/paper2021/figures/FigureS2ab.ti
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Supplementary figure 3
-% TURBINE acquisition in vivo - subtracted acquisitions
+% TURBINE acquisition in vivo - tSNR resting state
 clear 
 close all
 %%%%%%%% SETUP files %%%%%%%% 
@@ -582,4 +582,47 @@ subj = 'B';
 %%%%%%% Figure
 tSNR_fig(['experiments/data/experiment_inputs/TURBINE_data/in-vivo/subj' subj '/recons_nl_wavelet/'],3:13, 8, sensmask_lowres, sensmask_highres, 'experiments/data/experiment_results/paper2021/figures/FigureS4')
 
+%% Supplementary figure 5-8
+% in-vivo reconstructions
+%%%%%%% Parameters
+clear
+close all
+%%%%% Parameters 5
+slice = 8;
+subj = 'A';
+recon_folder =['experiments/data/experiment_inputs/TURBINE_data/in-vivo/subj' subj '/recons/'];
+titl = ['Linear - Subj ' subj];
+%%%%% Figure 5
+figure
+rs_recon_fig(recon_folder, slice, titl, 'experiments/data/experiment_results/paper2021/figures/FigureS5')
 
+
+%%%%% Parameters 6
+slice = 8;
+subj = 'B';
+titl = ['Linear - Subj ' subj];
+recon_folder =['experiments/data/experiment_inputs/TURBINE_data/in-vivo/subj' subj '/recons/'];
+
+%%%%% Figure
+figure
+rs_recon_fig(recon_folder, slice, titl, 'experiments/data/experiment_results/paper2021/figures/FigureS6')
+
+%%%%% Parameters 7
+slice = 8;
+subj = 'A';
+titl = ['Non-linear - Subj ' subj];
+recon_folder =['experiments/data/experiment_inputs/TURBINE_data/in-vivo/subj' subj '/recons_nl_wavelet/'];
+
+%%%%% Figure
+figure
+rs_recon_fig(recon_folder, slice, titl, 'experiments/data/experiment_results/paper2021/figures/FigureS7')
+
+%%%%% Parameters 6
+slice = 8;
+subj = 'B';
+titl = ['Non-linear - Subj ' subj];
+recon_folder =['experiments/data/experiment_inputs/TURBINE_data/in-vivo/subj' subj '/recons_nl_wavelet/'];
+
+%%%%% Figure
+figure
+rs_recon_fig(recon_folder, slice, titl, 'experiments/data/experiment_results/paper2021/figures/FigureS8')

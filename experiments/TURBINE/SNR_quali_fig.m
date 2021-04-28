@@ -3,7 +3,7 @@ function [] = SNR_quali_fig(sensmask_lowres, sensmask_highres, slices, kdata_fol
 %   Detailed explanation goes here
     
     window_sizes = [8,10,46,55];
-    load([kdata_folder 'SNR_measurements_slices' num2str(slices)], 'S_SILVER', 'S_GR', 'S_U', 'N_SILVER', 'N_GR', 'N_U', 'SNR_SILVER', 'SNR_GR', 'SNR_U')
+    load([kdata_folder 'SNR_measurements_slices' num2str(slices)], 'N_SILVER', 'N_GR', 'N_U')
 
     for n = 1:4
         ws = window_sizes(n);
@@ -29,11 +29,19 @@ function [] = SNR_quali_fig(sensmask_lowres, sensmask_highres, slices, kdata_fol
         for m = 1:length(slices)
             sl = slices(m);
             load([kdata_folder 'Noise_Recons_sl' num2str(sl) '_ws' num2str(ws) '.mat'], 'recon_n_GR', 'recon_n_S','recon_n_U')
-            N_GR_sim = cat(2,N_GR_sim,std(recon_n_GR,[],4));
-            N_S_sim = cat(2,N_S_sim,std(recon_n_S,[],4));
-            N_U_sim = cat(2,N_U_sim,std(recon_n_U,[],4));
+            N_GR_sim = cat(2,N_GR_sim,imrotate(std(recon_n_GR,[],4),-90));
+            N_S_sim = cat(2,N_S_sim,imrotate(std(recon_n_S,[],4),-90));
+            N_U_sim = cat(2,N_U_sim,imrotate(std(recon_n_U,[],4),-90));
         end
-  
+        
+        sensmask = reshape(imrotate(reshape(sensmask, size(sensmask,1),size(sensmask,1),[]),-90),size(sensmask,1),[]);
+
+        N_U{n} = reshape(imrotate(reshape(N_U{n}, size(sensmask,1),size(sensmask,1),[]),-90),size(sensmask,1),[]);
+        N_GR{n} = reshape(imrotate(reshape(N_GR{n}, size(sensmask,1),size(sensmask,1),[]),-90),size(sensmask,1),[]);
+        N_SILVER{n} = reshape(imrotate(reshape(N_SILVER{n}, size(sensmask,1),size(sensmask,1),[]),-90),size(sensmask,1),[]);
+        
+        
+        
         subplot(length(window_sizes),1,n)
         imagesc(cat(1,cat(2,sensmask.*N_U{n}./mean(N_U{n}(sensmask)), sensmask.*N_GR{n}./mean(N_U{n}(sensmask)), sensmask.*N_SILVER{n}./mean(N_U{n}(sensmask))),...
                 cat(2,sensmask.*N_U_sim./mean(N_U_sim(sensmask)), sensmask.*N_GR_sim./mean(N_U_sim(sensmask)), sensmask.*N_S_sim./mean(N_U_sim(sensmask)))))
@@ -51,13 +59,13 @@ function [] = SNR_quali_fig(sensmask_lowres, sensmask_highres, slices, kdata_fol
         text(size(sensmask,2)*2.5,size(sensmask,1), 'SILVER', 'HorizontalAlignment', 'center','color','w')
         
         caxis([0,3])
-        set(gcf, 'Position', [514 1 553 804])
+        set(gcf, 'Position', [514 1 317 804])
         clear('GR_n_pred', 'SILVER_n_pred', 'U_n_pred')
         colormap hot
         
     end
     cb = colorbar;
-    cb.Position = [0.75 0.33 0.03 0.33];
+    cb.Position = [0.9 0.33 0.03 0.33];
     set(gcf, 'InvertHardcopy', 'off')
     set(gcf, 'Color', 'w');
     saveas(gcf, [ savename '.svg'])
