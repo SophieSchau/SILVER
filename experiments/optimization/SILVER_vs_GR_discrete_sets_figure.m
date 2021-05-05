@@ -46,7 +46,7 @@ set(gca, 'ycolor', 'k')
 
 yyaxis('left')
 b2 = bar([prcnt_increase'], 'EdgeColor', 'k', 'LineWidth', 1);
-ylabel('% improvement')
+ylabel('% improvement in \eta')
 set(gca, 'ycolor', 'k')
 set(gca, 'SortMethod', 'depth')
 ylim([1,3.5].*ylim);

@@ -457,11 +457,12 @@ SNR_predict_and_measure_invivo(slices_quanti, Nspokes, sens030, sens100, ncov, [
 SNR_predict_and_measure_invivo(slices_quali, Nspokes, sens030, sens100, ncov, ['experiments/data/experiment_inputs/TURBINE_data/in-vivo/subj' subj '/recons/'])
 
 %%%%%%% Figure
+%%%%%%% Figure
 figure %A
-SNR_quali_fig(reshape(sensmask_lowres(:,:,slices_quali),30,[]), reshape(sensmask_highres(:,:,slices_quali),100,[]), slices_quali, ['experiments/data/experiment_inputs/TURBINE_data/in-vivo/subj' subj '/recons/'], 'experiments/data/experiment_results/paper2021/figures/FigureS2a')
+SNR_quali_fig(reshape(sensmask_lowres(:,:,slices_quali),30,[]), reshape(sensmask_highres(:,:,slices_quali),100,[]), slices_quali, ['experiments/data/experiment_inputs/TURBINE_data/in-vivo/subj' subj '/recons/'], 'experiments/data/experiment_results/paper2021/figures/Figure8a')
 
 figure %B
-SNR_quanti_fig(reshape(sensmask_lowres(:,:,slices_quanti),30,[]), reshape(sensmask_highres(:,:,slices_quanti),100,[]), slices_quanti, ['experiments/data/experiment_inputs/TURBINE_data/in-vivo/subj' subj '/recons/'], 'experiments/data/experiment_results/paper2021/figures/FigureS2b')
+SNR_quanti_fig(reshape(sensmask_lowres(:,:,slices_quanti),30,[]), reshape(sensmask_highres(:,:,slices_quanti),100,[]), slices_quanti, ['experiments/data/experiment_inputs/TURBINE_data/in-vivo/subj' subj '/recons/'], 'experiments/data/experiment_results/paper2021/figures/Figure8b')
 
 figure % Combine A and B
 A = imread('experiments/data/experiment_results/paper2021/figures/FigureS2a.tiff');
@@ -470,9 +471,9 @@ imagesc(cat(2, A,B));
 axis image 
 axis off
 set(gca, 'Position', [0 0 1 1])
-set(gcf, 'Position', [1 7 1237 798])
-annotation('textbox',[0.1 0.88 0.1 0.1], 'String', '(A)', 'LineStyle', 'none', 'fontsize', 16)
-annotation('textbox',[0.45 0.88 0.1 0.1], 'String', '(B)', 'LineStyle', 'none','fontsize', 16)
+set(gcf, 'Position', [1 7 1214 798])
+annotation('textbox',[0.05 0.88 0.1 0.1], 'String', '(A)', 'LineStyle', 'none', 'fontsize', 16)
+annotation('textbox',[0.3 0.88 0.1 0.1], 'String', '(B)', 'LineStyle', 'none','fontsize', 16)
 
 saveas(gcf, 'experiments/data/experiment_results/paper2021/figures/FigureS2ab.tiff')
                                
@@ -531,7 +532,7 @@ subj = 'B';
 tSNR_fig(['experiments/data/experiment_inputs/TURBINE_data/in-vivo/subj' subj '/recons/'],3:13, 8, sensmask_lowres, sensmask_highres, 'experiments/data/experiment_results/paper2021/figures/FigureS3')
 
 %% Supplementary figure 4
-% TURBINE acquisition in vivo - subtracted acquisitions
+% TURBINE acquisition in vivo - tSNR resting state nonlinear
 clear 
 close all
 %%%%%%%% SETUP files %%%%%%%% 

@@ -34,10 +34,31 @@ function [] = SNR_quanti_fig(sensmask_lowres, sensmask_highres, slices, kdata_fo
             N_U_sim = cat(2,N_U_sim,std(recon_n_U,[],4));
         end
   
+        
+        % significance testing (paired)
+        [U_GR_p, U_GR_h] = signrank(N_GR{n}(sensmask), N_U{n}(sensmask), 'alpha', 0.05/12);
+        [U_S_p, U_S_h] = signrank(N_U{n}(sensmask), N_SILVER{n}(sensmask), 'alpha', 0.05/12);
+        [GR_S_p, GR_S_h] = signrank(N_GR{n}(sensmask), N_SILVER{n}(sensmask), 'alpha', 0.05/12);
+
+        
         subplot(length(window_sizes),4,(n*4-3):(n*4-1))
         [h1,L1] = violin([N_U{n}(sensmask)./median(N_U{n}(sensmask)) N_GR{n}(sensmask)./median(N_U{n}(sensmask)) N_SILVER{n}(sensmask)./median(N_U{n}(sensmask)) ], 'mc', [], 'medc', 'k', 'facecolor', [0.1 0.1 0.1;0.1 0.1 0.1;0.1 0.1 0.1], 'side', 'left', 'bw', 0.1);
         hold on
         [h2,L2] = violin([N_U_sim(sensmask)./median(N_U_sim(sensmask)) N_GR_sim(sensmask)./median(N_U_sim(sensmask)) N_S_sim(sensmask)./median(N_U_sim(sensmask)) ], 'mc', [], 'medc', 'k', 'facecolor', [0.9 0.9 0.9;0.9 0.9 0.9;0.9 0.9 0.9], 'side', 'right','bw', 0.1);
+        
+        if ~U_GR_h
+            line([1,2], [3.3 3.3], 'color', 'k', 'handlevisibility', 'off')
+            text(1.5, 3.3, 'n.s.', 'Color', 'k', 'HorizontalAlignment', 'center', 'VerticalAlignment', 'bottom')
+        end
+        if ~U_S_h
+            line([1,3], [3.4 3.4], 'color', 'k', 'handlevisibility', 'off')
+            text(2, 3.4, 'n.s.', 'Color', 'k', 'HorizontalAlignment', 'center', 'VerticalAlignment', 'bottom')
+        end
+        if ~GR_S_h
+            line([2,3], [3.35 3.35], 'color', 'k', 'handlevisibility', 'off')
+            text(2.5, 3.35, 'n.s.', 'Color', 'k', 'HorizontalAlignment', 'center', 'VerticalAlignment', 'bottom')
+        end
+        
         title(['N = ' num2str(window_sizes(n))])
         xticks(1:3)
         xticklabels({'Uniform', 'GR', 'SILVER'})
@@ -57,7 +78,7 @@ function [] = SNR_quanti_fig(sensmask_lowres, sensmask_highres, slices, kdata_fo
 %         xticklabels({'measured noise', 'predicted noise'})
         title(['N = ' num2str(window_sizes(n)) ' ' labl], 'FontSize', 12)
         ylabel('noise, normalized', 'FontSize',12)
-        axis([xlim*1.15 0 3]) 
+        axis([xlim*1.15 0 3.5]) 
         set(gcf, 'Position', [1 1 904 804])
         legend('off')
     end

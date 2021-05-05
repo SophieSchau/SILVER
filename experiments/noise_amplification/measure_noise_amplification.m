@@ -24,7 +24,7 @@ for i = 1:mat_size(1)
     end
 end
 
-rng(1)
+rng(start_angle+1)
 nn = (randn(200*N*Nframes,size(sens,4))+1i*randn(200*N*Nframes,size(sens,4)))./sqrt(2);
 c = sqrtm(ncov);
 nc = nn*c;

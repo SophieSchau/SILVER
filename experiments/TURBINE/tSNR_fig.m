@@ -93,20 +93,42 @@ text(50,-10, 'SILVER', 'FontSize',16, 'HorizontalAlignment', 'center');
 
 
 subplot(2,3,3)
-histogram(reshape(tmpA(mask_lowres(:,:,slices_for_calc)),[],1), 'BinWidth',1, 'FaceColor', [1 0.5 0])
+[p, h] = signrank(reshape(tmpA(mask_lowres(:,:,slices_for_calc)),[],1),reshape(tmpB(mask_lowres(:,:,slices_for_calc)),[],1), 'alpha', 0.05/2);
+
+hA = histogram(reshape(tmpA(mask_lowres(:,:,slices_for_calc)),[],1), 'BinWidth',1, 'FaceColor', [1 0.5 0]);
 hold on
-histogram(reshape(tmpB(mask_lowres(:,:,slices_for_calc)),[],1), 'BinWidth',1, 'FaceColor', [0.5 0.5 0.5])
+hB = histogram(reshape(tmpB(mask_lowres(:,:,slices_for_calc)),[],1), 'BinWidth',1, 'FaceColor', [0.5 0.5 0.5]);
+
+if ~h
+    [max_a] = max(hA.Values);
+    [max_b] = max(hB.Values);
+    line([hA.BinEdges(end/2), hB.BinEdges(end/2)], max([max_a,max_b])*[1.001 1.001], 'handlevisibility', 'off', 'color', 'k')
+    text(mean([hA.BinEdges(end/2), hB.BinEdges(end/2)]), max([max_a,max_b])*1.01, 'n.s.', 'HorizontalAlignment', 'center', 'VerticalAlignment', 'bottom')
+end
+
 legend('GR', 'SILVER')
 title('tSNR - low res.', 'FontSize',16)
 axis([0 70 ylim])
+xlabel('tSNR')
 
 subplot(2,3,6)
-histogram(reshape(tmpC(mask_highres(:,:,slices_for_calc)),[],1), 'BinWidth',1, 'FaceColor', [1 0.5 0])
+[p, h] = signrank(reshape(tmpC(mask_highres(:,:,slices_for_calc)),[],1),reshape(tmpD(mask_highres(:,:,slices_for_calc)),[],1), 'alpha', 0.05/2);
+
+
+hC = histogram(reshape(tmpC(mask_highres(:,:,slices_for_calc)),[],1), 'BinWidth',1, 'FaceColor', [1 0.5 0]);
 hold on
-histogram(reshape(tmpD(mask_highres(:,:,slices_for_calc)),[],1), 'BinWidth',1, 'FaceColor', [0.5 0.5 0.5])
+hD = histogram(reshape(tmpD(mask_highres(:,:,slices_for_calc)),[],1), 'BinWidth',1, 'FaceColor', [0.5 0.5 0.5]);
+
+if ~h
+    [max_c] = max(hC.Values);
+    [max_d] = max(hD.Values);
+    line([hC.BinEdges(end/2), hD.BinEdges(end/2)], max([max_c,max_d])*[1.001 1.001], 'handlevisibility', 'off', 'color', 'k')
+    text(mean([hC.BinEdges(end/2), hD.BinEdges(end/2)]), max([max_c,max_d])*1.01, 'n.s.', 'HorizontalAlignment', 'center', 'VerticalAlignment', 'bottom')
+end
 legend('GR', 'SILVER')
 title('tSNR - high res.', 'FontSize',16)
 axis([0 70 ylim])
+xlabel('tSNR')
 
 annotation('line',[0 1], [0.5 0.5]);
 

@@ -53,6 +53,7 @@ box on
 grid minor
 set(gcf,'Position',[124 359 876 439])
 legend(lg{:}, 'location', 'southeast')
+xticks(xrange);
 xlabel('Window size')
 ylabel('Efficiency, \eta')
 axis([xlim,ylims])

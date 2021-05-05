@@ -87,14 +87,16 @@ text(15+30, -3, 'Uniform', 'HorizontalAlignment', 'center', 'FontSize', 12)
 text(15+30*2, -3, ['SILVER \{' num2str(S_set{1}) '\}'], 'HorizontalAlignment', 'center', 'FontSize', 12)
 text(15+30*3, -3, ['SILVER \{' num2str(S_set{2}) '\}'], 'HorizontalAlignment', 'center', 'FontSize', 12)
 text(15+30*4, -3, ['SILVER \{' num2str(S_set{3}) '\}'], 'HorizontalAlignment', 'center', 'FontSize', 12)
-text(-3, 15, 'Noise maps', 'HorizontalAlignment', 'center', 'FontSize', 12, 'Rotation', 90)
+text(-3, 15, 'noise s.d. maps', 'HorizontalAlignment', 'center', 'FontSize', 12, 'Rotation', 90)
 
 text(-5, -3, '(B)', 'fontsize', 14);
 
 
 colormap hot
 colorbar
-subplot(3,2,5)  
+subplot(3,2,5)
+[U_GR_p, U_GR_h] = signrank(GR_n(sensmask), U_n(sensmask), 'alpha', 0.05/(1+2*size(S_n,3)+nchoosek(size(S_n,3),2)));
+
 mean_noise = [mean(GR_n(sensmask), 'all'), mean(U_n(sensmask), 'all')];
 std_noise = [std(GR_n(sensmask), [],'all'), std(U_n(sensmask), [],'all')];
 eff = [efficiency_2D(gr2D*pi*[0:spokes-1], 'electrostatic_potential'),1];
@@ -103,8 +105,18 @@ for ii=1:size(S_n,3)
     mean_noise(ii+2) = mean(tmp(sensmask), 'all');
     std_noise(ii+2) = std(tmp(sensmask), [],'all');
     eff(ii+2) = efficiency_2D(S_rats(ii)*pi*[0:spokes-1], 'electrostatic_potential');
+    [U_S_p(ii), U_S_h(ii)] = signrank(U_n(sensmask), tmp(sensmask), 'alpha', 0.05/(1+2*size(S_n,3)+nchoosek(size(S_n,3),2)));
+    [GR_S_p(ii), GR_S_h(ii)] = signrank(GR_n(sensmask), tmp(sensmask), 'alpha', 0.05/(1+2*size(S_n,3)+nchoosek(size(S_n,3),2)));
 end
 
+S_S_h = nan(size(S_n,3)-1,size(S_n,3));
+for n = 1:size(S_n,3)-1
+    for m = n+1:size(S_n,3)
+        tmp_n = S_n(:,:,n);
+        tmp_m = S_n(:,:,m);
+        [S_S_p(n,m), S_S_h(n,m)] = signrank(tmp_n(sensmask), tmp_m(sensmask), 'alpha', 0.05/(1+2*size(S_n,3)+nchoosek(size(S_n,3),2)));
+    end
+end
 
 for n = 1:size(col,1)
     b = bar(n,mean_noise(n));
@@ -114,8 +126,32 @@ for n = 1:size(col,1)
 end
 errorbar(1:length(mean_noise),mean_noise,std_noise, 'LineStyle', 'none', 'color', 'k')
 
-axis([xlim min(mean_noise(:)-std_noise(:))*0.99  max(mean_noise(:)+std_noise(:))*1.01])
-ylabel('noise', 'Color', 'k')
+
+if ~U_GR_h
+    line([1 2], [max(mean_noise(1:2)+std_noise(1:2))*1.03, max(mean_noise(1:2)+std_noise(1:2))*1.03], 'color', 'k', 'handlevisibility', 'off', 'marker', '.')
+    text([1.5], [max(mean_noise(1:2)+std_noise(1:2))*1.04], 'n.s.', 'Color', 'k', 'HorizontalAlignment', 'center', 'VerticalAlignment', 'bottom')
+end
+for n = 1:size(S_n,3)
+    if ~GR_S_h(n)
+        line([1 n+2], [max(mean_noise([1,n+2])+std_noise([1,n+2]))*1.02, max(mean_noise([1,n+2])+std_noise([1,n+2]))*1.02], 'color', 'k', 'handlevisibility', 'off', 'marker', '.')
+        text([(1+n+2)/2], [max(mean_noise([1,n+2])+std_noise([1,n+2]))*1.03], 'n.s.', 'Color', 'k', 'HorizontalAlignment', 'center', 'VerticalAlignment', 'bottom')
+    end
+    if ~U_S_h(n)
+        line([2 n+2], [max(mean_noise([2,n+2])+std_noise([2,n+2]))*1.02, max(mean_noise([2,n+2])+std_noise([2,n+2]))*1.02], 'color', 'k', 'handlevisibility', 'off', 'marker', '.')
+        text([(2+n+2)/2], [max(mean_noise([2,n+2])+std_noise([2,n+2]))*1.03], 'n.s.', 'Color', 'k', 'HorizontalAlignment', 'center', 'VerticalAlignment', 'bottom')
+    end
+    for m = n+1:size(S_n,3)
+        if ~S_S_h(n,m)
+            line([n+2 m+2], [max(mean_noise([m+2,n+2])+std_noise([m+2,n+2]))*1.02, max(mean_noise([m+2,n+2])+std_noise([m+2,n+2]))*1.02], 'color', 'k', 'handlevisibility', 'off', 'marker', '.')
+            text([(n+2+m+2)/2], [max(mean_noise([m+2,n+2])+std_noise([m+2,n+2]))*1.03], 'n.s.', 'Color', 'k', 'HorizontalAlignment', 'center', 'VerticalAlignment', 'bottom')
+        end
+    end
+        
+end
+
+
+axis([xlim min(mean_noise(:)-std_noise(:))*0.99  max(mean_noise(:)+std_noise(:))*1.05])
+ylabel('noise s.d.', 'Color', 'k')
 legend('GR', 'Uniform', ['SILVER \{' num2str(S_set{1}) '\}'],['SILVER \{' num2str(S_set{2}) '\}'],['SILVER \{' num2str(S_set{3}) '\}'],'Location', 'southoutside')
 xticks([])
 grid minor
@@ -138,6 +174,7 @@ text(-1, max(ylim), '(D)', 'FontSize',14, 'VerticalAlignment', 'bottom')
 
 annotation('line', [0 1], [0.7 0.7]);
 annotation('line', [0 1], [0.37 0.37]);
+annotation('line', [0.5 0.5], [0.37 0]);
 set(gcf, 'Position', [141 71 1019 734])
 savefig(gcf, [savename '.fig'])
 saveas(gcf, [savename '.svg'])

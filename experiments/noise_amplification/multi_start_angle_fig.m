@@ -29,6 +29,23 @@ for start_angle = [0, start_angles]
     end
 
 end
+
+% significance testing
+U_GR_ttest = ttest(GR(:), U(:), 'alpha', 0.05/(1+2*size(S_n,3)+nchoosek(size(S_n,3),2)));
+for ii=1:size(S_n,3)
+    U_S_ttest(ii) = ttest(U(:), S(:,ii), 'alpha', 0.05/(1+2*size(S_n,3)+nchoosek(size(S_n,3),2)));
+    GR_S_ttest(ii) = ttest(GR(:), S(:,ii), 'alpha', 0.05/(1+2*size(S_n,3)+nchoosek(size(S_n,3),2)));
+end
+S_S_ttest = nan(size(S_n,3)-1,size(S_n,3));
+for n = 1:size(S_n,3)-1
+    for m = n+1:size(S_n,3)
+        tmp_n = S(:,n);
+        tmp_m = S(:,m);
+        S_S_ttest(n,m) = ttest(tmp_n(:), tmp_m(:), 'alpha', 0.05/(1+2*size(S_n,3)+nchoosek(size(S_n,3),2)));
+    end
+end
+
+
 col =[1 0.5 0; 0 0.5 1; ones(size(S_n,3),3).*linspace(0.4, 0.7, size(S_n,3))'];
 
 plot([0,start_angles], GR, 'color',col(1,:), 'linewidth', 2);
@@ -44,13 +61,36 @@ for ss = 1:size(S_n,3)
     plot([0,max(start_angles)], sqrt([mean(S(:,ss).^2) mean(S(:,ss).^2)]), 'color',col(ss+2,:), 'linewidth', 2, 'LineStyle', ':', 'HandleVisibility', 'off');
 end
 
+if ~U_GR_ttest
+    line([start_angles(end)+1 start_angles(end)+1], [sqrt(mean(GR.^2)) sqrt(mean(U.^2))], 'color', 'k', 'handlevisibility', 'off', 'marker', '.')
+    text([start_angles(end)+1], mean([sqrt(mean(GR.^2)) sqrt(mean(U.^2))]), 'n.s.', 'Color', 'k', 'HorizontalAlignment', 'center', 'VerticalAlignment', 'bottom', 'Rotation', -90)
+end
+for n = 1:size(S_n,3)
+    if ~GR_S_ttest(n)
+        line([start_angles(end)+1 start_angles(end)+1], [sqrt(mean(GR.^2)) sqrt(mean(S(:,n).^2))], 'color', 'k', 'handlevisibility', 'off', 'marker', '.')
+        text([start_angles(end)+1], mean([sqrt(mean(GR.^2)) sqrt(mean(S(:,n).^2))]), 'n.s.', 'Color', 'k', 'HorizontalAlignment', 'center', 'VerticalAlignment', 'bottom', 'Rotation', -90)
+    end
+    if ~U_S_ttest(n)
+        line([start_angles(end)+1 start_angles(end)+1], [sqrt(mean(U.^2)) sqrt(mean(S(:,n).^2))], 'color', 'k', 'handlevisibility', 'off', 'marker', '.')
+        text([start_angles(end)+1], mean([sqrt(mean(U.^2)) sqrt(mean(S(:,n).^2))]), 'n.s.', 'Color', 'k', 'HorizontalAlignment', 'center', 'VerticalAlignment', 'bottom', 'Rotation', -90)
+    end
+    for m = n+1:size(S_n,3)
+        if ~S_S_ttest(n,m)
+            line([start_angles(end)+1 start_angles(end)+1], [sqrt(mean(S(:,m).^2)) sqrt(mean(S(:,n).^2))], 'color', 'k', 'handlevisibility', 'off', 'marker', '.')
+            text([start_angles(end)+1], mean([sqrt(mean(S(:,m).^2)) sqrt(mean(S(:,n).^2))]), 'n.s.', 'Color', 'k', 'HorizontalAlignment', 'center', 'VerticalAlignment', 'bottom', 'Rotation', -90)
+        end
+    end
+end
+
+
+
 xlabel('start angle, degrees')
 ylabel('noise')
 set(gca, 'fontsize', 14)
 legend('GR', 'Uniform', ['SILVER \{' num2str(S_set{1}) '\}'],['SILVER \{' num2str(S_set{2}) '\}'],['SILVER \{' num2str(S_set{3}) '\}'],'Location', 'southoutside')
 set(gcf, 'Position', [436 265 881 413])
 grid minor
-
+box off
 savefig(gcf, [savename '.fig'])
 saveas(gcf, [savename '.svg'])
 
