@@ -65,7 +65,7 @@ SILVER_vs_GR_optimisation_example_fig(S_B, 'electrostatic_potential', xrange, yl
 close all
 figure
 h(1)= subplot(2,1,1);
-SILVER_vs_GR_discrete_sets_figure(S_A, 'experiments/data/experiment_results/paper2021/SILVER_vs_GR_sets', 'experiments/data/experiment_results/paper2021/figures/Figure3a')
+SILVER_vs_GR_discrete_sets_figure(S_A, 'experiments/data/experiment_results/paper2021/SILVER_vs_GR_sets')
 
 %%%% Bold any sets highlighed in B
 
@@ -81,7 +81,7 @@ end
 %%%%
 
 h(2)=subplot(2,1,2);
-SILVER_vs_GR_optimisation_example_fig(S_B, 'electrostatic_potential', xrange, ylims,'experiments/data/experiment_results/paper2021/figures/Figure3b');
+SILVER_vs_GR_optimisation_example_fig(S_B, 'electrostatic_potential', xrange, ylims);
 
 annotation('textbox',get(h(1), 'Position')*0.1+[0 0.9 0 0], 'String', '(A)', 'EdgeColor', 'none', 'fontsize', 16)
 annotation('textbox',get(h(1), 'Position')*0.1+[0 0.4 0 0], 'String', '(B)', 'EdgeColor', 'none', 'fontsize', 16)

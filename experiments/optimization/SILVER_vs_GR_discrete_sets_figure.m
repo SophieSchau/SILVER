@@ -1,7 +1,9 @@
 function [idx_sc] = SILVER_vs_GR_discrete_sets_figure(S, data_filename, savename)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
-
+if nargin < 3
+    savename = [];
+end
 
 load(data_filename);
 
