@@ -305,7 +305,7 @@ sens100 = sens;
 
 %%%%%%%%%%%%%%%%%%%%%%%%
 % Subj B
-% read_in_and_save_TURBINE('/Users/schauman/Documents/FMRIB Employment/Scanning/20210316_TURBINE/', 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/')% 
+% read_in_and_save_TURBINE('/Users/schauman/Documents/FMRIB Employment/Scanning/20210316_TURBINE/', 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/')% 
 % sens030 = generate_coil_sensitivity_maps_TURBINE('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/meas_MID00988_FID123662_mc_ep3d_turbine_GR_rs_fMRI_slice',0.3, 6016,1:16);
 % sens100 = generate_coil_sensitivity_maps_TURBINE('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/meas_MID00988_FID123662_mc_ep3d_turbine_GR_rs_fMRI_slice',1, 6016,1:16);
 % map = mapVBVD('/Users/schauman/Documents/FMRIB Employment/Scanning/20210316_TURBINE/meas_MID00988_FID123662_mc_ep3d_turbine_GR_rs_fMRI.dat','removeOS',false);
@@ -357,7 +357,7 @@ sens100 = sens;
 
 %%%%%%%%%%%%%%%%%%%%%%%%
 % Subj B
-% read_in_and_save_TURBINE('/Users/schauman/Documents/FMRIB Employment/Scanning/20210316_TURBINE/', 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/')% 
+% read_in_and_save_TURBINE('/Users/schauman/Documents/FMRIB Employment/Scanning/20210316_TURBINE/', 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/')% 
 % sens030 = generate_coil_sensitivity_maps_TURBINE('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/meas_MID00988_FID123662_mc_ep3d_turbine_GR_rs_fMRI_slice',0.3, 6016,1:16);
 % sens100 = generate_coil_sensitivity_maps_TURBINE('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/meas_MID00988_FID123662_mc_ep3d_turbine_GR_rs_fMRI_slice',1, 6016,1:16);
 % map = mapVBVD('/Users/schauman/Documents/FMRIB Employment/Scanning/20210316_TURBINE/meas_MID00988_FID123662_mc_ep3d_turbine_GR_rs_fMRI.dat','removeOS',false);
@@ -505,7 +505,7 @@ close all
 
 %%%%%%%%%%%%%%%%%%%%%%%%
 % Subj B
-% read_in_and_save_TURBINE('/Users/schauman/Documents/FMRIB Employment/Scanning/20210316_TURBINE/', 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/')% 
+% read_in_and_save_TURBINE('/Users/schauman/Documents/FMRIB Employment/Scanning/20210316_TURBINE/', 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/')% 
 % sens030 = generate_coil_sensitivity_maps_TURBINE('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/meas_MID00988_FID123662_mc_ep3d_turbine_GR_rs_fMRI_slice',0.3, 6016,1:16);
 % sens100 = generate_coil_sensitivity_maps_TURBINE('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/meas_MID00988_FID123662_mc_ep3d_turbine_GR_rs_fMRI_slice',1, 6016,1:16);
 % map = mapVBVD('/Users/schauman/Documents/FMRIB Employment/Scanning/20210316_TURBINE/meas_MID00988_FID123662_mc_ep3d_turbine_GR_rs_fMRI.dat','removeOS',false);
@@ -557,7 +557,7 @@ close all
 
 %%%%%%%%%%%%%%%%%%%%%%%%
 % Subj B
-% read_in_and_save_TURBINE('/Users/schauman/Documents/FMRIB Employment/Scanning/20210316_TURBINE/', 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/')% 
+% read_in_and_save_TURBINE('/Users/schauman/Documents/FMRIB Employment/Scanning/20210316_TURBINE/', 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/')% 
 % sens030 = generate_coil_sensitivity_maps_TURBINE('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/meas_MID00988_FID123662_mc_ep3d_turbine_GR_rs_fMRI_slice',0.3, 6016,1:16);
 % sens100 = generate_coil_sensitivity_maps_TURBINE('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/meas_MID00988_FID123662_mc_ep3d_turbine_GR_rs_fMRI_slice',1, 6016,1:16);
 % map = mapVBVD('/Users/schauman/Documents/FMRIB Employment/Scanning/20210316_TURBINE/meas_MID00988_FID123662_mc_ep3d_turbine_GR_rs_fMRI.dat','removeOS',false);
