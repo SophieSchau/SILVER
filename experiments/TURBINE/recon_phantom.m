@@ -38,6 +38,11 @@ function [] = recon_phantom(slices,sens_lowres, sens_highres, kdata_folder)
             end
 
             for ws = window_sizes
+                if exist([kdata_folder 'recons/Recon_sl' num2str(sl) '_ws' num2str(ws) kdata_file_a.name(1:end-12) '_iter.mat'], 'file')
+                    warning(['A file named "' kdata_folder 'recons/Recon_sl' num2str(sl) '_ws' num2str(ws) kdata_file_a.name(1:end-12) '_iter.mat" already exists! no reconstruction performed'])
+                    continue
+                end
+
                 Nframes = floor(size(kdata_a,2)/ws);
 
                 kspace = gen_radial(roundn(ratio*180,-3),200, ws*Nframes,1,360,1);

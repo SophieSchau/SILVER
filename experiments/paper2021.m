@@ -115,7 +115,13 @@ measure_noise_amplification_single_coil_fig(spokes, ['experiments/data/experimen
 clear
 close all
 %%%%%%%% Parameters - with coils experiment %%%%%%%%
-load('experiments/data/experiment_inputs/sensitivity_maps/meas_MID00130_FID121040_mc_ep3d_turbine_1a_sens0.3.mat','psens')
+
+if exist('experiments/data/experiment_inputs/sensitivity_maps/meas_MID00130_FID121040_mc_ep3d_turbine_1a_sens0.3.mat', 'file')
+    load('experiments/data/experiment_inputs/sensitivity_maps/meas_MID00130_FID121040_mc_ep3d_turbine_1a_sens0.3.mat','psens')
+else
+    load(websave('experiments/data/experiment_inputs/sensitivity_maps/meas_MID00130_FID121040_mc_ep3d_turbine_1a_sens0.3.mat', 'https://zenodo.org/record/4743420/files/meas_MID00130_FID121040_mc_ep3d_turbine_1a_sens0.3.mat'),'psens')
+end
+
 sens = psens(:,:,4,:); % use compressed coils
 sensmask = logical(abs(sum(sens.^2,4)));
 ncov  = 1;
@@ -134,7 +140,13 @@ measure_noise_amplification_multi_coil_fig(spokes, sensmask, ['experiments/data/
 %% Figure 6
 clear
 close all
-load('experiments/data/experiment_inputs/sensitivity_maps/meas_MID00130_FID121040_mc_ep3d_turbine_1a_sens0.3.mat','psens')
+
+if exist('experiments/data/experiment_inputs/sensitivity_maps/meas_MID00130_FID121040_mc_ep3d_turbine_1a_sens0.3.mat', 'file')
+    load('experiments/data/experiment_inputs/sensitivity_maps/meas_MID00130_FID121040_mc_ep3d_turbine_1a_sens0.3.mat','psens')
+else
+    load(websave('experiments/data/experiment_inputs/sensitivity_maps/meas_MID00130_FID121040_mc_ep3d_turbine_1a_sens0.3.mat', 'https://zenodo.org/record/4743420/files/meas_MID00130_FID121040_mc_ep3d_turbine_1a_sens0.3.mat'),'psens')
+end
+
 sens = psens(:,:,4,:); % use compressed coils
 sensmask = logical(abs(sum(sens.^2,4)));
 ncov  = 1;
@@ -156,20 +168,110 @@ multi_start_angle_fig(start_angles, sensmask, 'experiments/data/experiment_resul
 clear 
 close all
 %%%%%%%% SETUP files %%%%%%%% 
+% For reference of how the data was pre-processed:
+
 % read_in_and_save_TURBINE('/Users/schauman/Documents/FMRIB Employment/Scanning/20201215_TURBINE/', 'experiments/data/experiment_inputs/TURBINE_data/phantom/DEC15/')
 % map = mapVBVD('/Users/schauman/Documents/FMRIB Employment/Scanning/20201215_TURBINE/meas_MID00130_FID121040_mc_ep3d_turbine_1a.dat','removeOS',false);
 % ncov = cov(reshape(permute(squeeze(map{1}.noise()),[1,3,4,2]),[],32));
 % sens030 = generate_coil_sensitivity_maps_TURBINE('experiments/data/experiment_inputs/TURBINE_data/phantom/DEC15/meas_MID00130_FID121040_mc_ep3d_turbine_1a_slice',0.3, 2048,1:8);
 % sens100 = generate_coil_sensitivity_maps_TURBINE('experiments/data/experiment_inputs/TURBINE_data/phantom/DEC15/meas_MID00130_FID121040_mc_ep3d_turbine_1a_slice',1, 2048,1:8);
-% recon_phantom(1:8,sens030, sens100, 'experiments/data/experiment_inputs/TURBINE_data/phantom/DEC15/')
 
 
-% insert option to data download here for when twix files are not available
-load('experiments/data/experiment_inputs/TURBINE_data/phantom/DEC15/covariance.mat', 'ncov');
-load('experiments/data/experiment_inputs/TURBINE_data/phantom/DEC15/meas_MID00130_FID121040_mc_ep3d_turbine_1a_sens0.3.mat','sens');
+
+% Data that is not available will be downloaded from Zenodo:
+
+covfile_name = 'experiments/data/experiment_inputs/TURBINE_data/phantom/DEC15/covariance.mat';
+sens_lowres_name = 'experiments/data/experiment_inputs/TURBINE_data/phantom/DEC15/meas_MID00130_FID121040_mc_ep3d_turbine_1a_sens0.3.mat';
+sens_highres_name = 'experiments/data/experiment_inputs/TURBINE_data/phantom/DEC15/meas_MID00130_FID121040_mc_ep3d_turbine_1a_sens1.mat';
+
+if exist(covfile_name, 'file')
+    load(covfile_name, 'ncov');
+else
+    load(websave(covfile_name, 'https://zenodo.org/record/4743420/files/covariance.mat'), 'ncov');
+end
+    
+if exist(sens_lowres_name, 'file')
+    load(sens_lowres_name,'sens');
+else
+    load(websave(sens_lowres_name, 'https://zenodo.org/record/4743420/files/meas_MID00130_FID121040_mc_ep3d_turbine_1a_sens0.3.mat'), 'sens');
+end
 sens030 = sens;
-load('experiments/data/experiment_inputs/TURBINE_data/phantom/DEC15/meas_MID00130_FID121040_mc_ep3d_turbine_1a_sens1.mat','sens');
+
+if exist(sens_highres_name, 'file')
+    load(sens_highres_name,'sens');
+else
+    load(websave(sens_highres_name, 'https://zenodo.org/record/4743420/files/meas_MID00130_FID121040_mc_ep3d_turbine_1a_sens1.mat'), 'sens');
+end
 sens100 = sens;
+
+
+localpath = 'experiments/data/experiment_inputs/TURBINE_data/phantom/DEC15/';
+webpath = 'https://zenodo.org/record/4743420/files/';
+
+a1_name = 'meas_MID00130_FID121040_mc_ep3d_turbine_1a_slice';
+b1_name = 'meas_MID00132_FID121042_mc_ep3d_turbine_1b_slice';
+a2_name = 'meas_MID00134_FID121044_mc_ep3d_turbine_2a_slice';
+b2_name = 'meas_MID00136_FID121046_mc_ep3d_turbine_2b_slice';
+a3_name = 'meas_MID00138_FID121048_mc_ep3d_turbine_3a_slice';
+b3_name = 'meas_MID00140_FID121050_mc_ep3d_turbine_3b_slice';
+a4_name = 'meas_MID00142_FID121052_mc_ep3d_turbine_4a_slice';
+b4_name = 'meas_MID00144_FID121054_mc_ep3d_turbine_4b_slice';
+a5_name = 'meas_MID00146_FID121056_mc_ep3d_turbine_5a_slice';
+b5_name = 'meas_MID00148_FID121058_mc_ep3d_turbine_5b_slice';
+a6_name = 'meas_MID00150_FID121060_mc_ep3d_turbine_6a_slice';
+b6_name = 'meas_MID00152_FID121062_mc_ep3d_turbine_6b_slice';
+a8_name = 'meas_MID00158_FID121068_mc_ep3d_turbine_8a_slice';
+b8_name = 'meas_MID00160_FID121070_mc_ep3d_turbine_8b_slice';
+
+% download data
+for slice = 1:8
+    if ~exist([localpath a1_name num2str(slice) '.mat'], 'file')
+        websave([localpath a1_name num2str(slice) '.mat'], [webpath a1_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath b1_name num2str(slice) '.mat'], 'file')
+        websave([localpath b1_name num2str(slice) '.mat'], [webpath b1_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath a2_name num2str(slice) '.mat'], 'file')
+        websave([localpath a2_name num2str(slice) '.mat'], [webpath a2_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath b2_name num2str(slice) '.mat'], 'file')
+        websave([localpath b2_name num2str(slice) '.mat'], [webpath b2_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath a3_name num2str(slice) '.mat'], 'file')
+        websave([localpath a3_name num2str(slice) '.mat'], [webpath a3_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath b3_name num2str(slice) '.mat'], 'file')
+        websave([localpath b3_name num2str(slice) '.mat'], [webpath b3_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath a4_name num2str(slice) '.mat'], 'file')
+        websave([localpath a4_name num2str(slice) '.mat'], [webpath a4_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath b4_name num2str(slice) '.mat'], 'file')
+        websave([localpath b4_name num2str(slice) '.mat'], [webpath b4_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath a5_name num2str(slice) '.mat'], 'file')
+        websave([localpath a5_name num2str(slice) '.mat'], [webpath a5_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath b5_name num2str(slice) '.mat'], 'file')
+        websave([localpath b5_name num2str(slice) '.mat'], [webpath b5_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath a6_name num2str(slice) '.mat'], 'file')
+        websave([localpath a6_name num2str(slice) '.mat'], [webpath a6_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath b6_name num2str(slice) '.mat'], 'file')
+        websave([localpath b6_name num2str(slice) '.mat'], [webpath b6_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath a8_name num2str(slice) '.mat'], 'file')
+        websave([localpath a8_name num2str(slice) '.mat'], [webpath a8_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath b8_name num2str(slice) '.mat'], 'file')
+        websave([localpath b8_name num2str(slice) '.mat'], [webpath b8_name num2str(slice) '.mat']);
+    end
+end
+
+% perform reconstruction (skips if files already exist)
+recon_phantom(1:8,sens030, sens100, 'experiments/data/experiment_inputs/TURBINE_data/phantom/DEC15/')
+
 
 %%%%%%% Parameters
 slices_quali = 4;
@@ -205,31 +307,13 @@ saveas(gcf, 'experiments/data/experiment_results/paper2021/figures/Figure7ab.tif
 
 
 %% Figure 8
-% TURBINE acquisition in vivo - subtracted acquisitions
+% TURBINE acquisition in vivo - subtracted acquisitions subj B
 clear 
 close all
 %%%%%%%% SETUP files %%%%%%%% 
-% insert option to pre-processed data download here for when twix files are not available
-
-%%%%%%%%%%%%
-% Subj A
-% read_in_and_save_TURBINE('/Users/schauman/Documents/FMRIB Employment/Scanning/20210310_TURBINE/', 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/')% 
-% sens030 = generate_coil_sensitivity_maps_TURBINE('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/meas_MID00690_FID123364_mc_ep3d_turbine_GRa_slice',0.3, 1536,1:16);
-% sens100 = generate_coil_sensitivity_maps_TURBINE('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/meas_MID00690_FID123364_mc_ep3d_turbine_GRa_slice',1, 1536,1:16);
-% map = mapVBVD('/Users/schauman/Documents/FMRIB Employment/Scanning/20210310_TURBINE/meas_MID00690_FID123364_mc_ep3d_turbine_GRa.dat','removeOS',false);
-% ncov = cov(reshape(permute(squeeze(map{1}.noise()),[1,3,4,2]),[],32));
-% recon_invivo(1:16,sens030, sens100, 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/')
-
-% load('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/covariance.mat', 'ncov');
-% ncov = ncov;
-% load('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/meas_MID00690_FID123364_mc_ep3d_turbine_GRa__sens0.3.mat','sens');
-% sens030 = sens;
-% load('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/meas_MID00690_FID123364_mc_ep3d_turbine_GRa__sens1.mat','sens');
-% sens100 = sens;
-%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%
-% Subj B
+% Subj B - for reference preprocessing pipeline:
 % read_in_and_save_TURBINE('/Users/schauman/Documents/FMRIB Employment/Scanning/20210316_TURBINE/', 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/')
 % sens030 = generate_coil_sensitivity_maps_TURBINE('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/meas_MID00995_FID123669_mc_ep3d_turbine_GRa_slice',0.3, 1536,1:16);
 % sens100 = generate_coil_sensitivity_maps_TURBINE('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/meas_MID00995_FID123669_mc_ep3d_turbine_GRa_slice',1, 1536,1:16);
@@ -237,13 +321,102 @@ close all
 % ncov = cov(reshape(permute(squeeze(map{1}.noise()),[1,3,4,2]),[],32));
 % recon_invivo(1:16,sens030, sens100, 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/')
 
-load('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/covariance.mat', 'ncov');
-ncov = ncov;
-load('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/meas_MID00995_FID123669_mc_ep3d_turbine_GRa__sens0.3.mat','sens');
+
+
+% Data that is not available will be downloaded from Zenodo:
+
+covfile_name = 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/covariance.mat';
+sens_lowres_name = 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/meas_MID00995_FID123669_mc_ep3d_turbine_GRa__sens0.3.mat';
+sens_highres_name = 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/meas_MID00995_FID123669_mc_ep3d_turbine_GRa__sens1.mat';
+
+if exist(covfile_name, 'file')
+    load(covfile_name, 'ncov');
+else
+    load(websave(covfile_name, 'https://zenodo.org/record/4743764/files/covariance.mat'), 'ncov');
+end
+    
+if exist(sens_lowres_name, 'file')
+    load(sens_lowres_name,'sens');
+else
+    load(websave(sens_lowres_name, 'https://zenodo.org/record/4743764/files/meas_MID00995_FID123669_mc_ep3d_turbine_GRa__sens0.3.mat'), 'sens');
+end
 sens030 = sens;
-load('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/meas_MID00995_FID123669_mc_ep3d_turbine_GRa__sens1.mat','sens');
+
+if exist(sens_highres_name, 'file')
+    load(sens_highres_name,'sens');
+else
+    load(websave(sens_highres_name, 'https://zenodo.org/record/4743764/files/meas_MID00995_FID123669_mc_ep3d_turbine_GRa__sens1.mat'), 'sens');
+end
 sens100 = sens;
-%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+localpath = 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/';
+webpath = 'https://zenodo.org/record/4743764/files/';
+
+GRa_name = 'meas_MID00995_FID123669_mc_ep3d_turbine_GRa_slice';
+GRb_name = 'meas_MID00997_FID123671_mc_ep3d_turbine_GRb_slice';
+U8a_name = 'meas_MID01007_FID123681_mc_ep3d_turbine_UNI_8a_slice';
+U8b_name = 'meas_MID01009_FID123683_mc_ep3d_turbine_UNI_8b_slice';
+U10a_name = 'meas_MID00999_FID123673_mc_ep3d_turbine_UNI_10a_slice';
+U10b_name = 'meas_MID01001_FID123675_mc_ep3d_turbine_UNI_10b_slice';
+U46a_name = 'meas_MID01019_FID123693_mc_ep3d_turbine_UNI_46a_slice';
+U46b_name = 'meas_MID01021_FID123695_mc_ep3d_turbine_UNI_46b_slice';
+U55a_name = 'meas_MID01011_FID123685_mc_ep3d_turbine_UNI_55a_slice';
+U55b_name = 'meas_MID01013_FID123687_mc_ep3d_turbine_UNI_55b_slice';
+S10_46a_name = 'meas_MID01003_FID123677_mc_ep3d_turbine_SILVER_10_46a_slice';
+S10_46b_name = 'meas_MID01005_FID123679_mc_ep3d_turbine_SILVER_10_46b_slice';
+S8_55a_name = 'meas_MID01015_FID123689_mc_ep3d_turbine_SILVER_8_55a_slice';
+S8_55b_name = 'meas_MID01017_FID123691_mc_ep3d_turbine_SILVER_8_55b_slice';
+
+% download data
+for slice = 1:16
+    if ~exist([localpath GRa_name num2str(slice) '.mat'], 'file')
+        websave([localpath GRa_name num2str(slice) '.mat'], [webpath GRa_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath GRb_name num2str(slice) '.mat'], 'file')
+        websave([localpath GRb_name num2str(slice) '.mat'], [webpath GRb_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath U8a_name num2str(slice) '.mat'], 'file')
+        websave([localpath U8a_name num2str(slice) '.mat'], [webpath U8a_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath U8b_name num2str(slice) '.mat'], 'file')
+        websave([localpath U8b_name num2str(slice) '.mat'], [webpath U8b_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath U10a_name num2str(slice) '.mat'], 'file')
+        websave([localpath U10a_name num2str(slice) '.mat'], [webpath U10a_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath U10b_name num2str(slice) '.mat'], 'file')
+        websave([localpath U10b_name num2str(slice) '.mat'], [webpath U10b_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath U46a_name num2str(slice) '.mat'], 'file')
+        websave([localpath U46a_name num2str(slice) '.mat'], [webpath U46a_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath U46b_name num2str(slice) '.mat'], 'file')
+        websave([localpath U46b_name num2str(slice) '.mat'], [webpath U46b_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath U55a_name num2str(slice) '.mat'], 'file')
+        websave([localpath U55a_name num2str(slice) '.mat'], [webpath U55a_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath U55b_name num2str(slice) '.mat'], 'file')
+        websave([localpath U55b_name num2str(slice) '.mat'], [webpath U55b_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath S8_55a_name num2str(slice) '.mat'], 'file')
+        websave([localpath S8_55a_name num2str(slice) '.mat'], [webpath S8_55a_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath S8_55b_name num2str(slice) '.mat'], 'file')
+        websave([localpath S8_55b_name num2str(slice) '.mat'], [webpath S8_55b_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath S10_46a_name num2str(slice) '.mat'], 'file')
+        websave([localpath S10_46a_name num2str(slice) '.mat'], [webpath S10_46a_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath S10_46b_name num2str(slice) '.mat'], 'file')
+        websave([localpath S10_46b_name num2str(slice) '.mat'], [webpath S10_46b_name num2str(slice) '.mat']);
+    end
+end
+
+% perform reconstruction (skips if files already exist)
+recon_invivo(1:16,sens030, sens100, 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/')
+
 
 
 %%%%%%% Parameters
@@ -280,12 +453,10 @@ saveas(gcf, 'experiments/data/experiment_results/paper2021/figures/Figure8ab.tif
 
 
 %% Figure 9
-% TURBINE acquisition in vivo - resting state linear recon
+% TURBINE acquisition in vivo - resting state linear recon subj A
 clear 
 close all
 %%%%%%%% SETUP files %%%%%%%% 
-% insert option to pre-processed data download here for when twix files are not available
-
 %%%%%%%%%%%%
 % Subj A
 % read_in_and_save_TURBINE('/Users/schauman/Documents/FMRIB Employment/Scanning/20210310_TURBINE/', 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/')% 
@@ -293,32 +464,50 @@ close all
 % sens100 = generate_coil_sensitivity_maps_TURBINE('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/meas_MID00667_FID123341_mc_ep3d_turbine_GR_rs_fMRI_slice',1, 6016,1:16);
 % map = mapVBVD('/Users/schauman/Documents/FMRIB Employment/Scanning/20210310_TURBINE/meas_MID00667_FID123341_mc_ep3d_turbine_GR_rs_fMRI.dat','removeOS',false);
 % ncov = cov(reshape(permute(squeeze(map{1}.noise()),[1,3,4,2]),[],32));
-% recon_invivo_fmri(1:16,sens030, sens100, 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/')
 
-load('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/covariance_rs_fMRI.mat', 'ncov');
-ncov = ncov;
-load('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/meas_MID00667_FID123341_mc_ep3d_turbine_GR_rs_fMRI__sens0.3.mat','sens');
+covfile_name = 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/covariance_rs_fMRI.mat';
+sens_lowres_name = 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/meas_MID00667_FID123341_mc_ep3d_turbine_GR_rs_fMRI__sens0.3.mat';
+sens_highres_name = 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/meas_MID00667_FID123341_mc_ep3d_turbine_GR_rs_fMRI__sens1.mat';
+
+if exist(covfile_name, 'file')
+    load(covfile_name, 'ncov');
+else
+    load(websave(covfile_name, 'https://zenodo.org/record/4743418/files/covariance.mat'), 'ncov');
+end
+    
+if exist(sens_lowres_name, 'file')
+    load(sens_lowres_name,'sens');
+else
+    load(websave(sens_lowres_name, 'https://zenodo.org/record/4743418/files/meas_MID00667_FID123341_mc_ep3d_turbine_GR_rs_fMRI__sens0.3.mat'), 'sens');
+end
 sens030 = sens;
-load('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/meas_MID00667_FID123341_mc_ep3d_turbine_GR_rs_fMRI__sens1.mat','sens');
+
+if exist(sens_highres_name, 'file')
+    load(sens_highres_name,'sens');
+else
+    load(websave(sens_highres_name, 'https://zenodo.org/record/4743418/files/meas_MID00667_FID123341_mc_ep3d_turbine_GR_rs_fMRI__sens1.mat'), 'sens');
+end
 sens100 = sens;
-%%%%%%%%%%%%%%%%%%%%%%%%
 
-%%%%%%%%%%%%%%%%%%%%%%%%
-% Subj B
-% read_in_and_save_TURBINE('/Users/schauman/Documents/FMRIB Employment/Scanning/20210316_TURBINE/', 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/')% 
-% sens030 = generate_coil_sensitivity_maps_TURBINE('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/meas_MID00988_FID123662_mc_ep3d_turbine_GR_rs_fMRI_slice',0.3, 6016,1:16);
-% sens100 = generate_coil_sensitivity_maps_TURBINE('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/meas_MID00988_FID123662_mc_ep3d_turbine_GR_rs_fMRI_slice',1, 6016,1:16);
-% map = mapVBVD('/Users/schauman/Documents/FMRIB Employment/Scanning/20210316_TURBINE/meas_MID00988_FID123662_mc_ep3d_turbine_GR_rs_fMRI.dat','removeOS',false);
-% ncov = cov(reshape(permute(squeeze(map{1}.noise()),[1,3,4,2]),[],32));
-% recon_invivo_fmri(1:16,sens030, sens100, 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/')
 
-% load('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/covariance_rs_fMRI.mat', 'ncov');
-% ncov = ncov;
-% load('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/meas_MID00988_FID123662_mc_ep3d_turbine_GR_rs_fMRI__sens0.3.mat','sens');
-% sens030 = sens;
-% load('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/meas_MID00988_FID123662_mc_ep3d_turbine_GR_rs_fMRI__sens1.mat','sens');
-% sens100 = sens;
-%%%%%%%%%%%%%%%%%%%%%%%%
+localpath = 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/';
+webpath = 'https://zenodo.org/record/4743418/files/';
+
+GR_name = 'meas_MID00667_FID123341_mc_ep3d_turbine_GR_rs_fMRI_slice';
+S_name = 'meas_MID00669_FID123343_mc_ep3d_turbine_SILVER_rs_fMRI_slice';
+
+% download data
+for slice = 3:13
+    if ~exist([localpath GR_name num2str(slice) '.mat'], 'file')
+        websave([localpath GR_name num2str(slice) '.mat'], [webpath GR_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath S_name num2str(slice) '.mat'], 'file')
+        websave([localpath S_name num2str(slice) '.mat'], [webpath S_name num2str(slice) '.mat']);
+    end
+end
+
+% reconstruct
+recon_invivo_fmri(3:13,sens030, sens100, 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/')
 
 
 %%%%%%% Parameters
@@ -345,32 +534,51 @@ close all
 % sens100 = generate_coil_sensitivity_maps_TURBINE('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/meas_MID00667_FID123341_mc_ep3d_turbine_GR_rs_fMRI_slice',1, 6016,1:16);
 % map = mapVBVD('/Users/schauman/Documents/FMRIB Employment/Scanning/20210310_TURBINE/meas_MID00667_FID123341_mc_ep3d_turbine_GR_rs_fMRI.dat','removeOS',false);
 % ncov = cov(reshape(permute(squeeze(map{1}.noise()),[1,3,4,2]),[],32));
-% recon_invivo_fmri_wavelet(1:16,sens030, sens100, 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/')
 
-load('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/covariance_rs_fMRI.mat', 'ncov');
-ncov = ncov;
-load('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/meas_MID00667_FID123341_mc_ep3d_turbine_GR_rs_fMRI__sens0.3.mat','sens');
+covfile_name = 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/covariance_rs_fMRI.mat';
+sens_lowres_name = 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/meas_MID00667_FID123341_mc_ep3d_turbine_GR_rs_fMRI__sens0.3.mat';
+sens_highres_name = 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/meas_MID00667_FID123341_mc_ep3d_turbine_GR_rs_fMRI__sens1.mat';
+
+if exist(covfile_name, 'file')
+    load(covfile_name, 'ncov');
+else
+    load(websave(covfile_name, 'https://zenodo.org/record/4743418/files/covariance.mat'), 'ncov');
+end
+    
+if exist(sens_lowres_name, 'file')
+    load(sens_lowres_name,'sens');
+else
+    load(websave(sens_lowres_name, 'https://zenodo.org/record/4743418/files/meas_MID00667_FID123341_mc_ep3d_turbine_GR_rs_fMRI__sens0.3.mat'), 'sens');
+end
 sens030 = sens;
-load('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/meas_MID00667_FID123341_mc_ep3d_turbine_GR_rs_fMRI__sens1.mat','sens');
+
+if exist(sens_highres_name, 'file')
+    load(sens_highres_name,'sens');
+else
+    load(websave(sens_highres_name, 'https://zenodo.org/record/4743418/files/meas_MID00667_FID123341_mc_ep3d_turbine_GR_rs_fMRI__sens1.mat'), 'sens');
+end
 sens100 = sens;
-%%%%%%%%%%%%%%%%%%%%%%%%
 
-%%%%%%%%%%%%%%%%%%%%%%%%
-% Subj B
-% read_in_and_save_TURBINE('/Users/schauman/Documents/FMRIB Employment/Scanning/20210316_TURBINE/', 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/')% 
-% sens030 = generate_coil_sensitivity_maps_TURBINE('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/meas_MID00988_FID123662_mc_ep3d_turbine_GR_rs_fMRI_slice',0.3, 6016,1:16);
-% sens100 = generate_coil_sensitivity_maps_TURBINE('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/meas_MID00988_FID123662_mc_ep3d_turbine_GR_rs_fMRI_slice',1, 6016,1:16);
-% map = mapVBVD('/Users/schauman/Documents/FMRIB Employment/Scanning/20210316_TURBINE/meas_MID00988_FID123662_mc_ep3d_turbine_GR_rs_fMRI.dat','removeOS',false);
-% ncov = cov(reshape(permute(squeeze(map{1}.noise()),[1,3,4,2]),[],32));
-% recon_invivo_fmri_wavelet(1:16,sens030, sens100, 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/')
 
-% load('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/covariance_rs_fMRI.mat', 'ncov');
-% ncov = ncov;
-% load('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/meas_MID00988_FID123662_mc_ep3d_turbine_GR_rs_fMRI__sens0.3.mat','sens');
-% sens030 = sens;
-% load('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/meas_MID00988_FID123662_mc_ep3d_turbine_GR_rs_fMRI__sens1.mat','sens');
-% sens100 = sens;
-%%%%%%%%%%%%%%%%%%%%%%%%
+localpath = 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/';
+webpath = 'https://zenodo.org/record/4743418/files/';
+
+GR_name = 'meas_MID00667_FID123341_mc_ep3d_turbine_GR_rs_fMRI_slice';
+S_name = 'meas_MID00669_FID123343_mc_ep3d_turbine_SILVER_rs_fMRI_slice';
+
+% download data
+for slice = 3:13
+    if ~exist([localpath GR_name num2str(slice) '.mat'], 'file')
+        websave([localpath GR_name num2str(slice) '.mat'], [webpath GR_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath S_name num2str(slice) '.mat'], 'file')
+        websave([localpath S_name num2str(slice) '.mat'], [webpath S_name num2str(slice) '.mat']);
+    end
+end
+
+% reconstruct
+recon_invivo_fmri_wavelet(1:16,sens030, sens100, 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/')
+
 
 
 %%%%%%% Parameters
@@ -403,7 +611,7 @@ saveas(gcf,['experiments/data/experiment_results/paper2021/figures/FigureS1.svg'
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Supplementary figure 2
-% TURBINE acquisition in vivo - subtracted acquisitions
+% TURBINE acquisition in vivo - subtracted acquisitions subj A
 clear 
 close all
 %%%%%%%% SETUP files %%%%%%%% 
@@ -411,37 +619,110 @@ close all
 
 %%%%%%%%%%%%
 % Subj A
+% For reference of how the data was pre-processed:
+
 % read_in_and_save_TURBINE('/Users/schauman/Documents/FMRIB Employment/Scanning/20210310_TURBINE/', 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/')% 
 % sens030 = generate_coil_sensitivity_maps_TURBINE('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/meas_MID00690_FID123364_mc_ep3d_turbine_GRa_slice',0.3, 1536,1:16);
 % sens100 = generate_coil_sensitivity_maps_TURBINE('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/meas_MID00690_FID123364_mc_ep3d_turbine_GRa_slice',1, 1536,1:16);
 % map = mapVBVD('/Users/schauman/Documents/FMRIB Employment/Scanning/20210310_TURBINE/meas_MID00690_FID123364_mc_ep3d_turbine_GRa.dat','removeOS',false);
 % ncov = cov(reshape(permute(squeeze(map{1}.noise()),[1,3,4,2]),[],32));
-% recon_invivo(1:16,sens030, sens100, 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/')
 
-load('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/covariance.mat', 'ncov');
-ncov = ncov;
-load('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/meas_MID00690_FID123364_mc_ep3d_turbine_GRa__sens0.3.mat','sens');
+
+
+% Data that is not available will be downloaded from Zenodo:
+
+covfile_name = 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/covariance.mat';
+sens_lowres_name = 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/meas_MID00690_FID123364_mc_ep3d_turbine_GRa__sens0.3.mat';
+sens_highres_name = 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/meas_MID00690_FID123364_mc_ep3d_turbine_GRa__sens1.mat';
+
+if exist(covfile_name, 'file')
+    load(covfile_name, 'ncov');
+else
+    load(websave(covfile_name, 'https://zenodo.org/record/4743418/files/covariance.mat'), 'ncov');
+end
+    
+if exist(sens_lowres_name, 'file')
+    load(sens_lowres_name,'sens');
+else
+    load(websave(sens_lowres_name, 'https://zenodo.org/record/4743418/files/meas_MID00690_FID123364_mc_ep3d_turbine_GRa__sens0.3.mat'), 'sens');
+end
 sens030 = sens;
-load('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/meas_MID00690_FID123364_mc_ep3d_turbine_GRa__sens1.mat','sens');
+
+if exist(sens_highres_name, 'file')
+    load(sens_highres_name,'sens');
+else
+    load(websave(sens_highres_name, 'https://zenodo.org/record/4743418/files/meas_MID00690_FID123364_mc_ep3d_turbine_GRa__sens1.mat'), 'sens');
+end
 sens100 = sens;
-%%%%%%%%%%%%%%%%%%%%%%%%
 
-%%%%%%%%%%%%%%%%%%%%%%%%
-% Subj B
-% read_in_and_save_TURBINE('/Users/schauman/Documents/FMRIB Employment/Scanning/20210316_TURBINE/', 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/')
-% sens030 = generate_coil_sensitivity_maps_TURBINE('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/meas_MID00995_FID123669_mc_ep3d_turbine_GRa_slice',0.3, 1536,1:16);
-% sens100 = generate_coil_sensitivity_maps_TURBINE('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/meas_MID00995_FID123669_mc_ep3d_turbine_GRa_slice',1, 1536,1:16);
-% map = mapVBVD('/Users/schauman/Documents/FMRIB Employment/Scanning/20210316_TURBINE/meas_MID00995_FID123669_mc_ep3d_turbine_GRa.dat','removeOS',false);
-% ncov = cov(reshape(permute(squeeze(map{1}.noise()),[1,3,4,2]),[],32));
-% recon_invivo(1:16,sens030, sens100, 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/')
 
-% load('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/covariance.mat', 'ncov');
-% ncov = ncov;
-% load('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/meas_MID00995_FID123669_mc_ep3d_turbine_GRa__sens0.3.mat','sens');
-% sens030 = sens;
-% load('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/meas_MID00995_FID123669_mc_ep3d_turbine_GRa__sens1.mat','sens');
-% sens100 = sens;
-%%%%%%%%%%%%%%%%%%%%%%%%
+localpath = 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/';
+webpath = 'https://zenodo.org/record/4743418/files/';
+
+GRa_name = 'meas_MID00690_FID123364_mc_ep3d_turbine_GRa_slice';
+GRb_name = 'meas_MID00692_FID123366_mc_ep3d_turbine_GRb_slice';
+U8a_name = 'meas_MID00674_FID123348_mc_ep3d_turbine_UNI_8a_slice';
+U8b_name = 'meas_MID00676_FID123350_mc_ep3d_turbine_UNI_8b_slice';
+U10a_name = 'meas_MID00678_FID123352_mc_ep3d_turbine_UNI_10a_slice';
+U10b_name = 'meas_MID00680_FID123354_mc_ep3d_turbine_UNI_10b_slice';
+U46a_name = 'meas_MID00682_FID123356_mc_ep3d_turbine_UNI_46a_slice';
+U46b_name = 'meas_MID00684_FID123358_mc_ep3d_turbine_UNI_46b_slice';
+U55a_name = 'meas_MID00686_FID123360_mc_ep3d_turbine_UNI_55a_slice';
+U55b_name = 'meas_MID00688_FID123362_mc_ep3d_turbine_UNI_55b_slice';
+S10_46a_name = 'meas_MID00698_FID123372_mc_ep3d_turbine_SILVER_10_46a_slice';
+S10_46b_name = 'meas_MID00700_FID123374_mc_ep3d_turbine_SILVER_10_46b_slice';
+S8_55a_name = 'meas_MID00694_FID123368_mc_ep3d_turbine_SILVER_8_55a_slice';
+S8_55b_name = 'meas_MID00696_FID123370_mc_ep3d_turbine_SILVER_8_55b_slice';
+
+% download data
+for slice = 1:16
+    if ~exist([localpath GRa_name num2str(slice) '.mat'], 'file')
+        websave([localpath GRa_name num2str(slice) '.mat'], [webpath GRa_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath GRb_name num2str(slice) '.mat'], 'file')
+        websave([localpath GRb_name num2str(slice) '.mat'], [webpath GRb_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath U8a_name num2str(slice) '.mat'], 'file')
+        websave([localpath U8a_name num2str(slice) '.mat'], [webpath U8a_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath U8b_name num2str(slice) '.mat'], 'file')
+        websave([localpath U8b_name num2str(slice) '.mat'], [webpath U8b_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath U10a_name num2str(slice) '.mat'], 'file')
+        websave([localpath U10a_name num2str(slice) '.mat'], [webpath U10a_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath U10b_name num2str(slice) '.mat'], 'file')
+        websave([localpath U10b_name num2str(slice) '.mat'], [webpath U10b_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath U46a_name num2str(slice) '.mat'], 'file')
+        websave([localpath U46a_name num2str(slice) '.mat'], [webpath U46a_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath U46b_name num2str(slice) '.mat'], 'file')
+        websave([localpath U46b_name num2str(slice) '.mat'], [webpath U46b_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath U55a_name num2str(slice) '.mat'], 'file')
+        websave([localpath U55a_name num2str(slice) '.mat'], [webpath U55a_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath U55b_name num2str(slice) '.mat'], 'file')
+        websave([localpath U55b_name num2str(slice) '.mat'], [webpath U55b_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath S8_55a_name num2str(slice) '.mat'], 'file')
+        websave([localpath S8_55a_name num2str(slice) '.mat'], [webpath S8_55a_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath S8_55b_name num2str(slice) '.mat'], 'file')
+        websave([localpath S8_55b_name num2str(slice) '.mat'], [webpath S8_55b_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath S10_46a_name num2str(slice) '.mat'], 'file')
+        websave([localpath S10_46a_name num2str(slice) '.mat'], [webpath S10_46a_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath S10_46b_name num2str(slice) '.mat'], 'file')
+        websave([localpath S10_46b_name num2str(slice) '.mat'], [webpath S10_46b_name num2str(slice) '.mat']);
+    end
+end
+
+% perform reconstruction (skips if files already exist)
+recon_invivo(1:16,sens030, sens100, 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/')
+
 
 
 %%%%%%% Parameters
@@ -456,7 +737,6 @@ subj = 'A';
 SNR_predict_and_measure_invivo(slices_quanti, Nspokes, sens030, sens100, ncov, ['experiments/data/experiment_inputs/TURBINE_data/in-vivo/subj' subj '/recons/'])
 SNR_predict_and_measure_invivo(slices_quali, Nspokes, sens030, sens100, ncov, ['experiments/data/experiment_inputs/TURBINE_data/in-vivo/subj' subj '/recons/'])
 
-%%%%%%% Figure
 %%%%%%% Figure
 figure %A
 SNR_quali_fig(reshape(sensmask_lowres(:,:,slices_quali),30,[]), reshape(sensmask_highres(:,:,slices_quali),100,[]), slices_quali, ['experiments/data/experiment_inputs/TURBINE_data/in-vivo/subj' subj '/recons/'], 'experiments/data/experiment_results/paper2021/figures/Figure8a')
@@ -480,28 +760,13 @@ saveas(gcf, 'experiments/data/experiment_results/paper2021/figures/FigureS2ab.ti
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Supplementary figure 3
-% TURBINE acquisition in vivo - tSNR resting state
+% TURBINE acquisition in vivo - tSNR resting state linear recon subj B
 clear 
 close all
 %%%%%%%% SETUP files %%%%%%%% 
 % insert option to pre-processed data download here for when twix files are not available
 
-%%%%%%%%%%%%
-% Subj A
-% read_in_and_save_TURBINE('/Users/schauman/Documents/FMRIB Employment/Scanning/20210310_TURBINE/', 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/')% 
-% sens030 = generate_coil_sensitivity_maps_TURBINE('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/meas_MID00667_FID123341_mc_ep3d_turbine_GR_rs_fMRI_slice',0.3, 6016,1:16);
-% sens100 = generate_coil_sensitivity_maps_TURBINE('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/meas_MID00667_FID123341_mc_ep3d_turbine_GR_rs_fMRI_slice',1, 6016,1:16);
-% map = mapVBVD('/Users/schauman/Documents/FMRIB Employment/Scanning/20210310_TURBINE/meas_MID00667_FID123341_mc_ep3d_turbine_GR_rs_fMRI.dat','removeOS',false);
-% ncov = cov(reshape(permute(squeeze(map{1}.noise()),[1,3,4,2]),[],32));
-% recon_invivo_fmri(1:16,sens030, sens100, 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/')
 
-% load('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/covariance_rs_fMRI.mat', 'ncov');
-% ncov = ncov;
-% load('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/meas_MID00667_FID123341_mc_ep3d_turbine_GR_rs_fMRI__sens0.3.mat','sens');
-% sens030 = sens;
-% load('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/meas_MID00667_FID123341_mc_ep3d_turbine_GR_rs_fMRI__sens1.mat','sens');
-% sens100 = sens;
-%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%
 % Subj B
@@ -510,14 +775,51 @@ close all
 % sens100 = generate_coil_sensitivity_maps_TURBINE('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/meas_MID00988_FID123662_mc_ep3d_turbine_GR_rs_fMRI_slice',1, 6016,1:16);
 % map = mapVBVD('/Users/schauman/Documents/FMRIB Employment/Scanning/20210316_TURBINE/meas_MID00988_FID123662_mc_ep3d_turbine_GR_rs_fMRI.dat','removeOS',false);
 % ncov = cov(reshape(permute(squeeze(map{1}.noise()),[1,3,4,2]),[],32));
-% recon_invivo_fmri(1:16,sens030, sens100, 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/')
 
-load('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/covariance_rs_fMRI.mat', 'ncov');
-ncov = ncov;
-load('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/meas_MID00988_FID123662_mc_ep3d_turbine_GR_rs_fMRI__sens0.3.mat','sens');
+covfile_name = 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/covariance_rs_fMRI.mat';
+sens_lowres_name = 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/meas_MID00988_FID123662_mc_ep3d_turbine_GR_rs_fMRI__sens0.3.mat';
+sens_highres_name = 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/meas_MID00988_FID123662_mc_ep3d_turbine_GR_rs_fMRI__sens1.mat';
+
+if exist(covfile_name, 'file')
+    load(covfile_name, 'ncov');
+else
+    load(websave(covfile_name, 'https://zenodo.org/record/4743764/files/covariance.mat'), 'ncov');
+end
+    
+if exist(sens_lowres_name, 'file')
+    load(sens_lowres_name,'sens');
+else
+    load(websave(sens_lowres_name, 'https://zenodo.org/record/4743764/files/meas_MID00988_FID123662_mc_ep3d_turbine_GR_rs_fMRI__sens0.3.mat'), 'sens');
+end
 sens030 = sens;
-load('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/meas_MID00988_FID123662_mc_ep3d_turbine_GR_rs_fMRI__sens1.mat','sens');
+
+if exist(sens_highres_name, 'file')
+    load(sens_highres_name,'sens');
+else
+    load(websave(sens_highres_name, 'https://zenodo.org/record/4743764/files/meas_MID00988_FID123662_mc_ep3d_turbine_GR_rs_fMRI__sens1.mat'), 'sens');
+end
 sens100 = sens;
+
+
+localpath = 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/';
+webpath = 'https://zenodo.org/record/4743764/files/';
+
+GR_name = 'meas_MID00988_FID123662_mc_ep3d_turbine_GR_rs_fMRI_slice';
+S_name = 'meas_MID00986_FID123660_mc_ep3d_turbine_SILVER_rs_fMRI_slice';
+
+% download data
+for slice = 3:13
+    if ~exist([localpath GR_name num2str(slice) '.mat'], 'file')
+        websave([localpath GR_name num2str(slice) '.mat'], [webpath GR_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath S_name num2str(slice) '.mat'], 'file')
+        websave([localpath S_name num2str(slice) '.mat'], [webpath S_name num2str(slice) '.mat']);
+    end
+end
+
+% reconstruct
+recon_invivo_fmri(3:13,sens030, sens100, 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/')
+
 %%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -532,28 +834,10 @@ subj = 'B';
 tSNR_fig(['experiments/data/experiment_inputs/TURBINE_data/in-vivo/subj' subj '/recons/'],3:13, 8, sensmask_lowres, sensmask_highres, 'experiments/data/experiment_results/paper2021/figures/FigureS3')
 
 %% Supplementary figure 4
-% TURBINE acquisition in vivo - tSNR resting state nonlinear
+% TURBINE acquisition in vivo - tSNR resting state nonlinear subj B
 clear 
 close all
 %%%%%%%% SETUP files %%%%%%%% 
-% insert option to pre-processed data download here for when twix files are not available
-
-%%%%%%%%%%%%
-% Subj A
-% read_in_and_save_TURBINE('/Users/schauman/Documents/FMRIB Employment/Scanning/20210310_TURBINE/', 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/')% 
-% sens030 = generate_coil_sensitivity_maps_TURBINE('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/meas_MID00667_FID123341_mc_ep3d_turbine_GR_rs_fMRI_slice',0.3, 6016,1:16);
-% sens100 = generate_coil_sensitivity_maps_TURBINE('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/meas_MID00667_FID123341_mc_ep3d_turbine_GR_rs_fMRI_slice',1, 6016,1:16);
-% map = mapVBVD('/Users/schauman/Documents/FMRIB Employment/Scanning/20210310_TURBINE/meas_MID00667_FID123341_mc_ep3d_turbine_GR_rs_fMRI.dat','removeOS',false);
-% ncov = cov(reshape(permute(squeeze(map{1}.noise()),[1,3,4,2]),[],32));
-% recon_invivo_fmri_wavelet(1:16,sens030, sens100, 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/')
-
-% load('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/covariance_rs_fMRI.mat', 'ncov');
-% ncov = ncov;
-% load('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/meas_MID00667_FID123341_mc_ep3d_turbine_GR_rs_fMRI__sens0.3.mat','sens');
-% sens030 = sens;
-% load('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjA/meas_MID00667_FID123341_mc_ep3d_turbine_GR_rs_fMRI__sens1.mat','sens');
-% sens100 = sens;
-%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%
 % Subj B
@@ -562,15 +846,50 @@ close all
 % sens100 = generate_coil_sensitivity_maps_TURBINE('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/meas_MID00988_FID123662_mc_ep3d_turbine_GR_rs_fMRI_slice',1, 6016,1:16);
 % map = mapVBVD('/Users/schauman/Documents/FMRIB Employment/Scanning/20210316_TURBINE/meas_MID00988_FID123662_mc_ep3d_turbine_GR_rs_fMRI.dat','removeOS',false);
 % ncov = cov(reshape(permute(squeeze(map{1}.noise()),[1,3,4,2]),[],32));
-% recon_invivo_fmri_wavelet(1:16,sens030, sens100, 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/')
 
-load('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/covariance_rs_fMRI.mat', 'ncov');
-ncov = ncov;
-load('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/meas_MID00988_FID123662_mc_ep3d_turbine_GR_rs_fMRI__sens0.3.mat','sens');
+covfile_name = 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/covariance_rs_fMRI.mat';
+sens_lowres_name = 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/meas_MID00988_FID123662_mc_ep3d_turbine_GR_rs_fMRI__sens0.3.mat';
+sens_highres_name = 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/meas_MID00988_FID123662_mc_ep3d_turbine_GR_rs_fMRI__sens1.mat';
+
+if exist(covfile_name, 'file')
+    load(covfile_name, 'ncov');
+else
+    load(websave(covfile_name, 'https://zenodo.org/record/4743764/files/covariance.mat'), 'ncov');
+end
+    
+if exist(sens_lowres_name, 'file')
+    load(sens_lowres_name,'sens');
+else
+    load(websave(sens_lowres_name, 'https://zenodo.org/record/4743764/files/meas_MID00988_FID123662_mc_ep3d_turbine_GR_rs_fMRI__sens0.3.mat'), 'sens');
+end
 sens030 = sens;
-load('experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/meas_MID00988_FID123662_mc_ep3d_turbine_GR_rs_fMRI__sens1.mat','sens');
+
+if exist(sens_highres_name, 'file')
+    load(sens_highres_name,'sens');
+else
+    load(websave(sens_highres_name, 'https://zenodo.org/record/4743764/files/meas_MID00988_FID123662_mc_ep3d_turbine_GR_rs_fMRI__sens1.mat'), 'sens');
+end
 sens100 = sens;
-%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+localpath = 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/';
+webpath = 'https://zenodo.org/record/4743764/files/';
+
+GR_name = 'meas_MID00988_FID123662_mc_ep3d_turbine_GR_rs_fMRI_slice';
+S_name = 'meas_MID00986_FID123660_mc_ep3d_turbine_SILVER_rs_fMRI_slice';
+
+% download data
+for slice = 3:13
+    if ~exist([localpath GR_name num2str(slice) '.mat'], 'file')
+        websave([localpath GR_name num2str(slice) '.mat'], [webpath GR_name num2str(slice) '.mat']);
+    end
+    if ~exist([localpath S_name num2str(slice) '.mat'], 'file')
+        websave([localpath S_name num2str(slice) '.mat'], [webpath S_name num2str(slice) '.mat']);
+    end
+end
+
+% reconstruct
+recon_invivo_fmri_wavelet(3:13,sens030, sens100, 'experiments/data/experiment_inputs/TURBINE_data/in-vivo/subjB/')
 
 
 %%%%%%% Parameters
